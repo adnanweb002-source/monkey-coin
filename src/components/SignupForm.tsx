@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { RefreshCw, ChevronDown, Eye, EyeOff } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
 const signupSchema = z.object({
@@ -312,10 +313,10 @@ const SignupForm = () => {
 
         {/* Sign In Link */}
         <p className="text-center text-muted-foreground">
-          Already have an Account{" "}
-          <a href="/signin" className="crypto-link">
+          Already have an Account?{" "}
+          <Link to="/signin" className="crypto-link">
             Sign in
-          </a>
+          </Link>
         </p>
       </form>
     </div>

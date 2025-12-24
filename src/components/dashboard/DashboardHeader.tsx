@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Bell, Moon, Sun, Plus, ChevronDown } from "lucide-react";
+import { useTheme } from "next-themes";
 import { UserProfile } from "@/types/user";
 
 const DashboardHeader = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [isDarkMode, setIsDarkMode] = useState(true);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     const stored = localStorage.getItem("userProfile");
@@ -59,10 +60,10 @@ const DashboardHeader = () => {
         </button>
 
         <button
-          onClick={() => setIsDarkMode(!isDarkMode)}
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-foreground"
         >
-          {isDarkMode ? <Moon size={18} /> : <Sun size={18} />}
+          {theme === "dark" ? <Moon size={18} /> : <Sun size={18} />}
         </button>
 
         <button className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-foreground relative">

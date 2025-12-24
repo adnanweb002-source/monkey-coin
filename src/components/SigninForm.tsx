@@ -46,13 +46,20 @@ const SigninForm = () => {
       // Store tokens using tokenStorage utility
       tokenStorage.setTokens(accessToken, refreshToken);
 
+      // Fetch user profile after successful login
+      const profileResponse = await api.get("/auth/get-profile");
+      const userProfile = profileResponse?.data;
+      
+      // Store user profile in localStorage
+      localStorage.setItem("userProfile", JSON.stringify(userProfile));
+
       toast({
         title: "Success!",
         description: "You have been signed in successfully.",
       });
 
-      // Navigate to 2FA page
-      navigate("/2fa");
+      // Navigate to Dashboard
+      navigate("/dashboard");
     } catch (error) {
       toast({
         title: "Error",

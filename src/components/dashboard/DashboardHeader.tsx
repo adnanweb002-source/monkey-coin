@@ -1,0 +1,94 @@
+import { useEffect, useState } from "react";
+import { Bell, Moon, Sun, Plus, ChevronDown } from "lucide-react";
+import { UserProfile } from "@/types/user";
+
+const DashboardHeader = () => {
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
+
+  useEffect(() => {
+    const stored = localStorage.getItem("userProfile");
+    if (stored) {
+      setUserProfile(JSON.parse(stored));
+    }
+
+    const timer = setInterval(() => setCurrentDateTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatDateTime = (date: Date) => {
+    return date.toLocaleDateString("en-US", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }) + ", " + date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    }) + ", " + date.toLocaleDateString("en-US", { weekday: "short" });
+  };
+
+  return (
+    <header className="h-16 bg-card border-b border-border px-6 flex items-center justify-between">
+      {/* Left section */}
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+            <span className="text-primary-foreground text-sm">←</span>
+          </div>
+          <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
+        </div>
+        
+        <button className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-sm font-medium">
+          <span>🌐</span>
+          <span>Language</span>
+          <ChevronDown size={14} />
+        </button>
+        
+        <span className="text-primary text-sm font-medium">
+          {formatDateTime(currentDateTime)}
+        </span>
+      </div>
+
+      {/* Right section */}
+      <div className="flex items-center gap-4">
+        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium">
+          <Plus size={16} />
+          <span>Deposit</span>
+        </button>
+
+        <button
+          onClick={() => setIsDarkMode(!isDarkMode)}
+          className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-foreground"
+        >
+          {isDarkMode ? <Moon size={18} /> : <Sun size={18} />}
+        </button>
+
+        <button className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-foreground relative">
+          <Bell size={18} />
+          <span className="absolute -top-1 -right-1 w-4 h-4 bg-destructive rounded-full text-xs flex items-center justify-center text-destructive-foreground">
+            2
+          </span>
+        </button>
+
+        {/* User profile */}
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
+            <span className="text-foreground">👤</span>
+          </div>
+          <div className="text-right">
+            <p className="text-sm font-medium text-foreground">
+              {userProfile ? `${userProfile.firstName} ${userProfile.lastName}` : "User"}
+            </p>
+            <p className="text-xs text-primary">
+              {userProfile?.status === "ACTIVE" ? "Active" : "Super Admin"}
+            </p>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default DashboardHeader;

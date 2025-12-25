@@ -1,5 +1,18 @@
+import { useState } from "react";
 import { TrendingUp, Clock, Wallet, Percent } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
+import api from "@/lib/api";
 import type { Package } from "@/types/package";
 
 const formatCurrency = (value: string) => {
@@ -11,6 +24,36 @@ const formatCurrency = (value: string) => {
 
 const PackagesSection = ({ packages }: { packages: Package[] }) => {
   const activePackages = packages.filter((pkg) => pkg.isActive);
+  const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
+  const [amount, setAmount] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+
+  const handlePurchase = async () => {
+    if (!selectedPackage || !amount) return;
+
+    setIsLoading(true);
+    try {
+      await api.post("/packages/purchase", {
+        packageId: selectedPackage.id,
+        amount: amount,
+      });
+      toast({
+        title: "Success",
+        description: "Package purchased successfully!",
+      });
+      setSelectedPackage(null);
+      setAmount("");
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to purchase package. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="bg-card rounded-xl p-5 border border-border">
@@ -26,6 +69,7 @@ const PackagesSection = ({ packages }: { packages: Package[] }) => {
                   variant="default"
                   size="sm"
                   className="bg-primary hover:bg-primary/90"
+                  onClick={() => setSelectedPackage(pkg)}
                 >
                   Purchase Now
                 </Button>
@@ -95,6 +139,40 @@ const PackagesSection = ({ packages }: { packages: Package[] }) => {
           </p>
         </div>
       )}
+
+      <Dialog open={!!selectedPackage} onOpenChange={(open) => !open && setSelectedPackage(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Purchase {selectedPackage?.name}</DialogTitle>
+            <DialogDescription>
+              Enter the amount you want to invest (
+              {selectedPackage && formatCurrency(selectedPackage.investmentMin)} - {selectedPackage && formatCurrency(selectedPackage.investmentMax)})
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="amount">Amount</Label>
+              <Input
+                id="amount"
+                type="number"
+                placeholder="Enter amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                min={selectedPackage?.investmentMin}
+                max={selectedPackage?.investmentMax}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSelectedPackage(null)}>
+              Cancel
+            </Button>
+            <Button onClick={handlePurchase} disabled={!amount || isLoading}>
+              {isLoading ? "Processing..." : "Purchase"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

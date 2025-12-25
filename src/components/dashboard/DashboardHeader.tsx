@@ -32,7 +32,7 @@ const DashboardHeader = () => {
   };
 
   return (
-    <div className="flex-1 flex items-center justify-between">
+    <header className="h-16 px-6 bg-background border-b border-border flex items-center justify-between shrink-0">
       {/* Left section */}
       <div className="flex items-center gap-4">
         <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
@@ -87,7 +87,7 @@ const DashboardHeader = () => {
           </div>
         </div>
       </div>
-    </div>
+    </header>
   );
 };
 

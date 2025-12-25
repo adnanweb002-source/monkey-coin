@@ -31,15 +31,10 @@ const DashboardHeader = () => {
   };
 
   return (
-    <header className="h-16 bg-card border-b border-border px-6 flex items-center justify-between">
+    <div className="flex-1 flex items-center justify-between">
       {/* Left section */}
       <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground text-sm">←</span>
-          </div>
-          <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
-        </div>
+        <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
         
         <button className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-sm font-medium">
           <span>🌐</span>
@@ -88,7 +83,7 @@ const DashboardHeader = () => {
           </div>
         </div>
       </div>
-    </header>
+    </div>
   );
 };
 

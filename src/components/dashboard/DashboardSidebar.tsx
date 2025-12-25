@@ -13,6 +13,26 @@ import {
   Wrench,
   HeadphonesIcon,
 } from "lucide-react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  useSidebar,
+} from "@/components/ui/sidebar";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 interface SidebarItem {
   label: string;
@@ -52,6 +72,8 @@ const sidebarItems: SidebarItem[] = [
 
 const DashboardSidebar = () => {
   const location = useLocation();
+  const { state } = useSidebar();
+  const isCollapsed = state === "collapsed";
   const [expandedItems, setExpandedItems] = useState<string[]>(["Reports"]);
 
   const toggleExpand = (label: string) => {
@@ -67,91 +89,93 @@ const DashboardSidebar = () => {
     children?.some((child) => location.pathname === child.path);
 
   return (
-    <aside className="w-64 h-screen bg-card border-r border-border flex flex-col shrink-0">
+    <Sidebar collapsible="icon">
       {/* Logo */}
-      <div className="p-6 border-b border-border">
+      <SidebarHeader className="border-b border-sidebar-border p-4">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
             <span className="text-primary-foreground font-bold text-lg">L</span>
           </div>
-          <span className="text-foreground font-semibold text-lg">Logo</span>
+          {!isCollapsed && (
+            <span className="text-sidebar-foreground font-semibold text-lg">Logo</span>
+          )}
         </div>
-      </div>
+      </SidebarHeader>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 overflow-y-auto">
-        <ul className="space-y-1">
-          {sidebarItems.map((item) => (
-            <li key={item.label}>
-              {item.children ? (
-                <div>
-                  <button
-                    onClick={() => toggleExpand(item.label)}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                      isChildActive(item.children)
-                        ? "bg-primary/10 text-primary"
-                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <item.icon size={18} />
-                      <span>{item.label}</span>
-                    </div>
-                    {expandedItems.includes(item.label) ? (
-                      <ChevronDown size={16} />
-                    ) : (
-                      <ChevronRight size={16} />
-                    )}
-                  </button>
-                  {expandedItems.includes(item.label) && (
-                    <ul className="mt-1 ml-6 space-y-1">
-                      {item.children.map((child) => (
-                        <li key={child.path}>
-                          <Link
-                            to={child.path}
-                            className={`block px-3 py-2 rounded-lg text-sm transition-colors ${
-                              isActive(child.path)
-                                ? "text-primary"
-                                : "text-muted-foreground hover:text-foreground"
-                            }`}
-                          >
-                            {child.label}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {sidebarItems.map((item) => (
+                <SidebarMenuItem key={item.label}>
+                  {item.children ? (
+                    <Collapsible
+                      open={expandedItems.includes(item.label) && !isCollapsed}
+                      onOpenChange={() => toggleExpand(item.label)}
+                    >
+                      <CollapsibleTrigger asChild>
+                        <SidebarMenuButton
+                          tooltip={item.label}
+                          isActive={isChildActive(item.children)}
+                        >
+                          <item.icon className="shrink-0" />
+                          <span>{item.label}</span>
+                          {expandedItems.includes(item.label) ? (
+                            <ChevronDown className="ml-auto shrink-0" />
+                          ) : (
+                            <ChevronRight className="ml-auto shrink-0" />
+                          )}
+                        </SidebarMenuButton>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {item.children.map((child) => (
+                            <SidebarMenuSubItem key={child.path}>
+                              <SidebarMenuSubButton
+                                asChild
+                                isActive={isActive(child.path)}
+                              >
+                                <Link to={child.path}>{child.label}</Link>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          ))}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  ) : (
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.label}
+                      isActive={isActive(item.path)}
+                    >
+                      <Link to={item.path || "#"}>
+                        <item.icon className="shrink-0" />
+                        <span>{item.label}</span>
+                      </Link>
+                    </SidebarMenuButton>
                   )}
-                </div>
-              ) : (
-                <Link
-                  to={item.path || "#"}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                    isActive(item.path)
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                  }`}
-                >
-                  <item.icon size={18} />
-                  <span>{item.label}</span>
-                </Link>
-              )}
-            </li>
-          ))}
-        </ul>
-      </nav>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
 
       {/* Footer */}
-      <div className="p-4 border-t border-border">
-        <div className="flex gap-4 text-xs text-muted-foreground">
-          <Link to="/privacy" className="hover:text-foreground transition-colors">
-            Privacy Policy
-          </Link>
-          <Link to="/terms" className="hover:text-foreground transition-colors">
-            Terms of Use
-          </Link>
-        </div>
-      </div>
-    </aside>
+      <SidebarFooter className="border-t border-sidebar-border p-4">
+        {!isCollapsed && (
+          <div className="flex gap-4 text-xs text-sidebar-foreground/70">
+            <Link to="/privacy" className="hover:text-sidebar-foreground transition-colors">
+              Privacy Policy
+            </Link>
+            <Link to="/terms" className="hover:text-sidebar-foreground transition-colors">
+              Terms of Use
+            </Link>
+          </div>
+        )}
+      </SidebarFooter>
+    </Sidebar>
   );
 };
 

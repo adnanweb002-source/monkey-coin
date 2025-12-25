@@ -8,7 +8,8 @@ import Index from "./pages/Index";
 import Signin from "./pages/Signin";
 import TwoFactorAuth from "./pages/TwoFactorAuth";
 import Success from "./pages/Success";
-import Dashboard from "./pages/Dashboard";
+import DashboardLayout from "./components/dashboard/DashboardLayout";
+import DashboardHome from "./pages/DashboardHome";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,11 +22,18 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            {/* Auth Routes */}
             <Route path="/" element={<Index />} />
             <Route path="/signin" element={<Signin />} />
             <Route path="/2fa" element={<TwoFactorAuth />} />
             <Route path="/success" element={<Success />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            
+            {/* Dashboard Routes - wrapped in layout */}
+            <Route path="/dashboard" element={<DashboardLayout />}>
+              <Route index element={<DashboardHome />} />
+              {/* Add more dashboard routes here */}
+            </Route>
+            
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

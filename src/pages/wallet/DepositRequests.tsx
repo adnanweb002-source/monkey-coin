@@ -24,7 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
 
 interface DepositRequest {
-  id: string;
+  id: number;
   amount: string;
   method: string;
   reference: string;
@@ -52,7 +52,7 @@ const DepositRequests = () => {
   const fetchRequests = async () => {
     setIsLoading(true);
     try {
-      const response = await api.post("/wallets/deposit-requests", {
+      const response = await api.post("/wallet/deposit-requests", {
         skip: page * PAGE_SIZE,
         take: PAGE_SIZE,
         ...(statusFilter && statusFilter !== "ALL" ? { status: statusFilter } : {}),
@@ -141,7 +141,7 @@ const DepositRequests = () => {
                     {requests.map((request) => (
                       <TableRow key={request.id}>
                         <TableCell className="font-mono text-xs">
-                          {request.id.slice(0, 8)}...
+                          {request.id.toString().slice(0, 8)}...
                         </TableCell>
                         <TableCell>${parseFloat(request.amount).toLocaleString()}</TableCell>
                         <TableCell>{request.method || "-"}</TableCell>

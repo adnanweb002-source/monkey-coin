@@ -98,7 +98,7 @@ const Withdraw = () => {
       const userProfile = localStorage.getItem("userProfile");
       const userId = userProfile ? JSON.parse(userProfile).id : null;
 
-      await api.post("/wallets/withdraw", {
+      await api.post("/wallet/withdraw", {
         userId,
         walletType: selectedWalletType,
         amount,

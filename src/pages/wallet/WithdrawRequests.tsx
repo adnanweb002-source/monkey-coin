@@ -24,7 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
 
 interface WithdrawRequest {
-  id: string;
+  id: number;
   walletType: string;
   amount: string;
   method: string;
@@ -155,7 +155,7 @@ const WithdrawRequests = () => {
                     {requests.map((request) => (
                       <TableRow key={request.id}>
                         <TableCell className="font-mono text-xs">
-                          {request.id.slice(0, 8)}...
+                          {request.id.toString().slice(0, 8)}...
                         </TableCell>
                         <TableCell>
                           {walletLabels[request.walletType] || request.walletType}

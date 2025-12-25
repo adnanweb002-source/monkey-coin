@@ -32,7 +32,7 @@ const Deposit = () => {
     setIsLoading(true);
 
     try {
-      await api.post("/wallets/deposit-request", {
+      await api.post("/wallet/deposit-request", {
         amount,
         method,
         reference,

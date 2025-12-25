@@ -31,6 +31,7 @@ const sidebarItems: SidebarItem[] = [
   { label: "Transfer Funds", icon: ArrowRightLeft, path: "/transfer", disabled: true },
   { label: "Withdrawal Funds", icon: ArrowDownToLine, path: "/wallet/withdraw" },
   { label: "Withdrawal Requests", icon: FileText, path: "/wallet/withdraw-requests" },
+  { label: "Transactions", icon: ArrowRightLeft, path: "/wallet/transactions" },
   {
     label: "Reports",
     icon: FileText,

@@ -14,6 +14,7 @@ import Deposit from "./pages/wallet/Deposit";
 import DepositRequests from "./pages/wallet/DepositRequests";
 import Withdraw from "./pages/wallet/Withdraw";
 import WithdrawRequests from "./pages/wallet/WithdrawRequests";
+import Transactions from "./pages/wallet/Transactions";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ const App = () => (
               <Route path="deposit-requests" element={<DepositRequests />} />
               <Route path="withdraw" element={<Withdraw />} />
               <Route path="withdraw-requests" element={<WithdrawRequests />} />
+              <Route path="transactions" element={<Transactions />} />
             </Route>
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

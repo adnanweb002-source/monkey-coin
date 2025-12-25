@@ -17,7 +17,7 @@ const PackagesSection = ({ packages }: { packages: Package[] }) => {
       <h3 className="text-lg font-semibold text-foreground mb-4">Packages</h3>
 
       {activePackages.length > 0 ? (
-        <div className="space-y-4 max-h-80 overflow-y-auto pr-1">
+        <div className="space-y-4 max-h-[500px] overflow-y-auto pr-1">
           {activePackages.map((pkg) => (
             <div key={pkg.id} className="bg-secondary/50 rounded-xl p-4">
               <div className="flex items-center justify-between mb-4">

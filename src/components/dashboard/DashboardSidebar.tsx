@@ -24,7 +24,7 @@ interface SidebarItem {
 
 const sidebarItems: SidebarItem[] = [
   { label: "Dashboard", icon: Home, path: "/dashboard" },
-  { label: "Make Investment", icon: DollarSign, path: "/investment", disabled: true },
+  { label: "Make Investment", icon: DollarSign, path: "/packages" },
   { label: "My Tree", icon: TreePine, path: "/tree" },
   { label: "Deposit", icon: Wallet, path: "/wallet/deposit" },
   { label: "Deposit Requests", icon: FileText, path: "/wallet/deposit-requests" },

@@ -60,7 +60,7 @@ const PackagesSection = ({ packages }: { packages: Package[] }) => {
   };
 
   return (
-    <div className="bg-card rounded-xl p-5 border border-border  flex flex-col">
+    <div className="bg-card rounded-xl p-5 border border-border h-[420px] flex flex-col">
       <h3 className="text-lg font-semibold text-foreground mb-4 shrink-0">
         Packages
       </h3>

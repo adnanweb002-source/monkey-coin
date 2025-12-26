@@ -20,8 +20,8 @@ import MyTree from "./pages/tree/MyTree";
 import HolidayList from "./pages/HolidayList";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsAndConditions from "./pages/TermsAndConditions";
+import Packages from "./pages/Packages";
 import NotFound from "./pages/NotFound";
-
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -47,6 +47,11 @@ const App = () => (
             {/* Tree Routes - wrapped in layout */}
             <Route path="/tree" element={<DashboardLayout />}>
               <Route index element={<MyTree />} />
+            </Route>
+
+            {/* Packages Route */}
+            <Route path="/packages" element={<DashboardLayout />}>
+              <Route index element={<Packages />} />
             </Route>
 
             {/* Wallet Routes - wrapped in layout */}

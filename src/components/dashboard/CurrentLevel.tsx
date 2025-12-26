@@ -19,48 +19,50 @@ const levels: Level[] = [
 
 const CurrentLevel = () => {
   return (
-    <div className="bg-card rounded-xl p-5 border border-border">
-      <h3 className="text-lg font-semibold text-foreground mb-4">Current Level</h3>
+    <div className="bg-card rounded-xl p-5 border border-border h-[420px] flex flex-col">
+      <h3 className="text-lg font-semibold text-foreground mb-4 shrink-0">Current Level</h3>
       
-      <div className="space-y-4">
-        {levels.map((level, index) => (
-          <div key={index} className="flex items-start gap-4">
-            {/* Icon and connector */}
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center text-2xl">
-                {level.icon}
-              </div>
-              {index < levels.length - 1 && (
-                <div className="w-0.5 h-8 bg-border mt-2 relative">
-                  <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                  <div className="absolute top-3/4 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-green-500"></div>
+      <div className="flex-1 overflow-y-auto min-h-0 pr-1 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent hover:scrollbar-thumb-muted-foreground/30">
+        <div className="space-y-4">
+          {levels.map((level, index) => (
+            <div key={index} className="flex items-start gap-4">
+              {/* Icon and connector */}
+              <div className="flex flex-col items-center">
+                <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center text-2xl">
+                  {level.icon}
                 </div>
-              )}
-            </div>
-            
-            {/* Content */}
-            <div className="flex-1 flex justify-between items-start">
-              <div>
-                <p className={`font-semibold ${level.color}`}>{level.name}</p>
-                <div className="text-xs text-muted-foreground mt-1">
-                  {level.perks.map((perk, i) => (
-                    <span key={i} className="block">{perk}</span>
-                  ))}
-                </div>
-              </div>
-              <div className="text-right">
-                <p className={`font-semibold ${level.color}`}>{level.points}</p>
-                {level.isReached && (
-                  <p className="text-xs text-green-400 mt-1">Next Level Reached</p>
-                )}
-                {level.isMaxLevel && (
-                  <p className="text-xs text-muted-foreground mt-1">Max Level Reached</p>
+                {index < levels.length - 1 && (
+                  <div className="w-0.5 h-8 bg-border mt-2 relative">
+                    <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                    <div className="absolute top-3/4 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                  </div>
                 )}
               </div>
+              
+              {/* Content */}
+              <div className="flex-1 flex justify-between items-start">
+                <div>
+                  <p className={`font-semibold ${level.color}`}>{level.name}</p>
+                  <div className="text-xs text-muted-foreground mt-1">
+                    {level.perks.map((perk, i) => (
+                      <span key={i} className="block">{perk}</span>
+                    ))}
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className={`font-semibold ${level.color}`}>{level.points}</p>
+                  {level.isReached && (
+                    <p className="text-xs text-green-400 mt-1">Next Level Reached</p>
+                  )}
+                  {level.isMaxLevel && (
+                    <p className="text-xs text-muted-foreground mt-1">Max Level Reached</p>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

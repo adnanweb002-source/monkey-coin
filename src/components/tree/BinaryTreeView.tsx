@@ -12,9 +12,9 @@ interface BinaryTreeViewProps {
   searchQuery?: string;
 }
 
-const NODE_WIDTH = 140;
-const HORIZONTAL_GAP = 40;
-const VERTICAL_GAP = 60;
+const NODE_WIDTH = 120;
+const HORIZONTAL_GAP = 16;
+const VERTICAL_GAP = 50;
 
 const BinaryTreeView = ({ rootNode, onNodeClick, onAddUser, highlightedNodeIds, searchQuery }: BinaryTreeViewProps) => {
   const [selectedNodeId, setSelectedNodeId] = useState<number | null>(null);

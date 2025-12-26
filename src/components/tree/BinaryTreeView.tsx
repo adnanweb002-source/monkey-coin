@@ -240,14 +240,13 @@ const BinaryTreeView = ({
   return (
     <div 
       ref={containerRef}
-      className="w-full"
+      className="w-full flex justify-center"
     >
       <div 
-        className="relative mx-auto"
+        className="relative"
         style={{ 
           width: treeWidth + 80,
           height: treeHeight,
-          minWidth: "100%"
         }}
       >
         {/* SVG layer for connectors */}

@@ -21,6 +21,7 @@ import HolidayList from "./pages/HolidayList";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import Packages from "./pages/Packages";
+import AdminUsers from "./pages/admin/AdminUsers";
 import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
@@ -67,6 +68,11 @@ const App = () => (
             {/* Reports Routes */}
             <Route path="/reports" element={<DashboardLayout />}>
               <Route path="holiday-list" element={<HolidayList />} />
+            </Route>
+
+            {/* Admin Routes */}
+            <Route path="/admin" element={<DashboardLayout />}>
+              <Route path="users" element={<AdminUsers />} />
             </Route>
 
             {/* Legal Pages */}

@@ -1,6 +1,7 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { TreeNode } from "@/types/tree";
 import TreeNodeCard from "./TreeNodeCard";
+import TreeNodeContextMenu from "./TreeNodeContextMenu";
 import AddUserNode from "./AddUserNode";
 import { cn } from "@/lib/utils";
 
@@ -26,7 +27,16 @@ const BinaryTreeView = ({
   searchQuery 
 }: BinaryTreeViewProps) => {
   const [selectedNodeId, setSelectedNodeId] = useState<number | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("userProfile");
+    if (stored) {
+      const profile = JSON.parse(stored);
+      setIsAdmin(profile?.role === "ADMIN");
+    }
+  }, []);
 
   const handleNodeClick = (node: TreeNode) => {
     setSelectedNodeId(node.id);
@@ -146,23 +156,24 @@ const BinaryTreeView = ({
     }
 
     elements.push(
-      <div
-        key={`node-${node.id}`}
-        className="absolute"
-        style={{
-          left: x - NODE_WIDTH / 2,
-          top: y,
-        }}
-      >
-        <TreeNodeCard
-          node={node}
-          isRoot={!parentId}
-          isSelected={selectedNodeId === node.id}
-          isHighlighted={highlightedNodeIds?.has(node.id) ?? false}
-          searchQuery={searchQuery}
-          onClick={() => handleNodeClick(node)}
-        />
-      </div>
+      <TreeNodeContextMenu key={`menu-${node.id}`} node={node} isAdmin={isAdmin}>
+        <div
+          className="absolute"
+          style={{
+            left: x - NODE_WIDTH / 2,
+            top: y,
+          }}
+        >
+          <TreeNodeCard
+            node={node}
+            isRoot={!parentId}
+            isSelected={selectedNodeId === node.id}
+            isHighlighted={highlightedNodeIds?.has(node.id) ?? false}
+            searchQuery={searchQuery}
+            onClick={() => handleNodeClick(node)}
+          />
+        </div>
+      </TreeNodeContextMenu>
     );
 
     const hasLeft = node.leftChild !== null;

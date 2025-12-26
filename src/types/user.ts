@@ -1,4 +1,4 @@
- interface UserProfile {
+interface UserProfile {
   id: number;
   memberId: string;
   email: string;
@@ -9,8 +9,9 @@
   sponsorId: number;
   parentId: number;
   position: "LEFT" | "RIGHT";
-  status: "ACTIVE" | "INACTIVE";
+  status: "ACTIVE" | "INACTIVE" | "SUSPENDED";
   isG2faEnabled: boolean;
+  role?: "USER" | "ADMIN";
 }
 
 

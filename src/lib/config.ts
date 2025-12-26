@@ -3,6 +3,9 @@ import d_wallet from "@/assets/d_wallet.svg";
 import a_wallet from "@/assets/a_wallet.svg";
 import b_wallet from "@/assets/b_wallet.svg";
 import type { ApiWallet, WalletCard } from "@/types/wallet";
+import { useQueryClient } from "@tanstack/react-query";
+
+
 
 export const walletConfig: Record<
   ApiWallet["type"],

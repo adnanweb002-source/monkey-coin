@@ -146,10 +146,10 @@ const SigninForm = () => {
           className="crypto-button w-full"
         >
           {isLoading ? (
-            <>
+            <div className="flex items-center justify-center">
               <Loader2 className="animate-spin mr-2" size={18} />
-              Signing in...
-            </>
+        <p>      Signing in...</p>
+            </div>
           ) : (
             "Sign in"
           )}

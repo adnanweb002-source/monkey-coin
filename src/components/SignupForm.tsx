@@ -3,33 +3,54 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { RefreshCw, ChevronDown, Eye, EyeOff } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { Link, useNavigate } from "react-router-dom";
+import { BE_URL } from "../../config";
+import api from "@/lib/api";
+// utils/captcha.ts
+export function generateCaptcha(length = 5) {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  return Array.from(
+    { length },
+    () => chars[Math.floor(Math.random() * chars.length)]
+  ).join("");
+}
 
-const signupSchema = z.object({
-  sponsorId: z.string().min(1, "Sponsor ID is required"),
-  position: z.enum(["LEFT", "RIGHT"], { required_error: "Position is required" }),
-  firstName: z.string().min(1, "First name is required").max(50, "First name is too long"),
-  lastName: z.string().optional(),
-  email: z.string().email("Invalid email address"),
-  confirmEmail: z.string().email("Invalid email address"),
-  country: z.string().min(1, "Country is required"),
-  phoneNumber: z.string().min(1, "Phone number is required"),
-  password: z.string()
-    .min(8, "Password must be at least 8 characters")
-    .max(128, "Password must be less than 128 characters")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number"),
-  confirmPassword: z.string(),
-  captcha: z.string().min(1, "Please enter the captcha"),
-  agreeTerms: z.boolean().refine(val => val === true, "You must agree to the terms of use"),
-}).refine((data) => data.email === data.confirmEmail, {
-  message: "Emails do not match",
-  path: ["confirmEmail"],
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords do not match",
-  path: ["confirmPassword"],
-});
+const signupSchema = z
+  .object({
+    sponsorId: z.string(),
+    position: z.enum(["LEFT", "RIGHT"], {
+      required_error: "Position is required",
+    }),
+    firstName: z
+      .string()
+      .min(1, "First name is required")
+      .max(50, "First name is too long"),
+    lastName: z.string().optional(),
+    email: z.string().email("Invalid email address"),
+    confirmEmail: z.string().email("Invalid email address"),
+    country: z.string().min(1, "Country is required"),
+    phoneNumber: z.string().min(1, "Phone number is required"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .max(128, "Password must be less than 128 characters")
+      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .regex(/[0-9]/, "Password must contain at least one number"),
+    confirmPassword: z.string(),
+    captcha: z.string().min(1, "Please enter the captcha"),
+    agreeTerms: z
+      .boolean()
+      .refine((val) => val === true, "You must agree to the terms of use"),
+  })
+  .refine((data) => data.email === data.confirmEmail, {
+    message: "Emails do not match",
+    path: ["confirmEmail"],
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 type SignupFormData = z.infer<typeof signupSchema>;
 
@@ -37,12 +58,14 @@ const SignupForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [captchaValue, setCaptchaValue] = useState(generateCaptcha());
   const { toast } = useToast();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    resetField,
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
@@ -50,31 +73,30 @@ const SignupForm = () => {
     },
   });
 
+  const navigate=useNavigate();
   const onSubmit = async (data: SignupFormData) => {
     setIsSubmitting(true);
-    
+    // const { firstName, lastName, phone, country, email, password, sponsorMemberId, parentMemberId, position } = dto;
     try {
       // Prepare payload (exclude lastName and confirmEmail/confirmPassword as per requirements)
       const payload = {
-        sponsorId: data.sponsorId,
-        position: data.position,
-        username: data.firstName,
-        email: data.email,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        phone: data.phoneNumber,
         country: data.country,
-        phoneNumber: data.phoneNumber,
+        email: data.email,
         password: data.password,
+        // sponsorMemberId: data.sponsorId,
+        position: data.position,
+        // parentMemberId
       };
-
+      console.log(payload);
+      // return;
       // Replace with your actual API endpoint
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      const response = await api.post("/auth/register",payload,);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Signup failed');
+      if(response?.data){
+        navigate("/signin")
       }
 
       toast({
@@ -84,7 +106,10 @@ const SignupForm = () => {
     } catch (error) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Something went wrong. Please try again.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Something went wrong. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -113,7 +138,9 @@ const SignupForm = () => {
               {...register("sponsorId")}
             />
             {errors.sponsorId && (
-              <p className="text-destructive text-sm mt-1">{errors.sponsorId.message}</p>
+              <p className="text-destructive text-sm mt-1">
+                {errors.sponsorId.message}
+              </p>
             )}
           </div>
           <div>
@@ -129,7 +156,9 @@ const SignupForm = () => {
               <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
             </div>
             {errors.position && (
-              <p className="text-destructive text-sm mt-1">{errors.position.message}</p>
+              <p className="text-destructive text-sm mt-1">
+                {errors.position.message}
+              </p>
             )}
           </div>
         </div>
@@ -144,7 +173,9 @@ const SignupForm = () => {
               {...register("firstName")}
             />
             {errors.firstName && (
-              <p className="text-destructive text-sm mt-1">{errors.firstName.message}</p>
+              <p className="text-destructive text-sm mt-1">
+                {errors.firstName.message}
+              </p>
             )}
           </div>
           <div>
@@ -167,7 +198,9 @@ const SignupForm = () => {
               {...register("email")}
             />
             {errors.email && (
-              <p className="text-destructive text-sm mt-1">{errors.email.message}</p>
+              <p className="text-destructive text-sm mt-1">
+                {errors.email.message}
+              </p>
             )}
           </div>
           <div>
@@ -178,7 +211,9 @@ const SignupForm = () => {
               {...register("confirmEmail")}
             />
             {errors.confirmEmail && (
-              <p className="text-destructive text-sm mt-1">{errors.confirmEmail.message}</p>
+              <p className="text-destructive text-sm mt-1">
+                {errors.confirmEmail.message}
+              </p>
             )}
           </div>
         </div>
@@ -193,7 +228,9 @@ const SignupForm = () => {
               {...register("country")}
             />
             {errors.country && (
-              <p className="text-destructive text-sm mt-1">{errors.country.message}</p>
+              <p className="text-destructive text-sm mt-1">
+                {errors.country.message}
+              </p>
             )}
           </div>
           <div>
@@ -204,7 +241,9 @@ const SignupForm = () => {
               {...register("phoneNumber")}
             />
             {errors.phoneNumber && (
-              <p className="text-destructive text-sm mt-1">{errors.phoneNumber.message}</p>
+              <p className="text-destructive text-sm mt-1">
+                {errors.phoneNumber.message}
+              </p>
             )}
           </div>
         </div>
@@ -224,11 +263,17 @@ const SignupForm = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
               >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
               </button>
             </div>
             {errors.password && (
-              <p className="text-destructive text-sm mt-1">{errors.password.message}</p>
+              <p className="text-destructive text-sm mt-1">
+                {errors.password.message}
+              </p>
             )}
           </div>
           <div>
@@ -244,17 +289,23 @@ const SignupForm = () => {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
               >
-                {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showConfirmPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
               </button>
             </div>
             {errors.confirmPassword && (
-              <p className="text-destructive text-sm mt-1">{errors.confirmPassword.message}</p>
+              <p className="text-destructive text-sm mt-1">
+                {errors.confirmPassword.message}
+              </p>
             )}
           </div>
         </div>
 
         {/* Row 6: Captcha */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
           <div className="flex items-center gap-3">
             <div className="bg-secondary/50 px-4 py-3 rounded-lg flex-1">
               <span className="text-2xl italic text-primary font-serif tracking-wider select-none">
@@ -279,11 +330,45 @@ const SignupForm = () => {
               <p className="text-destructive text-sm mt-1">{errors.captcha.message}</p>
             )}
           </div>
-        </div>
+        </div> */}
+        <div className="grid md:grid-cols-2 gap-4 items-end">
+          <div className="flex gap-3">
+            <div className="bg-secondary/50 px-4 py-3 rounded-lg flex-1 text-2xl italic tracking-widest select-none">
+              {captchaValue}
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setCaptchaValue(generateCaptcha());
+                resetField("captcha");
+              }}
+              className="p-3 bg-secondary/50 rounded-lg"
+            >
+              <RefreshCw />
+            </button>
+          </div>
 
+          <div>
+            <input
+              className="crypto-input"
+              placeholder="Enter captcha"
+              {...register("captcha", {
+                onChange: (e) =>
+                  (e.target.value = e.target.value.toUpperCase()),
+              })}
+            />
+            {errors.captcha && (
+              <p className="text-destructive text-sm">
+                {errors.captcha.message}
+              </p>
+            )}
+          </div>
+        </div>
         {/* Password Note */}
         <p className="text-sm text-muted-foreground">
-          Note: Password should be between 8 to 16 characters in length and should include at least one upper case letter, one number, and one special character.
+          Note: Password should be between 8 to 16 characters in length and
+          should include at least one upper case letter, one number, and one
+          special character.
         </p>
 
         {/* Terms Checkbox */}
@@ -294,26 +379,27 @@ const SignupForm = () => {
             className="w-4 h-4 rounded border-border bg-input accent-primary cursor-pointer"
             {...register("agreeTerms")}
           />
-          <label htmlFor="agreeTerms" className="text-sm text-muted-foreground cursor-pointer">
+          <label
+            htmlFor="agreeTerms"
+            className="text-sm text-muted-foreground cursor-pointer"
+          >
             I agree with the terms of use
           </label>
         </div>
         {errors.agreeTerms && (
-          <p className="text-destructive text-sm">{errors.agreeTerms.message}</p>
+          <p className="text-destructive text-sm">
+            {errors.agreeTerms.message}
+          </p>
         )}
 
         {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="crypto-button"
-        >
+        <button type="submit" disabled={isSubmitting} className="crypto-button">
           {isSubmitting ? "Signing up..." : "Sign up"}
         </button>
 
         {/* Sign In Link */}
         <p className="text-center text-muted-foreground">
-          Already have an Account?{" "}
+          Already have an Account{" "}
           <Link to="/signin" className="crypto-link">
             Sign in
           </Link>

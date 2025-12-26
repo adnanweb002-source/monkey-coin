@@ -30,7 +30,7 @@ const WalletCards = ({ wallets }: { wallets: WalletCard[] }) => {
       {mappedWallets?.map((wallet: WalletCard) => (
         <div
           key={wallet.id}
-          className={`relative h-[10rem] overflow-hidden !rounded-lg  p-4 `}
+          className={`relative min-h-[10rem] overflow-hidden !rounded-lg  p-4 `}
         >
           {/* Background image */}
           <img

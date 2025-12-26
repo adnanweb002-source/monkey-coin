@@ -1,8 +1,4 @@
-import { useState } from "react";
-import { TrendingUp, Clock, Wallet, Percent } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -11,9 +7,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
 import type { Package } from "@/types/package";
+import { useQueryClient } from "@tanstack/react-query";
+import { Clock, Percent, TrendingUp, Wallet } from "lucide-react";
+import { useState } from "react";
 
 const formatCurrency = (value: string) => {
   const num = parseFloat(value);
@@ -23,9 +24,10 @@ const formatCurrency = (value: string) => {
 };
 
 const PackagesSection = ({ packages }: { packages: Package[] }) => {
+  const queryClient = useQueryClient();
   const activePackages = packages.filter((pkg) => pkg.isActive);
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState<number | null>();
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -42,12 +44,14 @@ const PackagesSection = ({ packages }: { packages: Package[] }) => {
         title: "Success",
         description: "Package purchased successfully!",
       });
+      queryClient.invalidateQueries({ queryKey: ["wallets"] });
       setSelectedPackage(null);
-      setAmount("");
+      setAmount(null);
     } catch (error) {
+      console.log(error?.response?.data);
       toast({
         title: "Error",
-        description: "Failed to purchase package. Please try again.",
+        description: `Failed to purchase package due to ${error?.response?.data?.message?.toLowerCase()} .`,
         variant: "destructive",
       });
     } finally {
@@ -56,14 +60,16 @@ const PackagesSection = ({ packages }: { packages: Package[] }) => {
   };
 
   return (
-    <div className="bg-card rounded-xl p-5 border border-border h-[380px] flex flex-col">
-      <h3 className="text-lg font-semibold text-foreground mb-4 shrink-0">Packages</h3>
+    <div className="bg-card rounded-xl p-5 border border-border  flex flex-col">
+      <h3 className="text-lg font-semibold text-foreground mb-4 shrink-0">
+        Packages
+      </h3>
 
       {activePackages.length > 0 ? (
         <div className="space-y-4 flex-1 overflow-y-auto pr-1 min-h-0">
           {activePackages.map((pkg) => (
             <div key={pkg.id} className="bg-secondary/50 rounded-xl p-4">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center  gap-x-4 justify-between mb-4">
                 <h4 className="font-semibold text-foreground">{pkg.name}</h4>
                 <Button
                   variant="default"
@@ -94,7 +100,9 @@ const PackagesSection = ({ packages }: { packages: Package[] }) => {
                     <TrendingUp size={14} className="text-green-500" />
                   </div>
                   <div>
-                    <p className="text-xs text-muted-foreground">Daily Return</p>
+                    <p className="text-xs text-muted-foreground">
+                      Daily Return
+                    </p>
                     <p className="text-sm font-medium text-foreground">
                       {pkg.dailyReturnPct}%
                     </p>
@@ -118,7 +126,9 @@ const PackagesSection = ({ packages }: { packages: Package[] }) => {
                     <Percent size={14} className="text-amber-500" />
                   </div>
                   <div>
-                    <p className="text-xs text-muted-foreground">Capital Return</p>
+                    <p className="text-xs text-muted-foreground">
+                      Capital Return
+                    </p>
                     <p className="text-sm font-medium text-foreground">
                       {pkg.capitalReturn}%
                     </p>
@@ -140,17 +150,23 @@ const PackagesSection = ({ packages }: { packages: Package[] }) => {
         </div>
       )}
 
-      <Dialog open={!!selectedPackage} onOpenChange={(open) => !open && setSelectedPackage(null)}>
-        <DialogContent className="sm:max-w-md">
+      <Dialog
+        open={!!selectedPackage}
+        onOpenChange={(open) => !open && setSelectedPackage(null)}
+      >
+        <DialogContent className="sm:max-w-md ">
           <DialogHeader>
             <DialogTitle>Purchase {selectedPackage?.name}</DialogTitle>
             <DialogDescription>
               Enter the amount you want to invest (
-              {selectedPackage && formatCurrency(selectedPackage.investmentMin)} - {selectedPackage && formatCurrency(selectedPackage.investmentMax)})
+              {selectedPackage && formatCurrency(selectedPackage.investmentMin)}{" "}
+              -{" "}
+              {selectedPackage && formatCurrency(selectedPackage.investmentMax)}
+              )
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
+          <div className="space-y-0  ">
+            <div className="space-y-2 ">
               <Label htmlFor="amount">Amount</Label>
               <Input
                 id="amount"
@@ -163,8 +179,17 @@ const PackagesSection = ({ packages }: { packages: Package[] }) => {
               />
             </div>
           </div>
+          <DialogDescription className="!-mt-2 text-xs">
+            Note :- The amount will be deducted from M Wallet.
+          </DialogDescription>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setSelectedPackage(null)}>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setSelectedPackage(null);
+                setAmount(null);
+              }}
+            >
               Cancel
             </Button>
             <Button onClick={handlePurchase} disabled={!amount || isLoading}>

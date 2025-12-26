@@ -8,9 +8,11 @@ interface BinaryTreeViewProps {
   rootNode: TreeNode | null;
   onNodeClick?: (node: TreeNode) => void;
   onAddUser?: (parentId: number, position: "LEFT" | "RIGHT") => void;
+  highlightedNodeIds?: Set<number>;
+  searchQuery?: string;
 }
 
-const BinaryTreeView = ({ rootNode, onNodeClick, onAddUser }: BinaryTreeViewProps) => {
+const BinaryTreeView = ({ rootNode, onNodeClick, onAddUser, highlightedNodeIds, searchQuery }: BinaryTreeViewProps) => {
   const [selectedNodeId, setSelectedNodeId] = useState<number | null>(null);
 
   const handleNodeClick = (node: TreeNode) => {
@@ -42,6 +44,8 @@ const BinaryTreeView = ({ rootNode, onNodeClick, onAddUser }: BinaryTreeViewProp
           node={node}
           isRoot={depth === 0}
           isSelected={selectedNodeId === node.id}
+          isHighlighted={highlightedNodeIds?.has(node.id) ?? false}
+          searchQuery={searchQuery}
           onClick={() => handleNodeClick(node)}
         />
 

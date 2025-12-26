@@ -6,10 +6,31 @@ interface TreeNodeCardProps {
   node: TreeNode;
   isRoot?: boolean;
   isSelected?: boolean;
+  isHighlighted?: boolean;
+  searchQuery?: string;
   onClick?: () => void;
 }
 
-const TreeNodeCard = ({ node, isRoot, isSelected, onClick }: TreeNodeCardProps) => {
+// Helper to highlight matching text
+const HighlightText = ({ text, query }: { text: string; query?: string }) => {
+  if (!query?.trim()) return <>{text}</>;
+  
+  const lowerText = text.toLowerCase();
+  const lowerQuery = query.toLowerCase().trim();
+  const index = lowerText.indexOf(lowerQuery);
+  
+  if (index === -1) return <>{text}</>;
+  
+  return (
+    <>
+      {text.slice(0, index)}
+      <span className="bg-primary/40 text-primary-foreground rounded px-0.5">{text.slice(index, index + query.trim().length)}</span>
+      {text.slice(index + query.trim().length)}
+    </>
+  );
+};
+
+const TreeNodeCard = ({ node, isRoot, isSelected, isHighlighted, searchQuery, onClick }: TreeNodeCardProps) => {
   const getInitials = (email: string) => {
     return email.substring(0, 2).toUpperCase();
   };
@@ -35,7 +56,8 @@ const TreeNodeCard = ({ node, isRoot, isSelected, onClick }: TreeNodeCardProps) 
         "hover:scale-105 hover:shadow-lg hover:shadow-primary/20",
         "min-w-[140px]",
         isRoot && "border-primary/50 shadow-lg shadow-primary/10",
-        isSelected && "ring-2 ring-primary border-primary"
+        isSelected && "ring-2 ring-primary border-primary",
+        isHighlighted && "ring-2 ring-primary border-primary animate-pulse shadow-lg shadow-primary/30"
       )}
     >
       {/* Active Status Indicator */}
@@ -47,7 +69,7 @@ const TreeNodeCard = ({ node, isRoot, isSelected, onClick }: TreeNodeCardProps) 
       />
 
       {/* Avatar */}
-      <Avatar className={cn("w-16 h-16 mb-3 ring-2 ring-border")}>
+      <Avatar className={cn("w-16 h-16 mb-3 ring-2 ring-border", isHighlighted && "ring-primary")}>
         <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${node.memberId}`} />
         <AvatarFallback className={cn("bg-gradient-to-br text-white font-bold", getAvatarColor(node.id))}>
           {getInitials(node.email)}
@@ -56,12 +78,12 @@ const TreeNodeCard = ({ node, isRoot, isSelected, onClick }: TreeNodeCardProps) 
 
       {/* Name/Email */}
       <span className="text-foreground font-semibold text-sm text-center truncate max-w-[120px]">
-        {node.email.split("@")[0]}
+        <HighlightText text={node.email.split("@")[0]} query={searchQuery} />
       </span>
 
       {/* Member ID */}
       <span className="text-muted-foreground text-xs mt-1">
-        ID: {node.memberId}
+        ID: <HighlightText text={node.memberId} query={searchQuery} />
       </span>
     </div>
   );

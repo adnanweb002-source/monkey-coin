@@ -43,12 +43,43 @@ const countExtremePositions = (node: TreeNode | null): { left: number; right: nu
   return { left: leftCount, right: rightCount };
 };
 
+// Helper to check if a node matches search query
+const nodeMatchesSearch = (node: TreeNode | null, query: string): boolean => {
+  if (!node || !query.trim()) return false;
+  const lowerQuery = query.toLowerCase().trim();
+  return (
+    node.memberId?.toLowerCase().includes(lowerQuery) ||
+    node.email?.toLowerCase().includes(lowerQuery)
+  );
+};
+
+// Helper to collect all matching node IDs in the tree
+const findMatchingNodeIds = (node: TreeNode | null, query: string): Set<number> => {
+  const matches = new Set<number>();
+  if (!node || !query.trim()) return matches;
+
+  const traverse = (n: TreeNode | null) => {
+    if (!n) return;
+    if (nodeMatchesSearch(n, query)) {
+      matches.add(n.id);
+    }
+    traverse(n.leftChild);
+    traverse(n.rightChild);
+  };
+
+  traverse(node);
+  return matches;
+};
+
 const MyTree = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [depth] = useState(2);
   const userId = 1; // This would come from auth context
 
   const { data: treeData, isLoading, error } = useGetTree(userId, depth);
+
+  // Find matching nodes based on search query
+  const matchingNodeIds = treeData ? findMatchingNodeIds(treeData, searchQuery) : new Set<number>();
 
   const handleNodeClick = (node: TreeNode) => {
     toast.info(`Selected: ${node.email}`, {
@@ -103,6 +134,8 @@ const MyTree = () => {
             rootNode={treeData || null}
             onNodeClick={handleNodeClick}
             onAddUser={handleAddUser}
+            highlightedNodeIds={matchingNodeIds}
+            searchQuery={searchQuery}
           />
         )}
       </div>

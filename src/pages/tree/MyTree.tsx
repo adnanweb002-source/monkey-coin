@@ -3,11 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { TreeNode } from "@/types/tree";
 import BinaryTreeView from "@/components/tree/BinaryTreeView";
-import TreeWalletCards from "@/components/tree/TreeWalletCards";
 import TreeControls from "@/components/tree/TreeControls";
+import TreeWalletCards from "@/components/tree/TreeWalletCards";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 // Mock data for development - matches reference design exactly
 const mockTreeData: TreeNode = {
@@ -98,7 +99,37 @@ const mockTreeData: TreeNode = {
       leftChild: null,
       rightChild: null,
     },
-    rightChild: null,
+    rightChild: {
+      id: 4,
+      memberId: "MG27862064",
+      email: "ryan@example.com",
+      position: "RIGHT",
+      isActive: true,
+      parent: { id: 1 },
+      sponsor: null,
+      leftChild: {
+        id: 13,
+        memberId: "MG27862064",
+        email: "gabriel@example.com",
+        position: "LEFT",
+        isActive: true,
+        parent: { id: 4 },
+        sponsor: null,
+        leftChild: null,
+        rightChild: null,
+      },
+      rightChild: {
+        id: 14,
+        memberId: "MG27862064",
+        email: "gabriel2@example.com",
+        position: "RIGHT",
+        isActive: true,
+        parent: { id: 4 },
+        sponsor: null,
+        leftChild: null,
+        rightChild: null,
+      },
+    },
   },
 };
 
@@ -172,11 +203,12 @@ const findMatchingNodeIds = (node: TreeNode | null, query: string): Set<number> 
 const MyTree = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [depth] = useState(20);
-  const userId = 1; // This would come from auth context
+  const [currentPage, setCurrentPage] = useState(4);
+  const totalPages = 13;
+  const userId = 1;
 
   const { data: treeData, isLoading, error } = useGetTree(userId, depth);
 
-  // Find matching nodes based on search query
   const matchingNodeIds = treeData ? findMatchingNodeIds(treeData, searchQuery) : new Set<number>();
 
   const handleNodeClick = (node: TreeNode) => {
@@ -187,15 +219,14 @@ const MyTree = () => {
 
   const handleAddUser = (parentId: number, position: "LEFT" | "RIGHT") => {
     toast.info(`Add user to ${position} of parent ${parentId}`);
-    // This would open a modal or navigate to add user page
   };
 
   const extremePositions = treeData ? countExtremePositions(treeData) : { left: 0, right: 0 };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-h-screen bg-[#1a1a1a] p-6">
       {/* Wallet Cards */}
-      {/* <TreeWalletCards /> */}
+      <TreeWalletCards />
 
       {/* Tree Controls */}
       <TreeControls
@@ -206,19 +237,19 @@ const MyTree = () => {
       />
 
       {/* Tree Visualization Container */}
-      <div className="bg-card rounded-2xl border border-border min-h-[500px] overflow-hidden">
+      <div className="min-h-[600px] overflow-hidden">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center p-8 space-y-4">
-            <Skeleton className="w-32 h-32 rounded-2xl" />
+            <Skeleton className="w-32 h-32 rounded-2xl bg-[#2a2a2a]" />
             <div className="flex gap-16 mt-8">
-              <Skeleton className="w-32 h-32 rounded-2xl" />
-              <Skeleton className="w-32 h-32 rounded-2xl" />
+              <Skeleton className="w-32 h-32 rounded-2xl bg-[#2a2a2a]" />
+              <Skeleton className="w-32 h-32 rounded-2xl bg-[#2a2a2a]" />
             </div>
             <div className="flex gap-8 mt-8">
-              <Skeleton className="w-28 h-28 rounded-2xl" />
-              <Skeleton className="w-28 h-28 rounded-2xl" />
-              <Skeleton className="w-28 h-28 rounded-2xl" />
-              <Skeleton className="w-28 h-28 rounded-2xl" />
+              <Skeleton className="w-28 h-28 rounded-2xl bg-[#2a2a2a]" />
+              <Skeleton className="w-28 h-28 rounded-2xl bg-[#2a2a2a]" />
+              <Skeleton className="w-28 h-28 rounded-2xl bg-[#2a2a2a]" />
+              <Skeleton className="w-28 h-28 rounded-2xl bg-[#2a2a2a]" />
             </div>
           </div>
         ) : error ? (
@@ -236,6 +267,31 @@ const MyTree = () => {
             searchQuery={searchQuery}
           />
         )}
+      </div>
+
+      {/* Pagination */}
+      <div className="flex items-center justify-center gap-2 pb-6">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="w-10 h-10 rounded-lg bg-[#2a2a2a] hover:bg-[#3a3a3a] text-white"
+          onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+          disabled={currentPage === 1}
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </Button>
+        <div className="px-6 py-2 rounded-lg bg-[#2a2a2a] text-white font-medium">
+          {currentPage} / {totalPages}
+        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="w-10 h-10 rounded-lg bg-[#2a2a2a] hover:bg-[#3a3a3a] text-white"
+          onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+          disabled={currentPage === totalPages}
+        >
+          <ChevronRight className="w-5 h-5" />
+        </Button>
       </div>
     </div>
   );

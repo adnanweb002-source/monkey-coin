@@ -1,5 +1,6 @@
 import { TreeNode } from "@/types/tree";
 import { cn } from "@/lib/utils";
+import { Phone } from "lucide-react";
 
 interface TreeNodeCardProps {
   node: TreeNode;
@@ -10,37 +11,26 @@ interface TreeNodeCardProps {
   onClick?: () => void;
 }
 
-// Pastel color palette matching the reference design
-const PASTEL_COLORS = [
-  { bg: "bg-amber-100", border: "border-amber-400", ring: "ring-amber-400" }, // Yellow/Gold - Root
-  { bg: "bg-blue-100", border: "border-blue-300", ring: "ring-blue-300" },
-  { bg: "bg-green-100", border: "border-green-300", ring: "ring-green-300" },
-  { bg: "bg-purple-100", border: "border-purple-300", ring: "ring-purple-300" },
-  { bg: "bg-orange-100", border: "border-orange-300", ring: "ring-orange-300" },
-  { bg: "bg-pink-100", border: "border-pink-300", ring: "ring-pink-300" },
-  { bg: "bg-teal-100", border: "border-teal-300", ring: "ring-teal-300" },
-  { bg: "bg-indigo-100", border: "border-indigo-300", ring: "ring-indigo-300" },
-];
-
-// Helper to highlight matching text
-const HighlightText = ({ text, query }: { text: string; query?: string }) => {
-  if (!query?.trim()) return <>{text}</>;
+// Color schemes matching the reference design exactly
+const getColorScheme = (id: number, isRoot: boolean) => {
+  if (isRoot) {
+    return {
+      bg: "bg-[#F5D76E]",
+      border: "border-[#D4A853]",
+      shadow: "shadow-[0_4px_20px_rgba(245,215,110,0.3)]"
+    };
+  }
   
-  const lowerText = text.toLowerCase();
-  const lowerQuery = query.toLowerCase().trim();
-  const index = lowerText.indexOf(lowerQuery);
+  const schemes = [
+    { bg: "bg-[#A78BFA]", border: "border-[#8B5CF6]", shadow: "shadow-[0_4px_20px_rgba(167,139,250,0.3)]" }, // Purple
+    { bg: "bg-[#60A5FA]", border: "border-[#3B82F6]", shadow: "shadow-[0_4px_20px_rgba(96,165,250,0.3)]" }, // Blue
+    { bg: "bg-[#4ADE80]", border: "border-[#22C55E]", shadow: "shadow-[0_4px_20px_rgba(74,222,128,0.3)]" }, // Green
+    { bg: "bg-[#F97316]", border: "border-[#EA580C]", shadow: "shadow-[0_4px_20px_rgba(249,115,22,0.3)]" }, // Orange
+    { bg: "bg-[#EC4899]", border: "border-[#DB2777]", shadow: "shadow-[0_4px_20px_rgba(236,72,153,0.3)]" }, // Pink
+    { bg: "bg-[#14B8A6]", border: "border-[#0D9488]", shadow: "shadow-[0_4px_20px_rgba(20,184,166,0.3)]" }, // Teal
+  ];
   
-  if (index === -1) return <>{text}</>;
-  
-  return (
-    <>
-      {text.slice(0, index)}
-      <span className="bg-primary/40 text-primary-foreground rounded px-0.5">
-        {text.slice(index, index + query.trim().length)}
-      </span>
-      {text.slice(index + query.trim().length)}
-    </>
-  );
+  return schemes[id % schemes.length];
 };
 
 const TreeNodeCard = ({ 
@@ -48,18 +38,11 @@ const TreeNodeCard = ({
   isRoot, 
   isSelected, 
   isHighlighted, 
-  searchQuery, 
   onClick 
 }: TreeNodeCardProps) => {
   const getName = (email: string) => {
     const name = email.split("@")[0];
-    // Capitalize first letter
     return name.charAt(0).toUpperCase() + name.slice(1);
-  };
-
-  const getColorScheme = (id: number, isRootNode: boolean) => {
-    if (isRootNode) return PASTEL_COLORS[0]; // Yellow/Gold for root
-    return PASTEL_COLORS[(id % (PASTEL_COLORS.length - 1)) + 1];
   };
 
   const colorScheme = getColorScheme(node.id, isRoot || false);
@@ -72,40 +55,37 @@ const TreeNodeCard = ({
         colorScheme.bg,
         "border-2",
         colorScheme.border,
-        "shadow-md hover:shadow-lg",
-        "w-[120px]",
-        isSelected && "ring-2 ring-primary",
-        isHighlighted && "ring-2 ring-primary shadow-lg shadow-primary/30"
+        colorScheme.shadow,
+        "w-[110px]",
+        isSelected && "ring-2 ring-white",
+        isHighlighted && "ring-2 ring-white scale-105"
       )}
     >
       {/* Avatar Container */}
-      <div 
-        className={cn(
-          "w-[70px] h-[70px] rounded-xl overflow-hidden mb-2 border-2",
-          colorScheme.border,
-          "bg-white/50"
-        )}
-      >
+      <div className="relative w-[65px] h-[65px] rounded-xl overflow-hidden mb-2 bg-white/30 border-2 border-white/40">
         <img 
-          src={`https://api.dicebear.com/7.x/notionists/svg?seed=${node.memberId}`}
+          src={`https://api.dicebear.com/7.x/notionists/svg?seed=${node.memberId}&backgroundColor=transparent`}
           alt={getName(node.email)}
           className="w-full h-full object-cover"
         />
         {/* Active Status Indicator */}
         {node.isActive && (
-          <div className="absolute top-[68px] right-[22px] w-3 h-3 rounded-full bg-green-500 border-2 border-white shadow-sm" />
+          <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-[#22C55E] border-2 border-white" />
         )}
       </div>
 
       {/* Name */}
-      <span className="text-foreground font-bold text-sm text-center truncate w-full">
-        <HighlightText text={getName(node.email)} query={searchQuery} />
+      <span className="text-[#1a1a1a] font-bold text-sm text-center truncate w-full">
+        {getName(node.email)}
       </span>
 
-      {/* Member ID */}
-      <span className="text-muted-foreground text-[10px] mt-0.5 truncate w-full text-center">
-        Id - <HighlightText text={node.memberId.length > 10 ? node.memberId.substring(0, 10) : node.memberId} query={searchQuery} />
-      </span>
+      {/* Member ID with icon */}
+      <div className="flex items-center gap-1 mt-0.5">
+        <Phone className="w-2.5 h-2.5 text-[#1a1a1a]/70" />
+        <span className="text-[#1a1a1a]/70 text-[9px] truncate">
+          Id - {node.memberId.length > 8 ? node.memberId.substring(0, 8) : node.memberId}
+        </span>
+      </div>
     </div>
   );
 };

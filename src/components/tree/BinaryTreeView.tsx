@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { TreeNode } from "@/types/tree";
 import TreeNodeCard from "./TreeNodeCard";
 import AddUserNode from "./AddUserNode";
@@ -12,11 +12,11 @@ interface BinaryTreeViewProps {
   searchQuery?: string;
 }
 
-const NODE_WIDTH = 120;
-const NODE_HEIGHT = 130;
-const HORIZONTAL_SPACING = 40;
-const VERTICAL_SPACING = 80;
-const CONNECTOR_COLOR = "#D4A853"; // Golden/amber color matching reference
+const NODE_WIDTH = 110;
+const NODE_HEIGHT = 120;
+const HORIZONTAL_SPACING = 20;
+const VERTICAL_SPACING = 60;
+const CONNECTOR_COLOR = "#4a4a4a";
 
 const BinaryTreeView = ({ 
   rootNode, 
@@ -33,7 +33,6 @@ const BinaryTreeView = ({
     onNodeClick?.(node);
   };
 
-  // Calculate the maximum depth of the tree
   const getMaxDepth = (node: TreeNode | null, currentDepth: number = 0): number => {
     if (!node) return currentDepth;
     const leftDepth = getMaxDepth(node.leftChild, currentDepth + 1);
@@ -41,7 +40,6 @@ const BinaryTreeView = ({
     return Math.max(leftDepth, rightDepth);
   };
 
-  // Calculate width needed for a subtree at a given depth
   const getSubtreeWidth = (node: TreeNode | null, showAddPlaceholder: boolean = true): number => {
     if (!node) {
       return showAddPlaceholder ? NODE_WIDTH : 0;
@@ -51,7 +49,6 @@ const BinaryTreeView = ({
     const hasRight = node.rightChild !== null;
 
     if (!hasLeft && !hasRight) {
-      // Leaf node - show 2 add placeholders below
       return (NODE_WIDTH * 2) + HORIZONTAL_SPACING;
     }
 
@@ -61,22 +58,43 @@ const BinaryTreeView = ({
     return leftWidth + HORIZONTAL_SPACING + rightWidth;
   };
 
-  // Render curved SVG connector line
+  // Render L-shaped connector lines matching the reference
   const renderConnector = (
     startX: number,
     startY: number,
     endX: number,
     endY: number
   ) => {
-    const midY = startY + (endY - startY) * 0.5;
-    
-    // Create smooth curved path
-    const path = `M ${startX} ${startY} 
-                  L ${startX} ${midY - 10}
-                  Q ${startX} ${midY}, ${startX + (endX - startX) * 0.3} ${midY}
-                  L ${endX - (endX - startX) * 0.3} ${midY}
-                  Q ${endX} ${midY}, ${endX} ${midY + 10}
-                  L ${endX} ${endY}`;
+    const midY = startY + (endY - startY) * 0.4;
+    const radius = 8;
+
+    // Determine direction
+    const goingLeft = endX < startX;
+    const goingRight = endX > startX;
+
+    let path = "";
+
+    if (goingLeft) {
+      path = `
+        M ${startX} ${startY}
+        L ${startX} ${midY - radius}
+        Q ${startX} ${midY} ${startX - radius} ${midY}
+        L ${endX + radius} ${midY}
+        Q ${endX} ${midY} ${endX} ${midY + radius}
+        L ${endX} ${endY}
+      `;
+    } else if (goingRight) {
+      path = `
+        M ${startX} ${startY}
+        L ${startX} ${midY - radius}
+        Q ${startX} ${midY} ${startX + radius} ${midY}
+        L ${endX - radius} ${midY}
+        Q ${endX} ${midY} ${endX} ${midY + radius}
+        L ${endX} ${endY}
+      `;
+    } else {
+      path = `M ${startX} ${startY} L ${endX} ${endY}`;
+    }
 
     return (
       <path
@@ -85,11 +103,11 @@ const BinaryTreeView = ({
         stroke={CONNECTOR_COLOR}
         strokeWidth={2}
         strokeLinecap="round"
+        strokeLinejoin="round"
       />
     );
   };
 
-  // Recursive render function
   const renderNode = (
     node: TreeNode | null,
     x: number,
@@ -101,7 +119,6 @@ const BinaryTreeView = ({
     const elements: React.ReactNode[] = [];
     const connectors: React.ReactNode[] = [];
 
-    // Render add user placeholder
     if (isPlaceholder && parentId !== undefined && position) {
       elements.push(
         <div
@@ -126,7 +143,6 @@ const BinaryTreeView = ({
       return { elements, connectors };
     }
 
-    // Render current node
     elements.push(
       <div
         key={`node-${node.id}`}
@@ -150,10 +166,8 @@ const BinaryTreeView = ({
     const hasLeft = node.leftChild !== null;
     const hasRight = node.rightChild !== null;
 
-    // Calculate child positions
     const childY = y + NODE_HEIGHT + VERTICAL_SPACING;
     
-    // Get subtree widths for positioning
     const leftSubtreeWidth = getSubtreeWidth(node.leftChild, !hasLeft);
     const rightSubtreeWidth = getSubtreeWidth(node.rightChild, !hasRight);
     
@@ -161,7 +175,7 @@ const BinaryTreeView = ({
     const leftCenterX = x - totalWidth / 2 + leftSubtreeWidth / 2;
     const rightCenterX = x + totalWidth / 2 - rightSubtreeWidth / 2;
 
-    // Add connector to left child/placeholder
+    // Add connectors
     const leftConnector = renderConnector(
       x,
       y + NODE_HEIGHT,
@@ -172,7 +186,6 @@ const BinaryTreeView = ({
       <g key={`connector-left-${node.id}`}>{leftConnector}</g>
     );
 
-    // Add connector to right child/placeholder
     const rightConnector = renderConnector(
       x,
       y + NODE_HEIGHT,
@@ -183,7 +196,7 @@ const BinaryTreeView = ({
       <g key={`connector-right-${node.id}`}>{rightConnector}</g>
     );
 
-    // Render left child or placeholder
+    // Render children
     if (hasLeft) {
       const leftResult = renderNode(node.leftChild, leftCenterX, childY, node.id, "LEFT");
       elements.push(...leftResult.elements);
@@ -193,7 +206,6 @@ const BinaryTreeView = ({
       elements.push(...leftResult.elements);
     }
 
-    // Render right child or placeholder
     if (hasRight) {
       const rightResult = renderNode(node.rightChild, rightCenterX, childY, node.id, "RIGHT");
       elements.push(...rightResult.elements);
@@ -208,13 +220,12 @@ const BinaryTreeView = ({
 
   if (!rootNode) {
     return (
-      <div className="flex items-center justify-center h-64 text-muted-foreground">
+      <div className="flex items-center justify-center h-64 text-gray-400">
         No tree data available
       </div>
     );
   }
 
-  // Calculate total tree dimensions
   const treeWidth = getSubtreeWidth(rootNode);
   const maxDepth = getMaxDepth(rootNode);
   const treeHeight = (maxDepth + 1) * (NODE_HEIGHT + VERTICAL_SPACING) + 100;
@@ -229,12 +240,12 @@ const BinaryTreeView = ({
       ref={containerRef}
       className={cn(
         "w-full overflow-auto p-4",
-        "scrollbar-thin scrollbar-track-background scrollbar-thumb-border"
+        "scrollbar-thin scrollbar-track-[#1a1a1a] scrollbar-thumb-[#3a3a3a]"
       )}
-      style={{ maxHeight: "calc(100vh - 300px)" }}
+      style={{ maxHeight: "calc(100vh - 350px)" }}
     >
       <div 
-        className="relative"
+        className="relative mx-auto"
         style={{ 
           width: treeWidth + 100,
           height: treeHeight,

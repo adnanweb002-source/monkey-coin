@@ -30,6 +30,7 @@ const App = () => (
           <Routes>
             {/* Auth Routes */}
             <Route path="/" element={<Index />} />
+             <Route path="/signup" element={<Index />} />
             <Route path="/signin" element={<Signin />} />
             <Route path="/2fa" element={<TwoFactorAuth />} />
             <Route path="/success" element={<Success />} />

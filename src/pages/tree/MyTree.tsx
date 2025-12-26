@@ -8,206 +8,10 @@ import TreeWalletCards from "@/components/tree/TreeWalletCards";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle } from "lucide-react";
 import { toast } from "sonner";
-
-// Mock data for development - matches reference design exactly
-const mockTreeData: TreeNode = {
-  id: 1,
-  memberId: "MG27862064",
-  email: "manuel@example.com",
-  position: "LEFT",
-  isActive: true,
-  parent: null,
-  sponsor: null,
-  leftChild: {
-    id: 2,
-    memberId: "MG27862064",
-    email: "derrick@example.com",
-    position: "LEFT",
-    isActive: true,
-    parent: { id: 1 },
-    sponsor: null,
-    leftChild: {
-      id: 6,
-      memberId: "MG27862064",
-      email: "homer@example.com",
-      position: "LEFT",
-      isActive: true,
-      parent: { id: 2 },
-      sponsor: null,
-      leftChild: {
-        id: 10,
-        memberId: "MG27862064",
-        email: "jackie@example.com",
-        position: "LEFT",
-        isActive: true,
-        parent: { id: 6 },
-        sponsor: null,
-        leftChild: null,
-        rightChild: null,
-      },
-      rightChild: {
-        id: 11,
-        memberId: "MG27862064",
-        email: "pablo@example.com",
-        position: "RIGHT",
-        isActive: true,
-        parent: { id: 6 },
-        sponsor: null,
-        leftChild: null,
-        rightChild: null,
-      },
-    },
-    rightChild: {
-      id: 7,
-      memberId: "MG27862064",
-      email: "emmett@example.com",
-      position: "RIGHT",
-      isActive: true,
-      parent: { id: 2 },
-      sponsor: null,
-      leftChild: {
-        id: 12,
-        memberId: "MG27862064",
-        email: "roman@example.com",
-        position: "LEFT",
-        isActive: true,
-        parent: { id: 7 },
-        sponsor: null,
-        leftChild: null,
-        rightChild: null,
-      },
-      rightChild: null,
-    },
-  },
-  rightChild: {
-    id: 3,
-    memberId: "MG27862064",
-    email: "jake@example.com",
-    position: "RIGHT",
-    isActive: true,
-    parent: { id: 1 },
-    sponsor: null,
-    leftChild: {
-      id: 8,
-      memberId: "MG27862064",
-      email: "everett@example.com",
-      position: "LEFT",
-      isActive: true,
-      parent: { id: 3 },
-      sponsor: null,
-      leftChild: null,
-      rightChild: null,
-    },
-    rightChild: {
-      id: 9,
-      memberId: "MG27862064",
-      email: "gabriel@example.com",
-      position: "RIGHT",
-      isActive: true,
-      parent: { id: 3 },
-      sponsor: null,
-      leftChild: null,
-      rightChild: null,
-    },
-  },
-};
+import WalletCards from "@/components/dashboard/WalletCards";
+import { useGetWallets } from "../api";
 
 // Add Thomas node to rightChild
-mockTreeData.rightChild!.rightChild = {
-  id: 4,
-  memberId: "MG27862064",
-  email: "ryan@example.com",
-  position: "RIGHT",
-  isActive: true,
-  parent: { id: 1 },
-  sponsor: null,
-  leftChild: {
-    id: 13,
-    memberId: "3194160864",
-    email: "gabriel@example.com",
-    position: "LEFT",
-    isActive: true,
-    parent: { id: 4 },
-    sponsor: null,
-    leftChild: null,
-    rightChild: null,
-  },
-  rightChild: {
-    id: 14,
-    memberId: "MG57002064",
-    email: "antonio@example.com",
-    position: "RIGHT",
-    isActive: true,
-    parent: { id: 4 },
-    sponsor: null,
-    leftChild: null,
-    rightChild: null,
-  },
-};
-
-// Add Thomas as a sibling
-mockTreeData.rightChild = {
-  id: 5,
-  memberId: "MG27862064",
-  email: "thomas@example.com",
-  position: "RIGHT",
-  isActive: true,
-  parent: { id: 1 },
-  sponsor: null,
-  leftChild: {
-    id: 3,
-    memberId: "MG27862064",
-    email: "jake@example.com",
-    position: "LEFT",
-    isActive: true,
-    parent: { id: 5 },
-    sponsor: null,
-    leftChild: {
-      id: 8,
-      memberId: "MG27862064",
-      email: "everett@example.com",
-      position: "LEFT",
-      isActive: true,
-      parent: { id: 3 },
-      sponsor: null,
-      leftChild: null,
-      rightChild: null,
-    },
-    rightChild: {
-      id: 9,
-      memberId: "MG27862064",
-      email: "gabriel@example.com",
-      position: "RIGHT",
-      isActive: true,
-      parent: { id: 3 },
-      sponsor: null,
-      leftChild: {
-        id: 15,
-        memberId: "MG27853064",
-        email: "gabriel2@example.com",
-        position: "LEFT",
-        isActive: true,
-        parent: { id: 9 },
-        sponsor: null,
-        leftChild: null,
-        rightChild: null,
-      },
-      rightChild: {
-        id: 16,
-        memberId: "MG57002064",
-        email: "antonio@example.com",
-        position: "RIGHT",
-        isActive: true,
-        parent: { id: 9 },
-        sponsor: null,
-        leftChild: null,
-        rightChild: null,
-      },
-    },
-  },
-  rightChild: null,
-};
-
 const useGetTree = (userId: number, depth: number) => {
   return useQuery<TreeNode>({
     queryKey: ["tree", userId, depth],
@@ -217,7 +21,7 @@ const useGetTree = (userId: number, depth: number) => {
         return response.data;
       } catch {
         // Return mock data for development when API is unavailable
-        return mockTreeData;
+        return {} as TreeNode;
       }
     },
   });
@@ -269,7 +73,11 @@ const findMatchingNodeIds = (node: TreeNode | null, query: string): Set<number> 
 const MyTree = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [depth] = useState(20);
-  const userId = 1;
+  const userId = localStorage.getItem("userProfile")
+    ? JSON.parse(localStorage.getItem("userProfile") || "").id
+    : 1;
+
+  const {data:wallets}=useGetWallets();
 
   const { data: treeData, isLoading, error } = useGetTree(userId, depth);
 
@@ -281,8 +89,9 @@ const MyTree = () => {
     });
   };
 
-  const handleAddUser = (parentId: number, position: "LEFT" | "RIGHT") => {
+  const handleAddUser = (parentId: string, position: "LEFT" | "RIGHT") => {
     toast.info(`Add user to ${position} of parent ${parentId}`);
+    window.open(`/signup?ref=${parentId}&position=${position}`, "_blank");
   };
 
   const businessVolume = treeData ? countBusinessVolume(treeData) : { left: 0, right: 0 };
@@ -290,7 +99,13 @@ const MyTree = () => {
   return (
     <div className="space-y-4 min-h-screen bg-[#0f0f1a] p-4">
       {/* Wallet Cards */}
-      <TreeWalletCards />
+      {/* <TreeWalletCards />
+      
+      */}
+
+       <div className="mb-6">
+        <WalletCards  wallets={wallets}/>
+      </div>
 
       {/* Tree Controls */}
       <TreeControls

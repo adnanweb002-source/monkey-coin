@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 interface BinaryTreeViewProps {
   rootNode: TreeNode | null;
   onNodeClick?: (node: TreeNode) => void;
-  onAddUser?: (parentId: number, position: "LEFT" | "RIGHT") => void;
+  onAddUser?: (parentId: string, position: "LEFT" | "RIGHT") => void;
   highlightedNodeIds?: Set<number>;
   searchQuery?: string;
 }
@@ -113,6 +113,7 @@ const BinaryTreeView = ({
     x: number,
     y: number,
     parentId?: number,
+    parentMemberId?: string,
     position?: "LEFT" | "RIGHT",
     isPlaceholder: boolean = false
   ): { elements: React.ReactNode[]; connectors: React.ReactNode[] } => {
@@ -132,7 +133,8 @@ const BinaryTreeView = ({
           <AddUserNode
             position={position}
             parentId={parentId}
-            onClick={() => onAddUser?.(parentId, position)}
+            parentMemberId={parentMemberId}
+            onClick={() => onAddUser?.(parentMemberId, position)}
           />
         </div>
       );
@@ -198,20 +200,20 @@ const BinaryTreeView = ({
 
     // Render children
     if (hasLeft) {
-      const leftResult = renderNode(node.leftChild, leftCenterX, childY, node.id, "LEFT");
+      const leftResult = renderNode(node.leftChild, leftCenterX, childY, node.id, node.memberId, "LEFT");
       elements.push(...leftResult.elements);
       connectors.push(...leftResult.connectors);
     } else {
-      const leftResult = renderNode(null, leftCenterX, childY, node.id, "LEFT", true);
+      const leftResult = renderNode(null, leftCenterX, childY, node.id, node.memberId, "LEFT", true);
       elements.push(...leftResult.elements);
     }
 
     if (hasRight) {
-      const rightResult = renderNode(node.rightChild, rightCenterX, childY, node.id, "RIGHT");
+      const rightResult = renderNode(node.rightChild, rightCenterX, childY, node.id, node.memberId, "RIGHT");
       elements.push(...rightResult.elements);
       connectors.push(...rightResult.connectors);
     } else {
-      const rightResult = renderNode(null, rightCenterX, childY, node.id, "RIGHT", true);
+      const rightResult = renderNode(null, rightCenterX, childY, node.id, node.memberId, "RIGHT", true);
       elements.push(...rightResult.elements);
     }
 

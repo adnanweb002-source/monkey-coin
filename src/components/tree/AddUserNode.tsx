@@ -3,6 +3,7 @@ import { Plus } from "lucide-react";
 interface AddUserNodeProps {
   position: "LEFT" | "RIGHT";
   parentId: number;
+  parentMemberId: string;
   onClick?: () => void;
 }
 

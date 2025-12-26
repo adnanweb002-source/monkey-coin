@@ -6,6 +6,7 @@ import { RefreshCw, ChevronDown, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { BE_URL } from "@/lib/api";
+import { useSearchParams } from "react-router-dom";
 import api from "@/lib/api";
 // utils/captcha.ts
 export function generateCaptcha(length = 5) {
@@ -61,6 +62,10 @@ const SignupForm = () => {
   const [captchaValue, setCaptchaValue] = useState(generateCaptcha());
   const { toast } = useToast();
 
+  const [searchParams] = useSearchParams();
+  const sponsorIdParam = searchParams.get("ref");
+  const positionParam = searchParams.get("position")
+
   const {
     register,
     handleSubmit,
@@ -68,9 +73,6 @@ const SignupForm = () => {
     resetField,
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
-    defaultValues: {
-      position: "LEFT",
-    },
   });
 
   const navigate=useNavigate();
@@ -86,13 +88,11 @@ const SignupForm = () => {
         country: data.country,
         email: data.email,
         password: data.password,
-        // sponsorMemberId: data.sponsorId,
-        position: data.position,
-        // parentMemberId
+        sponsorMemberId: data.sponsorId,
+        position: positionParam || null,
+        parentMemberId: data.sponsorId
       };
       console.log(payload);
-      // return;
-      // Replace with your actual API endpoint
       const response = await api.post("/auth/register",payload,);
 
       if(response?.data){
@@ -122,12 +122,11 @@ const SignupForm = () => {
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-foreground mb-2">Sign Up</h1>
         <p className="text-muted-foreground">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Create your account to get started
         </p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-        {/* Row 1: Sponsor ID & Position */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="crypto-label">Sponsor ID</label>
@@ -135,6 +134,8 @@ const SignupForm = () => {
               type="text"
               placeholder="1234567890"
               className="crypto-input"
+              defaultValue={sponsorIdParam || ""}
+              disabled={!!sponsorIdParam}
               {...register("sponsorId")}
             />
             {errors.sponsorId && (
@@ -149,6 +150,8 @@ const SignupForm = () => {
               <select
                 className="crypto-input appearance-none pr-10"
                 {...register("position")}
+                defaultValue={positionParam}
+                disabled={!!positionParam}
               >
                 <option value="LEFT">Left</option>
                 <option value="RIGHT">Right</option>

@@ -1,5 +1,4 @@
 import { TreeNode } from "@/types/tree";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
 interface TreeNodeCardProps {
@@ -10,6 +9,18 @@ interface TreeNodeCardProps {
   searchQuery?: string;
   onClick?: () => void;
 }
+
+// Pastel color palette matching the reference design
+const PASTEL_COLORS = [
+  { bg: "bg-amber-100", border: "border-amber-400", ring: "ring-amber-400" }, // Yellow/Gold - Root
+  { bg: "bg-blue-100", border: "border-blue-300", ring: "ring-blue-300" },
+  { bg: "bg-green-100", border: "border-green-300", ring: "ring-green-300" },
+  { bg: "bg-purple-100", border: "border-purple-300", ring: "ring-purple-300" },
+  { bg: "bg-orange-100", border: "border-orange-300", ring: "ring-orange-300" },
+  { bg: "bg-pink-100", border: "border-pink-300", ring: "ring-pink-300" },
+  { bg: "bg-teal-100", border: "border-teal-300", ring: "ring-teal-300" },
+  { bg: "bg-indigo-100", border: "border-indigo-300", ring: "ring-indigo-300" },
+];
 
 // Helper to highlight matching text
 const HighlightText = ({ text, query }: { text: string; query?: string }) => {
@@ -24,66 +35,76 @@ const HighlightText = ({ text, query }: { text: string; query?: string }) => {
   return (
     <>
       {text.slice(0, index)}
-      <span className="bg-primary/40 text-primary-foreground rounded px-0.5">{text.slice(index, index + query.trim().length)}</span>
+      <span className="bg-primary/40 text-primary-foreground rounded px-0.5">
+        {text.slice(index, index + query.trim().length)}
+      </span>
       {text.slice(index + query.trim().length)}
     </>
   );
 };
 
-const TreeNodeCard = ({ node, isRoot, isSelected, isHighlighted, searchQuery, onClick }: TreeNodeCardProps) => {
-  const getInitials = (email: string) => {
-    return email.substring(0, 2).toUpperCase();
+const TreeNodeCard = ({ 
+  node, 
+  isRoot, 
+  isSelected, 
+  isHighlighted, 
+  searchQuery, 
+  onClick 
+}: TreeNodeCardProps) => {
+  const getName = (email: string) => {
+    const name = email.split("@")[0];
+    // Capitalize first letter
+    return name.charAt(0).toUpperCase() + name.slice(1);
   };
 
-  const getAvatarColor = (id: number) => {
-    const colors = [
-      "from-purple-500 to-purple-700",
-      "from-blue-500 to-blue-700",
-      "from-green-500 to-green-700",
-      "from-orange-500 to-orange-700",
-      "from-pink-500 to-pink-700",
-      "from-teal-500 to-teal-700",
-    ];
-    return colors[id % colors.length];
+  const getColorScheme = (id: number, isRootNode: boolean) => {
+    if (isRootNode) return PASTEL_COLORS[0]; // Yellow/Gold for root
+    return PASTEL_COLORS[(id % (PASTEL_COLORS.length - 1)) + 1];
   };
+
+  const colorScheme = getColorScheme(node.id, isRoot || false);
 
   return (
     <div
       onClick={onClick}
       className={cn(
-        "relative flex flex-col items-center p-4 rounded-2xl cursor-pointer transition-all duration-300",
-        "bg-gradient-to-b from-card to-secondary border border-border/50",
-        "hover:scale-105 hover:shadow-lg hover:shadow-primary/20",
-        "min-w-[140px]",
-        isRoot && "border-primary/50 shadow-lg shadow-primary/10",
-        isSelected && "ring-2 ring-primary border-primary",
-        isHighlighted && "ring-2 ring-primary border-primary  shadow-lg shadow-primary/30"
+        "relative flex flex-col items-center p-3 rounded-2xl cursor-pointer transition-all duration-200",
+        colorScheme.bg,
+        "border-2",
+        colorScheme.border,
+        "shadow-md hover:shadow-lg",
+        "w-[120px]",
+        isSelected && "ring-2 ring-primary",
+        isHighlighted && "ring-2 ring-primary shadow-lg shadow-primary/30"
       )}
     >
-      {/* Active Status Indicator */}
-      <div
+      {/* Avatar Container */}
+      <div 
         className={cn(
-          "absolute top-3 right-3 w-3 h-3 rounded-full",
-          node.isActive ? "bg-green-500 shadow-lg shadow-green-500/50" : "bg-muted-foreground/50"
+          "w-[70px] h-[70px] rounded-xl overflow-hidden mb-2 border-2",
+          colorScheme.border,
+          "bg-white/50"
         )}
-      />
+      >
+        <img 
+          src={`https://api.dicebear.com/7.x/notionists/svg?seed=${node.memberId}`}
+          alt={getName(node.email)}
+          className="w-full h-full object-cover"
+        />
+        {/* Active Status Indicator */}
+        {node.isActive && (
+          <div className="absolute top-[68px] right-[22px] w-3 h-3 rounded-full bg-green-500 border-2 border-white shadow-sm" />
+        )}
+      </div>
 
-      {/* Avatar */}
-      <Avatar className={cn("w-16 h-16 mb-3 ring-2 ring-border", isHighlighted && "ring-primary")}>
-        <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${node.memberId}`} />
-        <AvatarFallback className={cn("bg-gradient-to-br text-white font-bold", getAvatarColor(node.id))}>
-          {getInitials(node.email)}
-        </AvatarFallback>
-      </Avatar>
-
-      {/* Name/Email */}
-      <span className="text-foreground font-semibold text-sm text-center truncate max-w-[120px]">
-        <HighlightText text={node.email.split("@")[0]} query={searchQuery} />
+      {/* Name */}
+      <span className="text-foreground font-bold text-sm text-center truncate w-full">
+        <HighlightText text={getName(node.email)} query={searchQuery} />
       </span>
 
       {/* Member ID */}
-      <span className="text-muted-foreground text-xs mt-1">
-        ID: <HighlightText text={node.memberId} query={searchQuery} />
+      <span className="text-muted-foreground text-[10px] mt-0.5 truncate w-full text-center">
+        Id - <HighlightText text={node.memberId.length > 10 ? node.memberId.substring(0, 10) : node.memberId} query={searchQuery} />
       </span>
     </div>
   );

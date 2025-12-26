@@ -12,17 +12,29 @@ const AddUserNode = ({ position, parentId, onClick }: AddUserNodeProps) => {
     <div
       onClick={onClick}
       className={cn(
-        "flex flex-col items-center justify-center p-4 rounded-2xl cursor-pointer transition-all duration-300",
-        "bg-secondary/50 border-2 border-dashed border-border hover:border-primary/50",
-        "hover:bg-secondary hover:shadow-lg hover:shadow-primary/10",
-        "min-w-[140px] min-h-[140px]"
+        "relative flex flex-col items-center p-3 rounded-2xl cursor-pointer transition-all duration-200",
+        "bg-green-50 border-2 border-green-200",
+        "hover:bg-green-100 hover:border-green-300 hover:shadow-md",
+        "w-[120px]"
       )}
     >
-      <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-3 border-2 border-dashed border-muted-foreground/30">
-        <Plus className="w-8 h-8 text-muted-foreground" />
+      {/* Avatar Placeholder with Plus Icon */}
+      <div className="w-[70px] h-[70px] rounded-xl overflow-hidden mb-2 border-2 border-green-200 bg-white/80 flex items-center justify-center relative">
+        {/* Placeholder Avatar */}
+        <img 
+          src="https://api.dicebear.com/7.x/notionists/svg?seed=placeholder&backgroundColor=f0fdf4"
+          alt="Add User"
+          className="w-full h-full object-cover opacity-50"
+        />
+        {/* Plus Icon Overlay */}
+        <div className="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-green-500 flex items-center justify-center shadow-sm">
+          <Plus className="w-3 h-3 text-white" strokeWidth={3} />
+        </div>
       </div>
-      <span className="text-muted-foreground font-medium text-sm">Add User</span>
-      <span className="text-muted-foreground/50 text-xs mt-1">{position}</span>
+
+      {/* Add User Text */}
+      <span className="text-foreground font-bold text-sm text-center">Add</span>
+      <span className="text-foreground font-bold text-sm text-center -mt-0.5">User</span>
     </div>
   );
 };

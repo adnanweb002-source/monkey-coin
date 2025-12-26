@@ -15,6 +15,7 @@ import DepositRequests from "./pages/wallet/DepositRequests";
 import Withdraw from "./pages/wallet/Withdraw";
 import WithdrawRequests from "./pages/wallet/WithdrawRequests";
 import Transactions from "./pages/wallet/Transactions";
+import MyTree from "./pages/tree/MyTree";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,11 @@ const App = () => (
             {/* Dashboard Routes - wrapped in layout */}
             <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<DashboardHome />} />
+            </Route>
+
+            {/* Tree Routes - wrapped in layout */}
+            <Route path="/tree" element={<DashboardLayout />}>
+              <Route index element={<MyTree />} />
             </Route>
 
             {/* Wallet Routes - wrapped in layout */}

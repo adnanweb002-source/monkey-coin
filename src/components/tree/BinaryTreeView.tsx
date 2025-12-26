@@ -238,11 +238,7 @@ const BinaryTreeView = ({
   return (
     <div 
       ref={containerRef}
-      className={cn(
-        "w-full overflow-auto",
-        "scrollbar-thin scrollbar-track-[#1a1a1a] scrollbar-thumb-[#3a3a3a]"
-      )}
-      style={{ maxHeight: "calc(100vh - 280px)" }}
+      className="w-full"
     >
       <div 
         className="relative mx-auto"

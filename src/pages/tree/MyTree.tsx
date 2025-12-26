@@ -6,9 +6,8 @@ import BinaryTreeView from "@/components/tree/BinaryTreeView";
 import TreeControls from "@/components/tree/TreeControls";
 import TreeWalletCards from "@/components/tree/TreeWalletCards";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 
 // Mock data for development - matches reference design exactly
 const mockTreeData: TreeNode = {
@@ -270,8 +269,6 @@ const findMatchingNodeIds = (node: TreeNode | null, query: string): Set<number> 
 const MyTree = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [depth] = useState(20);
-  const [currentPage, setCurrentPage] = useState(4);
-  const totalPages = 13;
   const userId = 1;
 
   const { data: treeData, isLoading, error } = useGetTree(userId, depth);
@@ -304,56 +301,29 @@ const MyTree = () => {
       />
 
       {/* Tree Visualization Container */}
-      <div className="min-h-[500px] overflow-hidden">
-        {isLoading ? (
-          <div className="flex flex-col items-center justify-center p-8 space-y-4">
-            <Skeleton className="w-28 h-28 rounded-xl bg-[#2a2a2a]" />
-            <div className="flex gap-12 mt-6">
-              <Skeleton className="w-24 h-24 rounded-xl bg-[#2a2a2a]" />
-              <Skeleton className="w-24 h-24 rounded-xl bg-[#2a2a2a]" />
-            </div>
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center p-8 space-y-4">
+          <Skeleton className="w-28 h-28 rounded-xl bg-[#2a2a2a]" />
+          <div className="flex gap-12 mt-6">
+            <Skeleton className="w-24 h-24 rounded-xl bg-[#2a2a2a]" />
+            <Skeleton className="w-24 h-24 rounded-xl bg-[#2a2a2a]" />
           </div>
-        ) : error ? (
-          <div className="flex flex-col items-center justify-center h-64 text-destructive gap-3">
-            <AlertCircle className="w-12 h-12" />
-            <span className="text-lg font-medium">Failed to load tree data</span>
-            <span className="text-muted-foreground text-sm">Please try again later</span>
-          </div>
-        ) : (
-          <BinaryTreeView
-            rootNode={treeData || null}
-            onNodeClick={handleNodeClick}
-            onAddUser={handleAddUser}
-            highlightedNodeIds={matchingNodeIds}
-            searchQuery={searchQuery}
-          />
-        )}
-      </div>
-
-      {/* Pagination */}
-      <div className="flex items-center justify-center gap-2 pb-4">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="w-9 h-9 rounded-lg bg-[#2a2a2a] hover:bg-[#3a3a3a] text-white"
-          onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-          disabled={currentPage === 1}
-        >
-          <ChevronLeft className="w-4 h-4" />
-        </Button>
-        <div className="px-5 py-1.5 rounded-lg bg-[#2a2a2a] text-white font-medium text-sm">
-          {currentPage} / {totalPages}
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="w-9 h-9 rounded-lg bg-[#2a2a2a] hover:bg-[#3a3a3a] text-white"
-          onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-          disabled={currentPage === totalPages}
-        >
-          <ChevronRight className="w-4 h-4" />
-        </Button>
-      </div>
+      ) : error ? (
+        <div className="flex flex-col items-center justify-center h-64 text-destructive gap-3">
+          <AlertCircle className="w-12 h-12" />
+          <span className="text-lg font-medium">Failed to load tree data</span>
+          <span className="text-muted-foreground text-sm">Please try again later</span>
+        </div>
+      ) : (
+        <BinaryTreeView
+          rootNode={treeData || null}
+          onNodeClick={handleNodeClick}
+          onAddUser={handleAddUser}
+          highlightedNodeIds={matchingNodeIds}
+          searchQuery={searchQuery}
+        />
+      )}
     </div>
   );
 };

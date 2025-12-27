@@ -22,6 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
+import AdminDepositActions from "@/components/admin/AdminDepositActions";
 
 interface DepositRequest {
   id: number;
@@ -47,7 +48,16 @@ const DepositRequests = () => {
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const stored = localStorage.getItem("userProfile");
+    if (stored) {
+      const profile = JSON.parse(stored);
+      setIsAdmin(profile?.role === "ADMIN");
+    }
+  }, []);
 
   const fetchRequests = async () => {
     setIsLoading(true);
@@ -103,7 +113,7 @@ const DepositRequests = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Your Deposit Requests</CardTitle>
+          <CardTitle>{isAdmin ? "All Deposit Requests" : "Your Deposit Requests"}</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -119,7 +129,7 @@ const DepositRequests = () => {
                 No deposit requests found
               </p>
               <p className="text-sm text-muted-foreground">
-                Your deposit requests will appear here
+                Deposit requests will appear here
               </p>
             </div>
           ) : (
@@ -135,6 +145,7 @@ const DepositRequests = () => {
                       <TableHead>Status</TableHead>
                       <TableHead>Created At</TableHead>
                       <TableHead>Approved At</TableHead>
+                      {isAdmin && <TableHead>Actions</TableHead>}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -162,6 +173,15 @@ const DepositRequests = () => {
                             ? format(new Date(request.approvedAt), "MMM dd, yyyy")
                             : "-"}
                         </TableCell>
+                        {isAdmin && (
+                          <TableCell>
+                            <AdminDepositActions
+                              depositId={request.id}
+                              status={request.status}
+                              onSuccess={fetchRequests}
+                            />
+                          </TableCell>
+                        )}
                       </TableRow>
                     ))}
                   </TableBody>

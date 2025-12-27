@@ -59,11 +59,12 @@ const sidebarItems: SidebarItem[] = [
     ],
   },
   { label: "Marketing Tools", icon: Wrench, path: "/marketing-tools", disabled: true },
-  { label: "Contact Support", icon: HeadphonesIcon, path: "/support", disabled: true },
+  { label: "Contact Support", icon: HeadphonesIcon, path: "/support" },
 ];
 
 const adminItems: SidebarItem[] = [
   { label: "User Management", icon: Users, path: "/admin/users", adminOnly: true },
+  { label: "Support Queries", icon: HeadphonesIcon, path: "/admin/support/queries", adminOnly: true },
 ];
 
 interface DashboardSidebarProps {

@@ -22,6 +22,8 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import Packages from "./pages/Packages";
 import AdminUsers from "./pages/admin/AdminUsers";
+import AdminSupportQueries from "./pages/admin/AdminSupportQueries";
+import Support from "./pages/Support";
 import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
@@ -73,6 +75,12 @@ const App = () => (
             {/* Admin Routes */}
             <Route path="/admin" element={<DashboardLayout />}>
               <Route path="users" element={<AdminUsers />} />
+              <Route path="support/queries" element={<AdminSupportQueries />} />
+            </Route>
+
+            {/* Support Route */}
+            <Route path="/support" element={<DashboardLayout />}>
+              <Route index element={<Support />} />
             </Route>
 
             {/* Legal Pages */}

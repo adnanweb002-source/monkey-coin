@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { TreeNode } from "@/types/tree";
@@ -38,8 +38,10 @@ import {
   ShieldOff,
   KeyRound,
   Loader2,
+  Gift,
 } from "lucide-react";
 import TransferToUserModal from "./TransferToUserModal";
+import SendBonusModal from "./SendBonusModal";
 
 interface TreeNodeContextMenuProps {
   node: TreeNode;
@@ -51,6 +53,7 @@ type AdminAction = "suspend" | "activate" | "disable2fa" | "resetPassword" | nul
 
 const TreeNodeContextMenu = ({ node, children, isAdmin }: TreeNodeContextMenuProps) => {
   const [transferOpen, setTransferOpen] = useState(false);
+  const [bonusOpen, setBonusOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState<AdminAction>(null);
   const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
   const [newPassword, setNewPassword] = useState("");
@@ -192,6 +195,13 @@ const TreeNodeContextMenu = ({ node, children, isAdmin }: TreeNodeContextMenuPro
             <>
               <ContextMenuSeparator />
               
+              <ContextMenuItem onClick={() => setBonusOpen(true)}>
+                <Gift className="mr-2 h-4 w-4 text-primary" />
+                Send Bonus
+              </ContextMenuItem>
+
+              <ContextMenuSeparator />
+              
               {node.isActive ? (
                 <ContextMenuItem 
                   onClick={() => setConfirmAction("suspend")}
@@ -228,6 +238,16 @@ const TreeNodeContextMenu = ({ node, children, isAdmin }: TreeNodeContextMenuPro
         recipientMemberId={node.memberId}
         recipientName={getName(node.email)}
       />
+
+      {/* Send Bonus Modal */}
+      {isAdmin && (
+        <SendBonusModal
+          open={bonusOpen}
+          onOpenChange={setBonusOpen}
+          userId={node.id}
+          userName={getName(node.email)}
+        />
+      )}
 
       {/* Confirmation Dialog */}
       <AlertDialog open={confirmAction !== null && confirmAction !== "resetPassword"} onOpenChange={() => setConfirmAction(null)}>

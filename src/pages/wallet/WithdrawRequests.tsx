@@ -22,6 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
+import AdminWithdrawActions from "@/components/admin/AdminWithdrawActions";
 
 interface WithdrawRequest {
   id: number;
@@ -57,7 +58,16 @@ const WithdrawRequests = () => {
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const stored = localStorage.getItem("userProfile");
+    if (stored) {
+      const profile = JSON.parse(stored);
+      setIsAdmin(profile?.role === "ADMIN");
+    }
+  }, []);
 
   const fetchRequests = async () => {
     setIsLoading(true);
@@ -116,7 +126,7 @@ const WithdrawRequests = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Your Withdrawal Requests</CardTitle>
+          <CardTitle>{isAdmin ? "All Withdrawal Requests" : "Your Withdrawal Requests"}</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -132,7 +142,7 @@ const WithdrawRequests = () => {
                 No withdrawal requests found
               </p>
               <p className="text-sm text-muted-foreground">
-                Your withdrawal requests will appear here
+                Withdrawal requests will appear here
               </p>
             </div>
           ) : (
@@ -149,6 +159,7 @@ const WithdrawRequests = () => {
                       <TableHead>Status</TableHead>
                       <TableHead>Created At</TableHead>
                       <TableHead>Updated At</TableHead>
+                      {isAdmin && <TableHead>Actions</TableHead>}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -179,6 +190,15 @@ const WithdrawRequests = () => {
                         <TableCell>
                           {format(new Date(request.updatedAt), "MMM dd, yyyy")}
                         </TableCell>
+                        {isAdmin && (
+                          <TableCell>
+                            <AdminWithdrawActions
+                              withdrawId={request.id}
+                              status={request.status}
+                              onSuccess={fetchRequests}
+                            />
+                          </TableCell>
+                        )}
                       </TableRow>
                     ))}
                   </TableBody>

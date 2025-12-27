@@ -2,14 +2,20 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2, Shield } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import api, { tokenStorage, getErrorMessage } from "@/lib/api";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 
 const signinSchema = z.object({
   email: z.string().min(4, "Email is required"),
   password: z.string().min(1, "Password is required"),
+  code: z.string().optional(),
   rememberMe: z.boolean().optional(),
 });
 
@@ -18,6 +24,7 @@ type SigninFormData = z.infer<typeof signinSchema>;
 const SigninForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [otpValue, setOtpValue] = useState("");
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -25,20 +32,33 @@ const SigninForm = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<SigninFormData>({
     resolver: zodResolver(signinSchema),
     defaultValues: {
       rememberMe: false,
+      code: "",
     },
   });
+
+  // Sync OTP value with form
+  const handleOtpChange = (value: string) => {
+    setOtpValue(value);
+    setValue("code", value);
+  };
 
   const onSubmit = async (data: SigninFormData) => {
     setIsLoading(true);
     try {
-      const payload = {
+      const payload: Record<string, string> = {
         phoneOrEmail: data.email,
         password: data.password,
       };
+
+      // Include OTP code if provided
+      if (otpValue && otpValue.length > 0) {
+        payload.code = otpValue;
+      }
 
       const response = await api.post("/auth/login", payload);
       const { accessToken, refreshToken } = response?.data;
@@ -49,7 +69,7 @@ const SigninForm = () => {
       // Fetch user profile after successful login
       const profileResponse = await api.get("/auth/get-profile");
       const userProfile = profileResponse?.data;
-      
+
       // Store user profile in localStorage
       localStorage.setItem("userProfile", JSON.stringify(userProfile));
 
@@ -58,8 +78,12 @@ const SigninForm = () => {
         description: "You have been signed in successfully.",
       });
 
-      // Navigate to Dashboard
-      navigate("/dashboard");
+      // Check if 2FA is enabled - if not, redirect to setup
+      if (!userProfile.isG2faEnabled) {
+        navigate("/security/2fa/setup");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (error) {
       toast({
         title: "Error",
@@ -76,7 +100,7 @@ const SigninForm = () => {
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-foreground mb-2">Sign In</h1>
         <p className="text-muted-foreground text-sm">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Enter your credentials to access your account
         </p>
       </div>
 
@@ -91,7 +115,7 @@ const SigninForm = () => {
             type="email"
             {...register("email")}
             className="crypto-input"
-            placeholder=""
+            placeholder="Enter your email"
           />
           {errors.email && (
             <p className="text-destructive text-xs mt-1">{errors.email.message}</p>
@@ -109,7 +133,7 @@ const SigninForm = () => {
               type={showPassword ? "text" : "password"}
               {...register("password")}
               className="crypto-input pr-10"
-              placeholder=""
+              placeholder="Enter your password"
             />
             <button
               type="button"
@@ -122,6 +146,35 @@ const SigninForm = () => {
           {errors.password && (
             <p className="text-destructive text-xs mt-1">{errors.password.message}</p>
           )}
+        </div>
+
+        {/* 2FA Code - Always Visible */}
+        <div>
+          <label className="crypto-label flex items-center gap-2">
+            <Shield size={14} className="text-primary" />
+            2FA Code (OTP)
+          </label>
+          <div className="flex justify-center">
+            <InputOTP
+              maxLength={6}
+              value={otpValue}
+              onChange={handleOtpChange}
+            >
+              <InputOTPGroup className="gap-2">
+                {[0, 1, 2, 3, 4, 5].map((index) => (
+                  <InputOTPSlot
+                    key={index}
+                    index={index}
+                    className="crypto-input w-10 h-12 text-center text-lg"
+                  />
+                ))}
+              </InputOTPGroup>
+            </InputOTP>
+          </div>
+          <p className="text-muted-foreground text-xs mt-2 text-center">
+            If you have enabled Two-Factor Authentication, enter the code from your
+            authenticator app. If 2FA is not enabled on your account, leave this blank.
+          </p>
         </div>
 
         {/* Remember me & Forgot Password */}
@@ -148,7 +201,7 @@ const SigninForm = () => {
           {isLoading ? (
             <div className="flex items-center justify-center">
               <Loader2 className="animate-spin mr-2" size={18} />
-        <p>      Signing in...</p>
+              <span>Signing in...</span>
             </div>
           ) : (
             "Sign in"

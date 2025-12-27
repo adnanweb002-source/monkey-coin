@@ -7,6 +7,7 @@ import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import Signin from "./pages/Signin";
 import TwoFactorAuth from "./pages/TwoFactorAuth";
+import TwoFactorSetup from "./pages/security/TwoFactorSetup";
 import Success from "./pages/Success";
 import DashboardLayout from "./components/dashboard/DashboardLayout";
 import DashboardHome from "./pages/DashboardHome";
@@ -25,8 +26,17 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminSupportQueries from "./pages/admin/AdminSupportQueries";
 import Support from "./pages/Support";
 import Profile from "./pages/Profile";
+import RequireAuth from "./components/auth/RequireAuth";
 import NotFound from "./pages/NotFound";
+
 const queryClient = new QueryClient();
+
+// Protected Dashboard Layout with 2FA requirement
+const ProtectedDashboard = () => (
+  <RequireAuth require2FA={true}>
+    <DashboardLayout />
+  </RequireAuth>
+);
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -38,33 +48,43 @@ const App = () => (
           <Routes>
             {/* Auth Routes */}
             <Route path="/" element={<Index />} />
-             <Route path="/signup" element={<Index />} />
+            <Route path="/signup" element={<Index />} />
             <Route path="/signin" element={<Signin />} />
             <Route path="/2fa" element={<TwoFactorAuth />} />
             <Route path="/success" element={<Success />} />
             
-            {/* Dashboard Routes - wrapped in layout */}
-            <Route path="/dashboard" element={<DashboardLayout />}>
+            {/* 2FA Setup Route - requires auth but not 2FA */}
+            <Route
+              path="/security/2fa/setup"
+              element={
+                <RequireAuth require2FA={false}>
+                  <TwoFactorSetup />
+                </RequireAuth>
+              }
+            />
+            
+            {/* Dashboard Routes - wrapped in protected layout */}
+            <Route path="/dashboard" element={<ProtectedDashboard />}>
               <Route index element={<DashboardHome />} />
             </Route>
 
             {/* Tree Routes - wrapped in layout */}
-            <Route path="/tree" element={<DashboardLayout />}>
+            <Route path="/tree" element={<ProtectedDashboard />}>
               <Route index element={<MyTree />} />
             </Route>
 
             {/* Packages Route */}
-            <Route path="/packages" element={<DashboardLayout />}>
+            <Route path="/packages" element={<ProtectedDashboard />}>
               <Route index element={<Packages />} />
             </Route>
 
             {/* Profile Route */}
-            <Route path="/profile" element={<DashboardLayout />}>
+            <Route path="/profile" element={<ProtectedDashboard />}>
               <Route index element={<Profile />} />
             </Route>
 
             {/* Wallet Routes - wrapped in layout */}
-            <Route path="/wallet" element={<DashboardLayout />}>
+            <Route path="/wallet" element={<ProtectedDashboard />}>
               <Route path="deposit" element={<Deposit />} />
               <Route path="deposit-requests" element={<DepositRequests />} />
               <Route path="withdraw" element={<Withdraw />} />
@@ -74,26 +94,26 @@ const App = () => (
             </Route>
 
             {/* Reports Routes */}
-            <Route path="/reports" element={<DashboardLayout />}>
+            <Route path="/reports" element={<ProtectedDashboard />}>
               <Route path="holiday-list" element={<HolidayList />} />
             </Route>
 
             {/* Admin Routes */}
-            <Route path="/admin" element={<DashboardLayout />}>
+            <Route path="/admin" element={<ProtectedDashboard />}>
               <Route path="users" element={<AdminUsers />} />
               <Route path="support/queries" element={<AdminSupportQueries />} />
             </Route>
 
             {/* Support Route */}
-            <Route path="/support" element={<DashboardLayout />}>
+            <Route path="/support" element={<ProtectedDashboard />}>
               <Route index element={<Support />} />
             </Route>
 
             {/* Legal Pages */}
-            <Route path="/privacy" element={<DashboardLayout />}>
+            <Route path="/privacy" element={<ProtectedDashboard />}>
               <Route index element={<PrivacyPolicy />} />
             </Route>
-            <Route path="/terms" element={<DashboardLayout />}>
+            <Route path="/terms" element={<ProtectedDashboard />}>
               <Route index element={<TermsAndConditions />} />
             </Route>
             

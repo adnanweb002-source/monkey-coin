@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import api from "@/lib/api";
 import type { WalletCard } from "@/types/wallet";
 import { walletConfig } from "@/lib/config";
 

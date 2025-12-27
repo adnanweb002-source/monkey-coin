@@ -29,7 +29,7 @@ const AdminWithdrawActions = ({ withdrawId, status, onSuccess }: AdminWithdrawAc
 
   const approveMutation = useMutation({
     mutationFn: async (note: string) => {
-      const response = await api.post(`/admin/withdrawal/${withdrawId}/approve`, { adminNote: note });
+      const response = await api.post(`/wallet/admin/withdrawal/${withdrawId}/approve`, { adminNote: note });
       return response.data;
     },
     onSuccess: () => {
@@ -50,7 +50,7 @@ const AdminWithdrawActions = ({ withdrawId, status, onSuccess }: AdminWithdrawAc
 
   const rejectMutation = useMutation({
     mutationFn: async (note: string) => {
-      const response = await api.post(`/admin/withdrawal/${withdrawId}/reject`, { adminNote: note });
+      const response = await api.post(`/wallet/admin/withdrawal/${withdrawId}/reject`, { adminNote: note });
       return response.data;
     },
     onSuccess: () => {

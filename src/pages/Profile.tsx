@@ -16,7 +16,7 @@ import type { UserProfile } from "@/types/user";
 
 interface PackagePurchase {
   id: number;
-  purchaseAmount: string;
+  amount: string;
   startDate: string;
   endDate: string;
   status: "ACTIVE" | "COMPLETED";
@@ -24,7 +24,7 @@ interface PackagePurchase {
     name: string;
     investmentMin: string;
     investmentMax: string;
-    dailyReturnPercent: string;
+    dailyReturnPct: string;
     durationDays: number;
     capitalReturn: boolean;
   };
@@ -52,7 +52,7 @@ const Profile = () => {
   const { data: profile, isLoading: profileLoading, error: profileError } = useQuery<UserProfile>({
     queryKey: ["userProfile"],
     queryFn: async () => {
-      const response = await api.get("/get-user-profile");
+      const response = await api.get("/auth/get-profile");
       localStorage.setItem("userProfile", JSON.stringify(response.data));
       return response.data;
     },
@@ -356,11 +356,11 @@ const Profile = () => {
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                         <div>
                           <p className="text-muted-foreground">Purchase Amount</p>
-                          <p className="font-medium">${parseFloat(purchase.purchaseAmount).toLocaleString()}</p>
+                          <p className="font-medium">${parseFloat(purchase.amount).toLocaleString()}</p>
                         </div>
                         <div>
                           <p className="text-muted-foreground">Daily Return</p>
-                          <p className="font-medium text-primary">{purchase.package.dailyReturnPercent}%</p>
+                          <p className="font-medium text-primary">{purchase.package.dailyReturnPct}%</p>
                         </div>
                         <div>
                           <p className="text-muted-foreground">Duration</p>

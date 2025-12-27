@@ -110,7 +110,7 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
-      await api.post("/logout");
+      await api.post("/auth/logout");
       toast({ title: "Success", description: "Logged out successfully" });
     } catch (error) {
       // Even if API fails, still clear tokens and redirect

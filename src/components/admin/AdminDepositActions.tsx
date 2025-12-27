@@ -28,7 +28,7 @@ const AdminDepositActions = ({ depositId, status, onSuccess }: AdminDepositActio
 
   const approveMutation = useMutation({
     mutationFn: async () => {
-      const response = await api.post(`/admin/deposits/${depositId}/approve`);
+      const response = await api.post(`/wallet/admin/deposits/${depositId}/approve`);
       return response.data;
     },
     onSuccess: () => {
@@ -48,7 +48,7 @@ const AdminDepositActions = ({ depositId, status, onSuccess }: AdminDepositActio
 
   const rejectMutation = useMutation({
     mutationFn: async () => {
-      const response = await api.post(`/admin/deposits/${depositId}/reject`);
+      const response = await api.post(`/wallet/admin/deposits/${depositId}/reject`);
       return response.data;
     },
     onSuccess: () => {

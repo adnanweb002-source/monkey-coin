@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Home,
   DollarSign,
@@ -16,9 +16,26 @@ import {
   X,
   Users,
   Shield,
+  User,
+  LogOut,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { tokenStorage } from "@/lib/api";
+import api from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 
 interface SidebarItem {
   label: string;
@@ -31,6 +48,7 @@ interface SidebarItem {
 
 const sidebarItems: SidebarItem[] = [
   { label: "Dashboard", icon: Home, path: "/dashboard" },
+  { label: "My Profile", icon: User, path: "/profile" },
   { label: "Make Investment", icon: DollarSign, path: "/packages" },
   { label: "My Tree", icon: TreePine, path: "/tree" },
   { label: "Deposit", icon: Wallet, path: "/wallet/deposit" },
@@ -74,9 +92,12 @@ interface DashboardSidebarProps {
 
 const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [expandedItems, setExpandedItems] = useState<string[]>(["Reports"]);
   const isMobile = useIsMobile();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("userProfile");
@@ -85,6 +106,22 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
       setIsAdmin(profile?.role === "ADMIN");
     }
   }, []);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await api.post("/logout");
+      toast({ title: "Success", description: "Logged out successfully" });
+    } catch (error) {
+      // Even if API fails, still clear tokens and redirect
+      toast({ title: "Warning", description: "Logged out locally. Please try again if issues persist.", variant: "destructive" });
+    } finally {
+      tokenStorage.clearTokens();
+      localStorage.removeItem("userProfile");
+      setIsLoggingOut(false);
+      navigate("/signin");
+    }
+  };
 
   const toggleExpand = (label: string) => {
     setExpandedItems((prev) =>
@@ -209,7 +246,33 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-border">
+        <div className="p-4 border-t border-border space-y-3">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
+                disabled={isLoggingOut}
+              >
+                <LogOut size={18} className="mr-3" />
+                {isLoggingOut ? "Logging out..." : "Logout"}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure you want to logout?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  You will be redirected to the login page and will need to sign in again to access your account.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleLogout} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  Logout
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <div className="flex gap-4 text-xs text-muted-foreground">
             <Link to="/privacy" onClick={handleNavClick} className="hover:text-foreground transition-colors">
               Privacy Policy

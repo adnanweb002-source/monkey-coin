@@ -24,6 +24,7 @@ import Packages from "./pages/Packages";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminSupportQueries from "./pages/admin/AdminSupportQueries";
 import Support from "./pages/Support";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
@@ -55,6 +56,11 @@ const App = () => (
             {/* Packages Route */}
             <Route path="/packages" element={<DashboardLayout />}>
               <Route index element={<Packages />} />
+            </Route>
+
+            {/* Profile Route */}
+            <Route path="/profile" element={<DashboardLayout />}>
+              <Route index element={<Profile />} />
             </Route>
 
             {/* Wallet Routes - wrapped in layout */}

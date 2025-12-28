@@ -17,15 +17,20 @@ import api from "@/lib/api";
 import { Users, RefreshCw, Search, UserPlus, Package } from "lucide-react";
 import { format } from "date-fns";
 
+interface PackagePurchase{
+  amount: string;
+  packageId: number;
+}
+
 interface Referral {
   id: number;
   memberId: string;
-  name: string;
+  firstName: string;
+  lastName: string; 
   email?: string;
   status: "ACTIVE" | "INACTIVE" | "SUSPENDED";
   createdAt: string;
-  activePackages?: number;
-  packages?: { name: string; status: string }[];
+  packagePurchases?: PackagePurchase[];
 }
 
 interface ReferralData {
@@ -74,7 +79,7 @@ const TrackReferral = () => {
       const query = searchQuery.toLowerCase();
       return (
         referral.memberId.toLowerCase().includes(query) ||
-        referral.name.toLowerCase().includes(query) ||
+        referral.firstName.toLowerCase().includes(query) ||
         (referral.email && referral.email.toLowerCase().includes(query))
       );
     });
@@ -96,14 +101,14 @@ const TrackReferral = () => {
   };
 
   const getPackageCount = (referral: Referral) => {
-    if (referral.activePackages !== undefined) {
-      return referral.activePackages;
+    if (referral.packagePurchases) {
+      return  referral.packagePurchases.length;
     }
-    if (referral.packages) {
-      return referral.packages.filter((p) => p.status === "ACTIVE").length;
-    }
+ 
     return 0;
   };
+
+  console.log(filteredReferrals);
 
   return (
     <div className="space-y-6">
@@ -177,6 +182,7 @@ const TrackReferral = () => {
                     <TableRow>
                       <TableHead>Member ID</TableHead>
                       <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Joined On</TableHead>
                       <TableHead className="text-center">Active Packages</TableHead>
@@ -189,7 +195,10 @@ const TrackReferral = () => {
                           {referral.memberId}
                         </TableCell>
                         <TableCell className="font-medium">
-                          {referral.name}
+                          {referral.firstName} {referral.lastName}
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground truncate max-w-xs">
+                          {referral.email || "-"}
                         </TableCell>
                         <TableCell>
                           <Badge
@@ -221,7 +230,7 @@ const TrackReferral = () => {
                   >
                     <div className="flex justify-between items-start mb-3">
                       <div>
-                        <p className="font-medium text-foreground">{referral.name}</p>
+                        <p className="font-medium text-foreground">{referral.firstName} {referral.lastName}</p>
                         <p className="text-sm text-muted-foreground font-mono">
                           {referral.memberId}
                         </p>

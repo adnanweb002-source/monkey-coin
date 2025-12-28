@@ -19,7 +19,7 @@ export function generateCaptcha(length = 5) {
 const signupSchema = z
   .object({
     sponsorId: z.string(),
-    position: z.enum(["LEFT", "RIGHT"], {
+    position: z.enum(["LEFT", "RIGHT", "AUTO"], {
       required_error: "Position is required",
     }),
     firstName: z
@@ -63,6 +63,7 @@ const SignupForm = () => {
 
   const [searchParams] = useSearchParams();
   const sponsorIdParam = searchParams.get("ref");
+  const parentIdParam = searchParams.get("parent");
   const positionParam = searchParams.get("position")
 
   const {
@@ -79,7 +80,6 @@ const SignupForm = () => {
     setIsSubmitting(true);
     // const { firstName, lastName, phone, country, email, password, sponsorMemberId, parentMemberId, position } = dto;
     try {
-      // Prepare payload (exclude lastName and confirmEmail/confirmPassword as per requirements)
       const payload = {
         firstName: data.firstName,
         lastName: data.lastName,
@@ -87,9 +87,9 @@ const SignupForm = () => {
         country: data.country,
         email: data.email,
         password: data.password,
-        sponsorMemberId: data.sponsorId,
-        position: positionParam || null,
-        parentMemberId: data.sponsorId
+        sponsorMemberId: sponsorIdParam || data.sponsorId || null,
+        position: positionParam ?? (data.position === "AUTO" ? null : data.position ?? null),
+        parentMemberId: parentIdParam || null,
       };
       console.log(payload);
       const response = await api.post("/auth/register",payload,);
@@ -152,6 +152,7 @@ const SignupForm = () => {
                 defaultValue={positionParam}
                 disabled={!!positionParam}
               >
+                 <option value="AUTO">Auto</option>
                 <option value="LEFT">Left</option>
                 <option value="RIGHT">Right</option>
               </select>

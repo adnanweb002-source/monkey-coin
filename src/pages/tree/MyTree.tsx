@@ -77,6 +77,10 @@ const MyTree = () => {
     ? JSON.parse(localStorage.getItem("userProfile") || "").id
     : 1;
 
+  const memberId = localStorage.getItem("userProfile")
+    ? JSON.parse(localStorage.getItem("userProfile") || "").memberId
+    : null;
+
   const {data:wallets}=useGetWallets();
 
   const { data: treeData, isLoading, error } = useGetTree(userId, depth);
@@ -91,7 +95,7 @@ const MyTree = () => {
 
   const handleAddUser = (parentId: string, position: "LEFT" | "RIGHT") => {
     toast.info(`Add user to ${position} of parent ${parentId}`);
-    window.open(`/signup?ref=${parentId}&position=${position}`, "_blank");
+    window.open(`/signup?ref=${memberId}&position=${position}&parent=${parentId}`, "_blank");
   };
 
   const businessVolume = treeData ? countBusinessVolume(treeData) : { left: 0, right: 0 };

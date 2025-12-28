@@ -27,6 +27,8 @@ type WalletType = "F_WALLET" | "I_WALLET" | "M_WALLET" | "BONUS_WALLET";
 
 interface Transaction {
   id: number;
+  walletId?: number;
+  userId?: number;
   txNumber: string;
   type: string;
   direction: "CREDIT" | "DEBIT";
@@ -61,6 +63,10 @@ const Transactions = () => {
   const [isLoadingTransactions, setIsLoadingTransactions] = useState(false);
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
   const { toast } = useToast();
+
+  const role = localStorage.getItem("userProfile")
+    ? JSON.parse(localStorage.getItem("userProfile") || "").role
+    : "USER";
 
   // Fetch wallets on mount
   useEffect(() => {
@@ -174,6 +180,8 @@ const Transactions = () => {
 
   const selectedWallet = wallets.find((w) => w.type === selectedWalletType);
 
+  console.log("Transactions:", transactions);
+
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-foreground">Wallet Transactions</h1>
@@ -243,6 +251,12 @@ const Transactions = () => {
                     <TableRow>
                       <TableHead>ID</TableHead>
                       <TableHead>Tx Number</TableHead>
+                      {
+                        role === "ADMIN" && <TableHead>User ID</TableHead>
+                      }
+                      {
+                        role === "ADMIN" && <TableHead>Wallet ID</TableHead>
+                      }
                       <TableHead>Type</TableHead>
                       <TableHead>Direction</TableHead>
                       <TableHead className="text-right">Amount</TableHead>
@@ -261,6 +275,10 @@ const Transactions = () => {
                         >
                           <TableCell className="font-mono text-sm">{tx.id}</TableCell>
                           <TableCell className="font-mono text-sm">{tx.txNumber}</TableCell>
+                          { role === "ADMIN" && <TableCell className="font-mono text-sm">{tx.userId || "-"}</TableCell> }
+                          {
+                            role === "ADMIN" && <TableCell className="font-mono text-sm">{tx.walletId || "-"}</TableCell>
+                          }
                           <TableCell>{getTypeBadge(tx.type)}</TableCell>
                           <TableCell>{getDirectionBadge(tx.direction)}</TableCell>
                           <TableCell className="text-right font-medium">

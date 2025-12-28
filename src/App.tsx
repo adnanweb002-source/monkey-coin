@@ -28,6 +28,7 @@ import Support from "./pages/Support";
 import Profile from "./pages/Profile";
 import BinaryIncome from "./pages/income/BinaryIncome";
 import DirectIncome from "./pages/income/DirectIncome";
+import Wallets from "./pages/reports/Wallets";
 import RequireAuth from "./components/auth/RequireAuth";
 import NotFound from "./pages/NotFound";
 
@@ -103,6 +104,7 @@ const App = () => (
 
             {/* Reports Routes */}
             <Route path="/reports" element={<ProtectedDashboard />}>
+              <Route path="wallets" element={<Wallets />} />
               <Route path="holiday-list" element={<HolidayList />} />
             </Route>
 

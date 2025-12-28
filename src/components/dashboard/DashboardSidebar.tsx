@@ -70,7 +70,7 @@ const sidebarItems: SidebarItem[] = [
     icon: FileText,
     disabled: true,
     children: [
-      { label: "Wallet", path: "/reports/wallet" },
+      { label: "Wallets", path: "/reports/wallets" },
       { label: "Team Activation", path: "/reports/team-activation" },
       { label: "Track Referral", path: "/reports/track-referral" },
       { label: "Gain Report", path: "/reports/gain" },

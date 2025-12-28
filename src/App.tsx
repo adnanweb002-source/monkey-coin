@@ -29,6 +29,9 @@ import Profile from "./pages/Profile";
 import BinaryIncome from "./pages/income/BinaryIncome";
 import DirectIncome from "./pages/income/DirectIncome";
 import Wallets from "./pages/reports/Wallets";
+import GainReport from "./pages/reports/GainReport";
+import TrackReferral from "./pages/reports/TrackReferral";
+import RankReward from "./pages/reports/RankReward";
 import RequireAuth from "./components/auth/RequireAuth";
 import NotFound from "./pages/NotFound";
 
@@ -105,6 +108,9 @@ const App = () => (
             {/* Reports Routes */}
             <Route path="/reports" element={<ProtectedDashboard />}>
               <Route path="wallets" element={<Wallets />} />
+              <Route path="gain-report" element={<GainReport />} />
+              <Route path="track-referral" element={<TrackReferral />} />
+              <Route path="rank-reward" element={<RankReward />} />
               <Route path="holiday-list" element={<HolidayList />} />
             </Route>
 

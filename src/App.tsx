@@ -24,6 +24,7 @@ import TermsAndConditions from "./pages/TermsAndConditions";
 import Packages from "./pages/Packages";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminSupportQueries from "./pages/admin/AdminSupportQueries";
+import SystemPrune from "./pages/admin/SystemPrune";
 import Support from "./pages/Support";
 import Profile from "./pages/Profile";
 import BinaryIncome from "./pages/income/BinaryIncome";
@@ -118,6 +119,7 @@ const App = () => (
             <Route path="/admin" element={<ProtectedDashboard />}>
               <Route path="users" element={<AdminUsers />} />
               <Route path="support/queries" element={<AdminSupportQueries />} />
+              <Route path="system/prune" element={<SystemPrune />} />
             </Route>
 
             {/* Support Route */}

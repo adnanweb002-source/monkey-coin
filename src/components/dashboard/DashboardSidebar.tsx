@@ -147,7 +147,7 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
     }
   };
 
-  const allItems = isAdmin ? [...sidebarItems.slice(0, 1), ...adminItems, ...sidebarItems.slice(1)] : sidebarItems;
+  const allItems = isAdmin ? [...sidebarItems, ...adminItems] : sidebarItems;
 
   return (
     <>

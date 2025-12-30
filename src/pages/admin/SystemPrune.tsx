@@ -65,7 +65,9 @@ const SystemPrune = () => {
     setError(null);
 
     try {
-      await api.post("/admin/prune-system", { confirm: true });
+      const response = await api.post("/admin/prune-system", { confirm: CONFIRM_KEYWORD });
+
+      console.log("System prune response:", response.data);
 
       toast({
         title: "System Prune Completed",
@@ -75,6 +77,7 @@ const SystemPrune = () => {
       // Redirect to admin dashboard
       navigate("/admin/users", { replace: true });
     } catch (err: unknown) {
+      console.error("System prune error:", err);
       const message =
         err instanceof Error
           ? err.message

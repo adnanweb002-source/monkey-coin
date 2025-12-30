@@ -134,7 +134,7 @@ const SignupForm = () => {
               placeholder="1234567890"
               className="crypto-input"
               defaultValue={sponsorIdParam || ""}
-              disabled={!!sponsorIdParam}
+              disabled
               {...register("sponsorId")}
             />
             {errors.sponsorId && (
@@ -150,7 +150,7 @@ const SignupForm = () => {
                 className="crypto-input appearance-none pr-10"
                 {...register("position")}
                 defaultValue={positionParam}
-                disabled={!!positionParam}
+                disabled
               >
                  <option value="AUTO">Auto</option>
                 <option value="LEFT">Left</option>

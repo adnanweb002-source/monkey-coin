@@ -4,7 +4,6 @@ import {
   Wallet,
   ArrowDownLeft,
   ArrowUpRight,
-  Copy,
   ExternalLink,
   RefreshCw,
   Banknote,
@@ -26,6 +25,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
 import type { ApiWallet } from "@/types/wallet";
+import WalletLimitsManagement from "@/components/admin/WalletLimitsManagement";
 
 type WalletType = "F_WALLET" | "I_WALLET" | "M_WALLET" | "BONUS_WALLET";
 
@@ -77,6 +77,20 @@ const Wallets = () => {
   const [latestTransactions, setLatestTransactions] = useState<Record<WalletType, Transaction | null>>({} as Record<WalletType, Transaction | null>);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Check admin role
+  useEffect(() => {
+    const stored = localStorage.getItem("userProfile");
+    if (stored) {
+      try {
+        const profile = JSON.parse(stored);
+        setIsAdmin(profile?.role === "ADMIN");
+      } catch {
+        setIsAdmin(false);
+      }
+    }
+  }, []);
 
   const fetchWallets = async () => {
     try {
@@ -334,6 +348,13 @@ const Wallets = () => {
                 </Card>
               );
             })}
+          </div>
+        )}
+
+        {/* Admin-only Wallet Limits Section */}
+        {isAdmin && (
+          <div className="mt-8">
+            <WalletLimitsManagement />
           </div>
         )}
       </div>

@@ -29,16 +29,26 @@ const PackageWalletRules = () => {
   const [editingValues, setEditingValues] = useState<Record<string, string>>({});
 
   const { data: rules = [], isLoading } = useQuery<WalletRule[]>({
-    queryKey: ["walletRules"],
-    queryFn: async () => {
-      const response = await api.get("/packages/wallet-rules");
-      return response.data;
-    },
-  });
+  queryKey: ["walletRules"],
+  queryFn: async () => {
+    const response = await api.get("/packages/wallet-rules");
+
+    // Response shape:
+    // { F_WALLET: "20", M_WALLET: "30", ... }
+
+    const obj = response.data;
+
+    return Object.entries(obj).map(([wallet, minPct]) => ({
+      wallet: wallet as WalletType,
+      minPct: Number(minPct), // Decimal → number
+    }));
+  },
+});
+
 
   const updateMutation = useMutation({
     mutationFn: async (data: { wallet: WalletType; minPct: number }) => {
-      const response = await api.post("/packages-wallet-rules", data);
+      const response = await api.post("/packages/wallet-rules", data);
       return response.data;
     },
     onSuccess: () => {
@@ -98,6 +108,8 @@ const PackageWalletRules = () => {
     );
   }
 
+  console.log("Wallet Rules Data:", rules);
+
   return (
     <div className="space-y-6">
       <div>
@@ -128,7 +140,7 @@ const PackageWalletRules = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {rules.map((rule) => (
+              {rules?.map((rule) => (
                 <TableRow key={rule.wallet}>
                   <TableCell className="font-medium">
                     {getWalletLabel(rule.wallet)}

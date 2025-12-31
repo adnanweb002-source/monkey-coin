@@ -142,7 +142,6 @@ const SystemPrune = () => {
                 <li>All deposit and withdrawal requests</li>
                 <li>All support queries and replies</li>
                 <li>All 2FA secrets and refresh tokens</li>
-                <li>All audit logs</li>
               </ul>
               <p className="font-semibold mt-3">
                 This action cannot be undone. Proceed ONLY if you fully understand the consequences.

@@ -294,7 +294,7 @@ const WalletLimitsManagement = () => {
                           <div>
                             <p className="font-medium">{config.name}</p>
                             <Badge variant="secondary" className="text-xs">
-                              {type}
+                              {type?.replace("_", " ")}
                             </Badge>
                           </div>
                         </div>

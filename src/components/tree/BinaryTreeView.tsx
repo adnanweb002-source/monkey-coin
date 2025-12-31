@@ -62,6 +62,7 @@ const BinaryTreeView = ({
     // Clear any existing timeout
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
     }
     
     const target = e.currentTarget as HTMLElement;
@@ -82,11 +83,25 @@ const BinaryTreeView = ({
   const handleHoverEnd = useCallback(() => {
     if (isMobile) return;
     
-    // Add a small delay before closing to allow moving to the popup
+    // Add a longer delay before closing to allow moving to the popup
     hoverTimeoutRef.current = setTimeout(() => {
       setHoverState({ node: null, position: { x: 0, y: 0 } });
-    }, 100);
+    }, 200);
   }, [isMobile]);
+
+  // Keep popup open when mouse enters the popup itself
+  const handlePopupMouseEnter = useCallback(() => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+  }, []);
+
+  const handlePopupMouseLeave = useCallback(() => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setHoverState({ node: null, position: { x: 0, y: 0 } });
+    }, 150);
+  }, []);
 
   const handleMobileTap = useCallback((node: TreeNode, e: React.MouseEvent | React.TouchEvent) => {
     if (!isMobile) return;
@@ -356,11 +371,16 @@ const BinaryTreeView = ({
 
         {/* Hover Details Popup */}
         {hoverState.node && (
-          <TreeNodeHoverDetails
-            node={hoverState.node}
-            position={hoverState.position}
-            onClose={closeHoverDetails}
-          />
+          <div 
+            onMouseEnter={handlePopupMouseEnter}
+            onMouseLeave={handlePopupMouseLeave}
+          >
+            <TreeNodeHoverDetails
+              node={hoverState.node}
+              position={hoverState.position}
+              onClose={closeHoverDetails}
+            />
+          </div>
         )}
       </div>
     </div>

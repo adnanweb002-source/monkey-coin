@@ -1,21 +1,11 @@
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
 import type { Package } from "@/types/package";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Clock, Percent, TrendingUp, Wallet, PackageIcon } from "lucide-react";
 import { useState } from "react";
+import PackagePurchaseModal from "@/components/tree/PackagePurchaseModal";
 
 const formatCurrency = (value: string) => {
   const num = parseFloat(value);
@@ -25,11 +15,8 @@ const formatCurrency = (value: string) => {
 };
 
 const Packages = () => {
-  const queryClient = useQueryClient();
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
-  const [amount, setAmount] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data: packages = [], isLoading: isLoadingPackages, isError } = useQuery({
     queryKey: ["packages"],
@@ -41,31 +28,9 @@ const Packages = () => {
 
   const activePackages = packages.filter((pkg: Package) => pkg.isActive);
 
-  const handlePurchase = async () => {
-    if (!selectedPackage || !amount) return;
-
-    setIsLoading(true);
-    try {
-      await api.post("/packages/purchase", {
-        packageId: selectedPackage.id,
-        amount: amount,
-      });
-      toast({
-        title: "Success",
-        description: "Package purchased successfully!",
-      });
-      queryClient.invalidateQueries({ queryKey: ["wallets"] });
-      setSelectedPackage(null);
-      setAmount("");
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: `Failed to purchase package: ${error?.response?.data?.message?.toLowerCase() || "Unknown error"}`,
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+  const handleOpenPurchase = (pkg: Package) => {
+    setSelectedPackage(pkg);
+    setIsModalOpen(true);
   };
 
   if (isLoadingPackages) {
@@ -137,7 +102,7 @@ const Packages = () => {
                 <Button
                   variant="default"
                   size="sm"
-                  onClick={() => setSelectedPackage(pkg)}
+                  onClick={() => handleOpenPurchase(pkg)}
                 >
                   Invest Now
                 </Button>
@@ -191,57 +156,12 @@ const Packages = () => {
         </div>
       )}
 
-      <Dialog
-        open={!!selectedPackage}
-        onOpenChange={(open) => {
-          if (!open) {
-            setSelectedPackage(null);
-            setAmount("");
-          }
-        }}
-      >
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Invest in {selectedPackage?.name}</DialogTitle>
-            <DialogDescription>
-              Enter the amount you want to invest (
-              {selectedPackage && formatCurrency(selectedPackage.investmentMin)} -{" "}
-              {selectedPackage && formatCurrency(selectedPackage.investmentMax)})
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="amount">Amount</Label>
-              <Input
-                id="amount"
-                type="number"
-                placeholder="Enter amount"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                min={selectedPackage?.investmentMin}
-                max={selectedPackage?.investmentMax}
-              />
-            </div>
-          </div>
-          <DialogDescription className="text-xs">
-            Note: The amount will be deducted from M Wallet.
-          </DialogDescription>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setSelectedPackage(null);
-                setAmount("");
-              }}
-            >
-              Cancel
-            </Button>
-            <Button onClick={handlePurchase} disabled={!amount || isLoading}>
-              {isLoading ? "Processing..." : "Invest"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <PackagePurchaseModal
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        selectedPackage={selectedPackage}
+        packages={activePackages}
+      />
     </div>
   );
 };

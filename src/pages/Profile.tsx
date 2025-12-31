@@ -12,8 +12,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, User, Mail, Lock, Package, Calendar, Phone, Globe, Shield, Hash, AlertTriangle } from "lucide-react";
+import { Loader2, User, Mail, Lock, Package, Calendar, Phone, Globe, Shield, Hash, AlertTriangle, Wallet } from "lucide-react";
 import type { UserProfile } from "@/types/user";
+import ExternalWalletsTab from "@/components/profile/ExternalWalletsTab";
 
 interface PackagePurchase {
   id: number;
@@ -165,10 +166,11 @@ const Profile = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4 max-w-lg">
+        <TabsList className="grid w-full grid-cols-5 max-w-2xl">
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="security">Security</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
+          <TabsTrigger value="wallets">Wallets</TabsTrigger>
           <TabsTrigger value="packages">Packages</TabsTrigger>
         </TabsList>
 
@@ -385,6 +387,11 @@ const Profile = () => {
               </form>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* External Wallets Tab */}
+        <TabsContent value="wallets" className="space-y-4 mt-6">
+          <ExternalWalletsTab />
         </TabsContent>
 
         {/* Packages Tab */}

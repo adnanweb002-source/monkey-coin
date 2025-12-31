@@ -75,7 +75,7 @@ const PackagePurchaseModal = ({
   const { data: walletRules = {} } = useQuery<WalletRule>({
     queryKey: ["wallet-rules"],
     queryFn: async () => {
-      const response = await api.get("/package/wallet-rules");
+      const response = await api.get("/packages/wallet-rules");
       return response.data;
     },
     staleTime: 5 * 60 * 1000,
@@ -85,10 +85,12 @@ const PackagePurchaseModal = ({
   const { data: wallets = [] } = useQuery<WalletBalance[]>({
     queryKey: ["wallets"],
     queryFn: async () => {
-      const response = await api.get("/wallet/my");
+      const response = await api.get("/wallet/user-wallets");
       return response.data;
     },
   });
+
+  console.log("Wallets:", wallets);
 
   // Reset state when modal opens or prefilled data changes
   useEffect(() => {
@@ -154,7 +156,7 @@ const PackagePurchaseModal = ({
     if (isAdminPurchasingForOther) {
       return { BONUS_WALLET: 0 }; // Admin purchasing for others: only Bonus Wallet
     }
-    return walletRules;
+    return wallets
   }, [walletRules, isAdminPurchasingForOther]);
 
   // Validation

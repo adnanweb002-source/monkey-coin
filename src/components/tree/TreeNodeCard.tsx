@@ -1,5 +1,6 @@
 import { TreeNode } from "@/types/tree";
 import { cn } from "@/lib/utils";
+import type { MouseEvent as ReactMouseEvent } from "react";
 
 interface TreeNodeCardProps {
   node: TreeNode;
@@ -7,7 +8,7 @@ interface TreeNodeCardProps {
   isSelected?: boolean;
   isHighlighted?: boolean;
   searchQuery?: string;
-  onClick?: () => void;
+  onClick?: (e: ReactMouseEvent<HTMLDivElement>) => void;
 }
 
 // Color schemes matching the reference design exactly

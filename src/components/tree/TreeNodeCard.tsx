@@ -8,9 +8,6 @@ interface TreeNodeCardProps {
   isHighlighted?: boolean;
   searchQuery?: string;
   onClick?: () => void;
-  onHoverStart?: (e: React.MouseEvent) => void;
-  onHoverEnd?: () => void;
-  onTap?: (e: React.MouseEvent | React.TouchEvent) => void;
 }
 
 // Color schemes matching the reference design exactly
@@ -41,9 +38,6 @@ const TreeNodeCard = ({
   isSelected, 
   isHighlighted, 
   onClick,
-  onHoverStart,
-  onHoverEnd,
-  onTap,
 }: TreeNodeCardProps) => {
   const getName = (email: string) => {
     const name = email.split("@")[0];
@@ -55,14 +49,6 @@ const TreeNodeCard = ({
   return (
     <div
       onClick={onClick}
-      onMouseEnter={onHoverStart}
-      onMouseLeave={onHoverEnd}
-      onTouchStart={(e) => {
-        // Prevent context menu trigger on first tap
-        if (onTap) {
-          onTap(e);
-        }
-      }}
       className={cn(
         "relative flex flex-col items-center p-2.5 rounded-xl cursor-pointer transition-all duration-200",
         colorScheme.bg,

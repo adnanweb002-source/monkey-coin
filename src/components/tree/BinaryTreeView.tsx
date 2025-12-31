@@ -57,7 +57,22 @@ const BinaryTreeView = ({
     onNodeClick?.(node);
   };
 
-  const handleHoverStart = useCallback((node: TreeNode, e: React.MouseEvent) => {
+  // Get position relative to tree container using data attributes
+  const getNodePosition = (nodeId: number): { x: number; y: number; height: number } | null => {
+    const nodeElement = containerRef.current?.querySelector(`[data-node-id="${nodeId}"]`);
+    if (!nodeElement || !containerRef.current) return null;
+    
+    const nodeRect = nodeElement.getBoundingClientRect();
+    const containerRect = containerRef.current.getBoundingClientRect();
+    
+    return {
+      x: nodeRect.left - containerRect.left + nodeRect.width / 2,
+      y: nodeRect.top - containerRect.top + nodeRect.height,
+      height: nodeRect.height,
+    };
+  };
+
+  const handleHoverStart = useCallback((node: TreeNode) => {
     if (isMobile) return;
     
     // Clear any existing timeout
@@ -66,29 +81,31 @@ const BinaryTreeView = ({
       hoverTimeoutRef.current = null;
     }
     
-    const target = e.currentTarget as HTMLElement;
-    const rect = target.getBoundingClientRect();
-    const containerRect = containerRef.current?.getBoundingClientRect();
-    
-    if (containerRect) {
-      setHoverState({
-        node,
-        position: {
-          x: rect.left - containerRect.left + rect.width / 2,
-          y: rect.top - containerRect.top + rect.height,
-        },
-        nodeHeight: rect.height,
-      });
-    }
+    // Delay showing hover to avoid flicker and allow click to work
+    hoverTimeoutRef.current = setTimeout(() => {
+      const pos = getNodePosition(node.id);
+      if (pos) {
+        setHoverState({
+          node,
+          position: { x: pos.x, y: pos.y },
+          nodeHeight: pos.height,
+        });
+      }
+    }, 300);
   }, [isMobile]);
 
   const handleHoverEnd = useCallback(() => {
     if (isMobile) return;
     
-    // Add a longer delay before closing to allow moving to the popup
+    // Clear pending hover show
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+    }
+    
+    // Delay hiding to allow moving to the popup
     hoverTimeoutRef.current = setTimeout(() => {
       setHoverState({ node: null, position: { x: 0, y: 0 }, nodeHeight: 0 });
-    }, 200);
+    }, 150);
   }, [isMobile]);
 
   // Keep popup open when mouse enters the popup itself
@@ -102,34 +119,26 @@ const BinaryTreeView = ({
   const handlePopupMouseLeave = useCallback(() => {
     hoverTimeoutRef.current = setTimeout(() => {
       setHoverState({ node: null, position: { x: 0, y: 0 }, nodeHeight: 0 });
-    }, 150);
+    }, 100);
   }, []);
 
-  const handleMobileTap = useCallback((node: TreeNode, e: React.MouseEvent | React.TouchEvent) => {
+  const handleMobileTap = useCallback((node: TreeNode) => {
     if (!isMobile) return;
     
     // First tap shows details, second tap triggers context menu
     if (tappedNodeId === node.id) {
-      // Second tap - let context menu handle it
+      // Second tap - close details and let context menu handle it
       setTappedNodeId(null);
       setHoverState({ node: null, position: { x: 0, y: 0 }, nodeHeight: 0 });
+      return; // Let the event propagate to context menu
     } else {
       // First tap - show details
-      e.preventDefault();
-      e.stopPropagation();
-      
-      const target = e.currentTarget as HTMLElement;
-      const rect = target.getBoundingClientRect();
-      const containerRect = containerRef.current?.getBoundingClientRect();
-      
-      if (containerRect) {
+      const pos = getNodePosition(node.id);
+      if (pos) {
         setHoverState({
           node,
-          position: {
-            x: rect.left - containerRect.left + rect.width / 2,
-            y: rect.top - containerRect.top + rect.height,
-          },
-          nodeHeight: rect.height,
+          position: { x: pos.x, y: pos.y },
+          nodeHeight: pos.height,
         });
         setTappedNodeId(node.id);
       }
@@ -257,10 +266,14 @@ const BinaryTreeView = ({
       <TreeNodeContextMenu key={`menu-${node.id}`} node={node} isAdmin={isAdmin}>
         <div
           className="absolute"
+          data-node-id={node.id}
           style={{
             left: x - NODE_WIDTH / 2,
             top: y,
           }}
+          onMouseEnter={() => handleHoverStart(node)}
+          onMouseLeave={handleHoverEnd}
+          onTouchEnd={() => handleMobileTap(node)}
         >
           <TreeNodeCard
             node={node}
@@ -269,9 +282,6 @@ const BinaryTreeView = ({
             isHighlighted={highlightedNodeIds?.has(node.id) ?? false}
             searchQuery={searchQuery}
             onClick={() => handleNodeClick(node)}
-            onHoverStart={(e) => handleHoverStart(node, e)}
-            onHoverEnd={handleHoverEnd}
-            onTap={(e) => handleMobileTap(node, e)}
           />
         </div>
       </TreeNodeContextMenu>

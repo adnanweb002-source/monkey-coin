@@ -146,6 +146,17 @@ const PackagePurchaseModal = ({
     return map;
   }, [wallets]);
 
+  // Determine if admin is purchasing for another user (show only Bonus Wallet)
+  const isAdminPurchasingForOther = isAdmin && purchaseMode === "downline";
+
+  // Get available wallets based on user role and purchase mode
+  const availableWallets = useMemo(() => {
+    if (isAdminPurchasingForOther) {
+      return { BONUS_WALLET: 0 }; // Admin purchasing for others: only Bonus Wallet
+    }
+    return walletRules;
+  }, [walletRules, isAdminPurchasingForOther]);
+
   // Validation
   useEffect(() => {
     const errors: string[] = [];
@@ -162,18 +173,25 @@ const PackagePurchaseModal = ({
       }
     }
 
-    // Check total percentage
-    if (totalAmount > 0 && Math.abs(totalPercentage - 100) > 0.01) {
-      errors.push(`Total split must equal 100% (current: ${totalPercentage.toFixed(1)}%)`);
+    // Calculate total from available wallets only
+    const totalSplitAmount = Object.entries(walletAmounts)
+      .filter(([wallet]) => wallet in availableWallets)
+      .reduce((sum, [, amt]) => sum + (parseFloat(amt) || 0), 0);
+
+    // Check if split amounts equal total package amount
+    if (totalAmount > 0 && Math.abs(totalSplitAmount - totalAmount) > 0.01) {
+      errors.push(`Total wallet amounts must equal $${totalAmount.toFixed(2)} (current: $${totalSplitAmount.toFixed(2)})`);
     }
 
-    // Check minimum percentages per wallet
-    Object.entries(walletRules).forEach(([wallet, minPct]) => {
-      const currentPct = walletPercentages[wallet] || 0;
-      if (currentPct > 0 && currentPct < minPct) {
-        errors.push(`${WALLET_LABELS[wallet] || wallet} must be at least ${minPct}%`);
-      }
-    });
+    // Check minimum percentages per wallet (only for non-admin or self purchase)
+    if (!isAdminPurchasingForOther) {
+      Object.entries(walletRules).forEach(([wallet, minPct]) => {
+        const currentPct = walletPercentages[wallet] || 0;
+        if (currentPct > 0 && currentPct < minPct) {
+          errors.push(`${WALLET_LABELS[wallet] || wallet} must be at least ${minPct}%`);
+        }
+      });
+    }
 
     // Check negative values
     Object.entries(walletAmounts).forEach(([wallet, amt]) => {
@@ -183,16 +201,16 @@ const PackagePurchaseModal = ({
       }
     });
 
-    // Check wallet balances (only for self purchase)
-    if (purchaseMode === "self") {
-      Object.entries(walletAmounts).forEach(([wallet, amt]) => {
+    // Check wallet balances (always check for admin bonus wallet usage)
+    Object.entries(walletAmounts)
+      .filter(([wallet]) => wallet in availableWallets)
+      .forEach(([wallet, amt]) => {
         const numAmt = parseFloat(amt) || 0;
         const balance = walletBalanceMap[wallet] || 0;
         if (numAmt > balance) {
-          errors.push(`${WALLET_LABELS[wallet] || wallet} amount exceeds balance (${formatCurrency(balance)})`);
+          errors.push(`${WALLET_LABELS[wallet] || wallet} amount exceeds balance ($${balance.toFixed(2)})`);
         }
       });
-    }
 
     // Check member ID for downline purchase
     if (purchaseMode === "downline" && !targetMemberId.trim()) {
@@ -200,7 +218,7 @@ const PackagePurchaseModal = ({
     }
 
     setValidationErrors(errors);
-  }, [totalAmount, totalPercentage, walletRules, walletPercentages, walletAmounts, walletBalanceMap, selectedPackage, purchaseMode, targetMemberId]);
+  }, [totalAmount, walletRules, walletPercentages, walletAmounts, walletBalanceMap, selectedPackage, purchaseMode, targetMemberId, isAdminPurchasingForOther, availableWallets]);
 
   const isValid = validationErrors.length === 0 && totalAmount > 0 && selectedPackage;
 
@@ -240,14 +258,16 @@ const PackagePurchaseModal = ({
   const handleSubmit = () => {
     if (!selectedPackage || !isValid) return;
 
-    // Build split object as percentages
+    // Build split object as percentages (only from available wallets)
     const split: Record<string, number> = {};
-    Object.entries(walletAmounts).forEach(([wallet, amt]) => {
-      const numAmt = parseFloat(amt) || 0;
-      if (numAmt > 0) {
-        split[wallet] = Math.round((numAmt / totalAmount) * 100);
-      }
-    });
+    Object.entries(walletAmounts)
+      .filter(([wallet]) => wallet in availableWallets)
+      .forEach(([wallet, amt]) => {
+        const numAmt = parseFloat(amt) || 0;
+        if (numAmt > 0) {
+          split[wallet] = Math.round((numAmt / totalAmount) * 100);
+        }
+      });
 
     const payload: {
       packageId: number;
@@ -392,74 +412,111 @@ const PackagePurchaseModal = ({
           )}
 
           {/* Wallet Split Allocation */}
-          {Object.keys(walletRules).length > 0 && totalAmount > 0 && (
+          {Object.keys(availableWallets).length > 0 && totalAmount > 0 && (
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <Label>Wallet Split Allocation</Label>
-                <span
-                  className={cn(
-                    "text-sm font-medium",
-                    Math.abs(totalPercentage - 100) <= 0.01
-                      ? "text-green-600"
-                      : "text-destructive"
-                  )}
-                >
-                  Total: {totalPercentage.toFixed(1)}%
-                </span>
+                {!isAdminPurchasingForOther && (
+                  <span className="text-xs text-muted-foreground">
+                    Total must equal ${totalAmount.toFixed(2)}
+                  </span>
+                )}
               </div>
 
+              {isAdminPurchasingForOther && (
+                <p className="text-xs text-muted-foreground bg-primary/10 p-2 rounded-md">
+                  Admin purchases for other users use Bonus Wallet only.
+                </p>
+              )}
+
               <div className="space-y-3">
-                {Object.entries(walletRules).map(([wallet, minPct]) => {
+                {Object.entries(availableWallets).map(([wallet, minPct]) => {
                   const balance = walletBalanceMap[wallet] || 0;
                   const pct = walletPercentages[wallet] || 0;
+                  const walletAmt = parseFloat(walletAmounts[wallet]) || 0;
+                  const exceedsBalance = walletAmt > balance;
 
                   return (
                     <div
                       key={wallet}
                       className="p-3 rounded-lg border border-border bg-secondary/20"
                     >
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                        <div className="flex-1">
-                          <div className="flex justify-between items-center mb-1">
-                            <span className="font-medium text-sm">
-                              {WALLET_LABELS[wallet] || wallet}
-                            </span>
-                            <span className="text-xs text-muted-foreground">
-                              Min: {minPct}% | Bal: {formatCurrency(balance)}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <div className="relative flex-1">
-                              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
-                                $
-                              </span>
-                              <Input
-                                type="number"
-                                placeholder="0.00"
-                                value={walletAmounts[wallet] || ""}
-                                onChange={(e) => handleWalletAmountChange(wallet, e.target.value)}
-                                className="pl-7 h-9"
-                                min="0"
-                                step="0.01"
-                              />
-                            </div>
-                            <div className="w-20 text-right">
-                              <span
-                                className={cn(
-                                  "text-sm font-medium",
-                                  pct > 0 && pct < minPct ? "text-destructive" : "text-foreground"
-                                )}
-                              >
-                                {pct.toFixed(1)}%
-                              </span>
-                            </div>
-                          </div>
-                        </div>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-medium text-sm">
+                          {WALLET_LABELS[wallet] || wallet}
+                        </span>
+                        {!isAdminPurchasingForOther && minPct > 0 && (
+                          <span className="text-xs text-muted-foreground">
+                            Min: {minPct}%
+                          </span>
+                        )}
                       </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <div className="relative flex-1">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
+                            $
+                          </span>
+                          <Input
+                            type="number"
+                            placeholder="0.00"
+                            value={walletAmounts[wallet] || ""}
+                            onChange={(e) => handleWalletAmountChange(wallet, e.target.value)}
+                            className={cn(
+                              "pl-7 h-9",
+                              exceedsBalance && "border-destructive focus-visible:ring-destructive"
+                            )}
+                            min="0"
+                            step="0.01"
+                          />
+                        </div>
+                        {!isAdminPurchasingForOther && (
+                          <div className="w-16 text-right">
+                            <span
+                              className={cn(
+                                "text-sm font-medium",
+                                pct > 0 && pct < minPct ? "text-destructive" : "text-foreground"
+                              )}
+                            >
+                              {pct.toFixed(1)}%
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Balance hint below input */}
+                      <p className={cn(
+                        "text-xs mt-1.5",
+                        exceedsBalance ? "text-destructive" : "text-muted-foreground"
+                      )}>
+                        Available Balance: ${balance.toFixed(2)}
+                      </p>
                     </div>
                   );
                 })}
               </div>
+
+              {/* Total Summary */}
+              {!isAdminPurchasingForOther && (
+                <div className="flex justify-between items-center pt-2 border-t border-border">
+                  <span className="text-sm font-medium">Total Split</span>
+                  <span
+                    className={cn(
+                      "text-sm font-semibold",
+                      Math.abs(Object.entries(walletAmounts)
+                        .filter(([w]) => w in availableWallets)
+                        .reduce((sum, [, amt]) => sum + (parseFloat(amt) || 0), 0) - totalAmount) <= 0.01
+                        ? "text-green-600"
+                        : "text-destructive"
+                    )}
+                  >
+                    ${Object.entries(walletAmounts)
+                      .filter(([w]) => w in availableWallets)
+                      .reduce((sum, [, amt]) => sum + (parseFloat(amt) || 0), 0)
+                      .toFixed(2)} / ${totalAmount.toFixed(2)}
+                  </span>
+                </div>
+              )}
             </div>
           )}
 

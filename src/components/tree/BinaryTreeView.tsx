@@ -23,6 +23,7 @@ const CONNECTOR_COLOR = "#5C5C5C";
 interface HoverState {
   node: TreeNode | null;
   position: { x: number; y: number };
+  nodeHeight: number;
 }
 
 const BinaryTreeView = ({ 
@@ -34,7 +35,7 @@ const BinaryTreeView = ({
 }: BinaryTreeViewProps) => {
   const [selectedNodeId, setSelectedNodeId] = useState<number | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [hoverState, setHoverState] = useState<HoverState>({ node: null, position: { x: 0, y: 0 } });
+  const [hoverState, setHoverState] = useState<HoverState>({ node: null, position: { x: 0, y: 0 }, nodeHeight: 0 });
   const [isMobile, setIsMobile] = useState(false);
   const [tappedNodeId, setTappedNodeId] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -76,6 +77,7 @@ const BinaryTreeView = ({
           x: rect.left - containerRect.left + rect.width / 2,
           y: rect.top - containerRect.top + rect.height,
         },
+        nodeHeight: rect.height,
       });
     }
   }, [isMobile]);
@@ -85,7 +87,7 @@ const BinaryTreeView = ({
     
     // Add a longer delay before closing to allow moving to the popup
     hoverTimeoutRef.current = setTimeout(() => {
-      setHoverState({ node: null, position: { x: 0, y: 0 } });
+      setHoverState({ node: null, position: { x: 0, y: 0 }, nodeHeight: 0 });
     }, 200);
   }, [isMobile]);
 
@@ -99,7 +101,7 @@ const BinaryTreeView = ({
 
   const handlePopupMouseLeave = useCallback(() => {
     hoverTimeoutRef.current = setTimeout(() => {
-      setHoverState({ node: null, position: { x: 0, y: 0 } });
+      setHoverState({ node: null, position: { x: 0, y: 0 }, nodeHeight: 0 });
     }, 150);
   }, []);
 
@@ -110,7 +112,7 @@ const BinaryTreeView = ({
     if (tappedNodeId === node.id) {
       // Second tap - let context menu handle it
       setTappedNodeId(null);
-      setHoverState({ node: null, position: { x: 0, y: 0 } });
+      setHoverState({ node: null, position: { x: 0, y: 0 }, nodeHeight: 0 });
     } else {
       // First tap - show details
       e.preventDefault();
@@ -127,6 +129,7 @@ const BinaryTreeView = ({
             x: rect.left - containerRect.left + rect.width / 2,
             y: rect.top - containerRect.top + rect.height,
           },
+          nodeHeight: rect.height,
         });
         setTappedNodeId(node.id);
       }
@@ -134,7 +137,7 @@ const BinaryTreeView = ({
   }, [isMobile, tappedNodeId]);
 
   const closeHoverDetails = useCallback(() => {
-    setHoverState({ node: null, position: { x: 0, y: 0 } });
+    setHoverState({ node: null, position: { x: 0, y: 0 }, nodeHeight: 0 });
     setTappedNodeId(null);
   }, []);
 
@@ -378,6 +381,7 @@ const BinaryTreeView = ({
             <TreeNodeHoverDetails
               node={hoverState.node}
               position={hoverState.position}
+              nodeHeight={hoverState.nodeHeight}
               onClose={closeHoverDetails}
             />
           </div>

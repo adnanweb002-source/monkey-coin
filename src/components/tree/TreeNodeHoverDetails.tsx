@@ -6,10 +6,11 @@ import { Badge } from "@/components/ui/badge";
 interface TreeNodeHoverDetailsProps {
   node: TreeNode;
   position: { x: number; y: number };
+  nodeHeight: number;
   onClose: () => void;
 }
 
-const TreeNodeHoverDetails = ({ node, position, onClose }: TreeNodeHoverDetailsProps) => {
+const TreeNodeHoverDetails = ({ node, position, nodeHeight, onClose }: TreeNodeHoverDetailsProps) => {
   const getName = (email: string) => {
     const name = email.split("@")[0];
     return name.charAt(0).toUpperCase() + name.slice(1);
@@ -87,7 +88,7 @@ const TreeNodeHoverDetails = ({ node, position, onClose }: TreeNodeHoverDetailsP
         onTouchStart={onClose}
       />
       
-      {/* Tooltip Panel - positioned to overlap with node to prevent flickering */}
+      {/* Tooltip Panel - positioned directly below the node with arrow pointing up */}
       <div
         className={cn(
           "absolute z-50 bg-card border border-border rounded-lg shadow-lg",
@@ -96,22 +97,21 @@ const TreeNodeHoverDetails = ({ node, position, onClose }: TreeNodeHoverDetailsP
         )}
         style={{
           left: position.x,
-          top: position.y - 10, // Overlap with node slightly
-          transform: "translate(-50%, 0)",
-          paddingTop: "10px", // Add padding to create hover bridge
+          top: position.y + 8, // Small gap below the node
+          transform: "translateX(-50%)",
         }}
         onClick={(e) => e.stopPropagation()}
         onMouseEnter={(e) => e.stopPropagation()}
       >
-        {/* Arrow pointer */}
+        {/* Arrow pointer pointing UP toward the node */}
         <div
-          className="absolute top-[2px] left-1/2 -translate-x-1/2 w-0 h-0 
+          className="absolute -top-[8px] left-1/2 -translate-x-1/2 w-0 h-0 
                      border-l-[8px] border-l-transparent 
                      border-r-[8px] border-r-transparent 
                      border-b-[8px] border-b-border"
         />
         <div
-          className="absolute top-[4px] left-1/2 -translate-x-1/2 w-0 h-0 
+          className="absolute -top-[6px] left-1/2 -translate-x-1/2 w-0 h-0 
                      border-l-[7px] border-l-transparent 
                      border-r-[7px] border-r-transparent 
                      border-b-[7px] border-b-card"

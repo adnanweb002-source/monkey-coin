@@ -234,7 +234,7 @@ const PackagePurchaseModal = ({
       userId?: number;
       split: Record<string, number>;
     }) => {
-      const response = await api.post("/purchase", data);
+      const response = await api.post("/packages/purchase", data);
       return response.data;
     },
     onSuccess: () => {

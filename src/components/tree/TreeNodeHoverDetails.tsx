@@ -17,6 +17,8 @@ const TreeNodeHoverDetails = ({ node, position, nodeHeight, isMobile, onClose }:
     return name.charAt(0).toUpperCase() + name.slice(1);
   };
 
+  console.log("Rendering TreeNodeHoverDetails for node:", node);
+
   const formatBV = (value: number | string | undefined) => {
     if (value === undefined || value === null) return "—";
     const num = typeof value === "string" ? parseFloat(value) : value;
@@ -25,18 +27,19 @@ const TreeNodeHoverDetails = ({ node, position, nodeHeight, isMobile, onClose }:
 
   // Extended node with optional fields
   const extendedNode = node as TreeNode & {
-    fullName?: string;
+    firstName?: string;
+    lastName?:string;
     joinDate?: string;
     createdAt?: string;
     rank?: string;
     leftBv?: number | string;
     rightBv?: number | string;
-    activePackagesCount?: number;
+    sponsorMemberId?: string;
   };
 
   const details = [
     { label: "Member ID", value: node.memberId },
-    { label: "Full Name", value: extendedNode.fullName || getName(node.email) },
+    { label: "Full Name", value: `${extendedNode.firstName} ${extendedNode.lastName}` },
     { label: "Email", value: node.email },
     {
       label: "Status",
@@ -72,11 +75,8 @@ const TreeNodeHoverDetails = ({ node, position, nodeHeight, isMobile, onClose }:
     { label: "BV Left", value: formatBV(extendedNode.leftBv) },
     { label: "BV Right", value: formatBV(extendedNode.rightBv) },
     {
-      label: "Active Packages",
-      value:
-        extendedNode.activePackagesCount !== undefined
-          ? extendedNode.activePackagesCount
-          : "—",
+      label: "Sponsor Member ID",
+      value: extendedNode.sponsorMemberId || "—",
     },
   ];
 

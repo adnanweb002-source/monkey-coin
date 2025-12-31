@@ -38,9 +38,9 @@ interface PackagePurchaseModalProps {
 }
 
 const WALLET_LABELS: Record<string, string> = {
-  F_WALLET: "Fund Wallet",
-  M_WALLET: "Main Wallet",
-  I_WALLET: "Income Wallet",
+  F_WALLET: "F Wallet",
+  M_WALLET: "M Wallet",
+  I_WALLET: "I Wallet",
   BONUS_WALLET: "Bonus Wallet",
 };
 

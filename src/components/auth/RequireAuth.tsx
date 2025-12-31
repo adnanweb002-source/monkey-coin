@@ -53,11 +53,8 @@ const RequireAuth = ({ children, require2FA = true }: RequireAuthProps) => {
     return <Navigate to="/signin" state={{ from: location }} replace />;
   }
 
-  // Authenticated but 2FA not enabled - redirect to setup
-  // Exception: if we're already on the 2FA setup page
-  if (require2FA && !has2FA && location.pathname !== "/security/2fa/setup") {
-    return <Navigate to="/security/2fa/setup" replace />;
-  }
+  // 2FA is no longer blocking - users can access dashboard without 2FA
+  // The dashboard will show a warning banner instead
 
   return <>{children}</>;
 };

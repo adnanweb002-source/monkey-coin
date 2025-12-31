@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useLocation, useNavigate } from "react-router-dom";
 import api from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, User, Mail, Lock, Package, Calendar, Phone, Globe, Shield, Hash } from "lucide-react";
+import { Loader2, User, Mail, Lock, Package, Calendar, Phone, Globe, Shield, Hash, AlertTriangle } from "lucide-react";
 import type { UserProfile } from "@/types/user";
 
 interface PackagePurchase {
@@ -47,7 +48,18 @@ type ChangeEmailData = z.infer<typeof changeEmailSchema>;
 const Profile = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("profile");
+
+  // Handle navigation state for opening specific tabs
+  useEffect(() => {
+    if (location.state?.openTab === "security") {
+      setActiveTab("security");
+      // Clear the state so it doesn't persist
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const { data: profile, isLoading: profileLoading, error: profileError } = useQuery<UserProfile>({
     queryKey: ["userProfile"],
@@ -153,10 +165,11 @@ const Profile = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 max-w-md">
+        <TabsList className="grid w-full grid-cols-4 max-w-lg">
           <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsTrigger value="security">Security</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
-          <TabsTrigger value="packages">My Packages</TabsTrigger>
+          <TabsTrigger value="packages">Packages</TabsTrigger>
         </TabsList>
 
         {/* Profile Tab */}
@@ -230,6 +243,60 @@ const Profile = () => {
                   </div>
                 </div>
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Security Tab - 2FA Setup */}
+        <TabsContent value="security" className="space-y-4 mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield size={20} />
+                Two-Factor Authentication
+              </CardTitle>
+              <CardDescription>
+                Add an extra layer of security to your account
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {profile?.isG2faEnabled ? (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+                    <Shield className="h-6 w-6 text-green-600 dark:text-green-500" />
+                    <div>
+                      <p className="font-medium text-green-700 dark:text-green-400">
+                        2FA is Enabled
+                      </p>
+                      <p className="text-sm text-green-600 dark:text-green-500">
+                        Your account is protected with two-factor authentication.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                    <AlertTriangle className="h-6 w-6 text-yellow-600 dark:text-yellow-500 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-yellow-700 dark:text-yellow-400">
+                        2FA is Not Enabled
+                      </p>
+                      <p className="text-sm text-yellow-600 dark:text-yellow-500">
+                        Your account is not protected with two-factor authentication. 
+                        We strongly recommend enabling 2FA to secure your account.
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => navigate("/security/2fa/setup")}
+                    className="w-full sm:w-auto"
+                  >
+                    <Shield className="h-4 w-4 mr-2" />
+                    Setup Two-Factor Authentication
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>

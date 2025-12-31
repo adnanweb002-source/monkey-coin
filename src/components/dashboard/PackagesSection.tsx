@@ -1,20 +1,8 @@
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
-import api from "@/lib/api";
 import type { Package } from "@/types/package";
-import { useQueryClient } from "@tanstack/react-query";
 import { Clock, Percent, TrendingUp, Wallet } from "lucide-react";
 import { useState } from "react";
+import PackagePurchaseModal from "@/components/tree/PackagePurchaseModal";
 
 const formatCurrency = (value: string) => {
   const num = parseFloat(value);
@@ -24,39 +12,13 @@ const formatCurrency = (value: string) => {
 };
 
 const PackagesSection = ({ packages }: { packages: Package[] }) => {
-  const queryClient = useQueryClient();
   const activePackages = packages.filter((pkg) => pkg.isActive);
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
-  const [amount, setAmount] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handlePurchase = async () => {
-    if (!selectedPackage || !amount) return;
-
-    setIsLoading(true);
-    try {
-      await api.post("/packages/purchase", {
-        packageId: selectedPackage.id,
-        amount: amount,
-      });
-      toast({
-        title: "Success",
-        description: "Package purchased successfully!",
-      });
-      queryClient.invalidateQueries({ queryKey: ["wallets"] });
-      setSelectedPackage(null);
-      setAmount(null);
-    } catch (error) {
-      console.log(error?.response?.data);
-      toast({
-        title: "Error",
-        description: `Failed to purchase package due to ${error?.response?.data?.message?.toLowerCase()} .`,
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+  const handleOpenPurchase = (pkg: Package) => {
+    setSelectedPackage(pkg);
+    setIsModalOpen(true);
   };
 
   return (
@@ -75,7 +37,7 @@ const PackagesSection = ({ packages }: { packages: Package[] }) => {
                   variant="default"
                   size="sm"
                   className="bg-primary hover:bg-primary/90"
-                  onClick={() => setSelectedPackage(pkg)}
+                  onClick={() => handleOpenPurchase(pkg)}
                 >
                   Purchase Now
                 </Button>
@@ -150,54 +112,12 @@ const PackagesSection = ({ packages }: { packages: Package[] }) => {
         </div>
       )}
 
-      <Dialog
-        open={!!selectedPackage}
-        onOpenChange={(open) => !open && setSelectedPackage(null)}
-      >
-        <DialogContent className="sm:max-w-md ">
-          <DialogHeader>
-            <DialogTitle>Purchase {selectedPackage?.name}</DialogTitle>
-            <DialogDescription>
-              Enter the amount you want to invest (
-              {selectedPackage && formatCurrency(selectedPackage.investmentMin)}{" "}
-              -{" "}
-              {selectedPackage && formatCurrency(selectedPackage.investmentMax)}
-              )
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-0  ">
-            <div className="space-y-2 ">
-              <Label htmlFor="amount">Amount</Label>
-              <Input
-                id="amount"
-                type="number"
-                placeholder="Enter amount"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                min={selectedPackage?.investmentMin}
-                max={selectedPackage?.investmentMax}
-              />
-            </div>
-          </div>
-          <DialogDescription className="!-mt-2 text-xs">
-            Note :- The amount will be deducted from M Wallet.
-          </DialogDescription>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setSelectedPackage(null);
-                setAmount(null);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button onClick={handlePurchase} disabled={!amount || isLoading}>
-              {isLoading ? "Processing..." : "Purchase"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <PackagePurchaseModal
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        selectedPackage={selectedPackage}
+        packages={activePackages}
+      />
     </div>
   );
 };

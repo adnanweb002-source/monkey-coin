@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { TreeNode } from "@/types/tree";
 import {
@@ -39,9 +39,12 @@ import {
   KeyRound,
   Loader2,
   Gift,
+  Package,
 } from "lucide-react";
 import TransferToUserModal from "./TransferToUserModal";
 import SendBonusModal from "./SendBonusModal";
+import PackagePurchaseModal from "./PackagePurchaseModal";
+import type { Package as PackageType } from "@/types/package";
 
 interface TreeNodeContextMenuProps {
   node: TreeNode;
@@ -54,11 +57,22 @@ type AdminAction = "suspend" | "activate" | "disable2fa" | "resetPassword" | nul
 const TreeNodeContextMenu = ({ node, children, isAdmin }: TreeNodeContextMenuProps) => {
   const [transferOpen, setTransferOpen] = useState(false);
   const [bonusOpen, setBonusOpen] = useState(false);
+  const [purchaseOpen, setPurchaseOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState<AdminAction>(null);
   const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Fetch packages for purchase modal
+  const { data: packages = [] } = useQuery<PackageType[]>({
+    queryKey: ["packages"],
+    queryFn: async () => {
+      const response = await api.get("/packages");
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
 
   const getName = (email: string) => {
     const name = email.split("@")[0];
@@ -191,6 +205,11 @@ const TreeNodeContextMenu = ({ node, children, isAdmin }: TreeNodeContextMenuPro
             Transfer Funds to This User
           </ContextMenuItem>
 
+          <ContextMenuItem onClick={() => setPurchaseOpen(true)}>
+            <Package className="mr-2 h-4 w-4 text-primary" />
+            Purchase Package for User
+          </ContextMenuItem>
+
           {isAdmin && (
             <>
               <ContextMenuSeparator />
@@ -237,6 +256,17 @@ const TreeNodeContextMenu = ({ node, children, isAdmin }: TreeNodeContextMenuPro
         onOpenChange={setTransferOpen}
         recipientMemberId={node.memberId}
         recipientName={getName(node.email)}
+      />
+
+      {/* Package Purchase Modal */}
+      <PackagePurchaseModal
+        open={purchaseOpen}
+        onOpenChange={setPurchaseOpen}
+        selectedPackage={null}
+        packages={packages}
+        prefilledMemberId={node.memberId}
+        prefilledUserId={node.id}
+        isAdmin={isAdmin}
       />
 
       {/* Send Bonus Modal */}

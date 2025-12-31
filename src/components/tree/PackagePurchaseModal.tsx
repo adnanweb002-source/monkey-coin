@@ -112,16 +112,16 @@ const PackagePurchaseModal = ({
     }
   }, [open, initialPackage, prefilledMemberId, prefilledUserId]);
 
-  // Initialize wallet amounts when rules are loaded
+  // Initialize wallet amounts when wallets are loaded
   useEffect(() => {
-    if (Object.keys(walletRules).length > 0 && Object.keys(walletAmounts).length === 0) {
+    if (wallets.length > 0 && Object.keys(walletAmounts).length === 0) {
       const initial: Record<string, string> = {};
-      Object.keys(walletRules).forEach((wallet) => {
-        initial[wallet] = "";
+      wallets.forEach((wallet) => {
+        initial[wallet.type] = "";
       });
       setWalletAmounts(initial);
     }
-  }, [walletRules]);
+  }, [wallets]);
 
   const totalAmount = parseFloat(amount) || 0;
 
@@ -151,13 +151,14 @@ const PackagePurchaseModal = ({
   // Determine if admin is purchasing for another user (show only Bonus Wallet)
   const isAdminPurchasingForOther = isAdmin && purchaseMode === "downline";
 
-  // Get available wallets based on user role and purchase mode
+  // Get available wallets based on user role and purchase mode (from user-wallets API)
   const availableWallets = useMemo(() => {
     if (isAdminPurchasingForOther) {
-      return { BONUS_WALLET: 0 }; // Admin purchasing for others: only Bonus Wallet
+      // Admin purchasing for others: only Bonus Wallet
+      return wallets.filter(w => w.type === "BONUS_WALLET");
     }
-    return wallets
-  }, [walletRules, isAdminPurchasingForOther]);
+    return wallets;
+  }, [wallets, isAdminPurchasingForOther]);
 
   // Validation
   useEffect(() => {
@@ -176,8 +177,9 @@ const PackagePurchaseModal = ({
     }
 
     // Calculate total from available wallets only
+    const availableWalletTypes = availableWallets.map(w => w.type);
     const totalSplitAmount = Object.entries(walletAmounts)
-      .filter(([wallet]) => wallet in availableWallets)
+      .filter(([wallet]) => availableWalletTypes.includes(wallet))
       .reduce((sum, [, amt]) => sum + (parseFloat(amt) || 0), 0);
 
     // Check if split amounts equal total package amount
@@ -204,8 +206,9 @@ const PackagePurchaseModal = ({
     });
 
     // Check wallet balances (always check for admin bonus wallet usage)
+    const availableWalletTypesForBalance = availableWallets.map(w => w.type);
     Object.entries(walletAmounts)
-      .filter(([wallet]) => wallet in availableWallets)
+      .filter(([wallet]) => availableWalletTypesForBalance.includes(wallet))
       .forEach(([wallet, amt]) => {
         const numAmt = parseFloat(amt) || 0;
         const balance = walletBalanceMap[wallet] || 0;
@@ -261,9 +264,10 @@ const PackagePurchaseModal = ({
     if (!selectedPackage || !isValid) return;
 
     // Build split object as percentages (only from available wallets)
+    const availableWalletTypes = availableWallets.map(w => w.type);
     const split: Record<string, number> = {};
     Object.entries(walletAmounts)
-      .filter(([wallet]) => wallet in availableWallets)
+      .filter(([wallet]) => availableWalletTypes.includes(wallet))
       .forEach(([wallet, amt]) => {
         const numAmt = parseFloat(amt) || 0;
         if (numAmt > 0) {
@@ -414,7 +418,7 @@ const PackagePurchaseModal = ({
           )}
 
           {/* Wallet Split Allocation */}
-          {Object.keys(availableWallets).length > 0 && totalAmount > 0 && (
+          {availableWallets.length > 0 && totalAmount > 0 && (
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <Label>Wallet Split Allocation</Label>
@@ -432,7 +436,9 @@ const PackagePurchaseModal = ({
               )}
 
               <div className="space-y-3">
-                {Object.entries(availableWallets).map(([wallet, minPct]) => {
+                {availableWallets.map((walletData) => {
+                  const wallet = walletData.type;
+                  const minPct = walletRules[wallet] || 0;
                   const balance = walletBalanceMap[wallet] || 0;
                   const pct = walletPercentages[wallet] || 0;
                   const walletAmt = parseFloat(walletAmounts[wallet]) || 0;

@@ -41,12 +41,22 @@ const PackageWalletRules = () => {
   const [newMinPct, setNewMinPct] = useState("");
 
   const { data: rules = [], isLoading } = useQuery<WalletRule[]>({
-    queryKey: ["walletRules"],
-    queryFn: async () => {
-      const response = await api.get("/packages/wallet-rules");
-      return response.data;
-    },
-  });
+  queryKey: ["walletRules"],
+  queryFn: async () => {
+    const response = await api.get("/packages/wallet-rules");
+
+    // Response shape:
+    // { F_WALLET: "20", M_WALLET: "30", ... }
+
+    const obj = response.data;
+
+    return Object.entries(obj).map(([wallet, minPct]) => ({
+      wallet: wallet as WalletType,
+      minPct: Number(minPct), // Decimal → number
+    }));
+  },
+});
+
 
   const configuredWallets = rules.map((r) => r.wallet);
   const availableWallets = ALL_WALLET_TYPES.filter((w) => !configuredWallets.includes(w));

@@ -12,7 +12,6 @@ import {
   ChevronRight,
   Wrench,
   HeadphonesIcon,
-  Menu,
   X,
   Users,
   Shield,
@@ -87,7 +86,8 @@ const sidebarItems: SidebarItem[] = [
 
 const adminItems: SidebarItem[] = [
   { label: "User Management", icon: Users, path: "/admin/users", adminOnly: true },
-  {label: "Package Wallet Rules", icon: Wrench, path: "/admin/package-wallet-rules", adminOnly: true },
+  { label: "Package Wallet Rules", icon: Wrench, path: "/admin/package-wallet-rules", adminOnly: true },
+  { label: "Supported Wallet Types", icon: Wallet, path: "/admin/supported-wallet-types", adminOnly: true },
   { label: "Support Queries", icon: HeadphonesIcon, path: "/admin/support/queries", adminOnly: true },
   { label: "System Prune", icon: Shield, path: "/admin/system/prune", adminOnly: true },
 ];

@@ -26,6 +26,7 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminSupportQueries from "./pages/admin/AdminSupportQueries";
 import SystemPrune from "./pages/admin/SystemPrune";
 import PackageWalletRules from "./pages/admin/PackageWalletRules";
+import SupportedWalletTypes from "./pages/admin/SupportedWalletTypes";
 import Support from "./pages/Support";
 import Profile from "./pages/Profile";
 import BinaryIncome from "./pages/income/BinaryIncome";
@@ -122,6 +123,7 @@ const App = () => (
               <Route path="support/queries" element={<AdminSupportQueries />} />
               <Route path="system/prune" element={<SystemPrune />} />
               <Route path="package-wallet-rules" element={<PackageWalletRules />} />
+              <Route path="supported-wallet-types" element={<SupportedWalletTypes />} />
             </Route>
 
             {/* Support Route */}

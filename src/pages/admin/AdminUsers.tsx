@@ -4,6 +4,7 @@ import api from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -36,13 +37,25 @@ import { useToast } from "@/hooks/use-toast";
 import {
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
+  ChevronUp,
   Ban,
   CheckCircle,
   ShieldOff,
   KeyRound,
   Loader2,
   Users,
+  Wallet,
+  Pencil,
 } from "lucide-react";
+
+interface UserWallet {
+  id: number;
+  walletTypeName: string;
+  currency: string;
+  address: string;
+  changeCount?: number;
+}
 
 interface User {
   id: number;
@@ -55,6 +68,8 @@ interface User {
   role: "USER" | "ADMIN";
   createdAt: string;
   updatedAt: string;
+  externalWallets?: UserWallet[];
+  isWithdrawalRestricted?: boolean;
 }
 
 interface UsersResponse {
@@ -69,6 +84,10 @@ const AdminUsers = () => {
   const [actionType, setActionType] = useState<"suspend" | "activate" | "disable2fa" | null>(null);
   const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
   const [newPassword, setNewPassword] = useState("");
+  const [expandedUsers, setExpandedUsers] = useState<Set<number>>(new Set());
+  const [editingWallet, setEditingWallet] = useState<{ userId: number; wallet: UserWallet } | null>(null);
+  const [editWalletAddress, setEditWalletAddress] = useState("");
+  const [togglingRestriction, setTogglingRestriction] = useState<number | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -155,6 +174,49 @@ const AdminUsers = () => {
     },
   });
 
+  const overrideWalletMutation = useMutation({
+    mutationFn: async ({ walletId, address }: { walletId: number; address: string }) => {
+      const response = await api.put(`/wallet/admin/${walletId}/override-external-wallet`, { address });
+      return response.data;
+    },
+    onSuccess: () => {
+      toast({ title: "Success", description: "Wallet address updated successfully" });
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+      setEditingWallet(null);
+      setEditWalletAddress("");
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Error", 
+        description: error.response?.data?.message || "Failed to update wallet address", 
+        variant: "destructive" 
+      });
+    },
+  });
+
+  const restrictWithdrawalMutation = useMutation({
+    mutationFn: async ({ userId, restrict }: { userId: number; restrict: boolean }) => {
+      const response = await api.patch(`/admin/users/${userId}/restrict-withdrawal`, { restrict });
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      toast({ 
+        title: "Success", 
+        description: variables.restrict ? "Withdrawals disabled for user" : "Withdrawals enabled for user" 
+      });
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+      setTogglingRestriction(null);
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Error", 
+        description: error.response?.data?.message || "Failed to update withdrawal restriction", 
+        variant: "destructive" 
+      });
+      setTogglingRestriction(null);
+    },
+  });
+
   const closeDialogs = () => {
     setSelectedUser(null);
     setActionType(null);
@@ -184,6 +246,36 @@ const AdminUsers = () => {
       return;
     }
     resetPasswordMutation.mutate({ userId: selectedUser.id, password: newPassword });
+  };
+
+  const toggleUserExpanded = (userId: number) => {
+    setExpandedUsers(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(userId)) {
+        newSet.delete(userId);
+      } else {
+        newSet.add(userId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleEditWallet = (userId: number, wallet: UserWallet) => {
+    setEditingWallet({ userId, wallet });
+    setEditWalletAddress(wallet.address);
+  };
+
+  const handleSaveWalletOverride = () => {
+    if (!editingWallet || !editWalletAddress.trim()) {
+      toast({ title: "Error", description: "Wallet address is required", variant: "destructive" });
+      return;
+    }
+    overrideWalletMutation.mutate({ walletId: editingWallet.wallet.id, address: editWalletAddress.trim() });
+  };
+
+  const handleWithdrawalToggle = (user: User, checked: boolean) => {
+    setTogglingRestriction(user.id);
+    restrictWithdrawalMutation.mutate({ userId: user.id, restrict: checked });
   };
 
   const isProcessing = suspendMutation.isPending || activateMutation.isPending || 
@@ -238,6 +330,7 @@ const AdminUsers = () => {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="whitespace-nowrap w-10"></TableHead>
                 <TableHead className="whitespace-nowrap">ID</TableHead>
                 <TableHead className="whitespace-nowrap">Member ID</TableHead>
                 <TableHead className="whitespace-nowrap">Name</TableHead>
@@ -245,6 +338,7 @@ const AdminUsers = () => {
                 <TableHead className="whitespace-nowrap">Phone</TableHead>
                 <TableHead className="whitespace-nowrap">Status</TableHead>
                 <TableHead className="whitespace-nowrap">Role</TableHead>
+                <TableHead className="whitespace-nowrap">Withdrawals</TableHead>
                 <TableHead className="whitespace-nowrap">Created</TableHead>
                 <TableHead className="whitespace-nowrap text-right">Actions</TableHead>
               </TableRow>
@@ -253,7 +347,7 @@ const AdminUsers = () => {
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <TableRow key={i}>
-                    {Array.from({ length: 9 }).map((_, j) => (
+                    {Array.from({ length: 11 }).map((_, j) => (
                       <TableCell key={j}>
                         <Skeleton className="h-4 w-full" />
                       </TableCell>
@@ -262,67 +356,153 @@ const AdminUsers = () => {
                 ))
               ) : data?.users.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={9} className="text-center text-muted-foreground py-12">
+                  <TableCell colSpan={11} className="text-center text-muted-foreground py-12">
                     No users found
                   </TableCell>
                 </TableRow>
               ) : (
                 data?.users.map((user) => (
-                  <TableRow key={user.id}>
-                    <TableCell className="font-medium">{user.id}</TableCell>
-                    <TableCell className="font-mono text-sm">{user.memberId}</TableCell>
-                    <TableCell className="whitespace-nowrap">
-                      {user.firstName} {user.lastName}
-                    </TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{user.phoneNumber || "-"}</TableCell>
-                    <TableCell>{getStatusBadge(user.status)}</TableCell>
-                    <TableCell>{getRoleBadge(user.role)}</TableCell>
-                    <TableCell className="whitespace-nowrap">{formatDate(user.createdAt)}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center justify-end gap-1">
-                        {user.status === "ACTIVE" ? (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-destructive hover:text-destructive"
-                            onClick={() => { setSelectedUser(user); setActionType("suspend"); }}
-                            title="Suspend User"
-                          >
-                            <Ban size={16} />
-                          </Button>
-                        ) : (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-green-600 hover:text-green-600"
-                            onClick={() => { setSelectedUser(user); setActionType("activate"); }}
-                            title="Activate User"
-                          >
-                            <CheckCircle size={16} />
-                          </Button>
-                        )}
+                  <>
+                    <TableRow key={user.id}>
+                      <TableCell>
                         <Button
                           variant="ghost"
                           size="icon"
                           className="h-8 w-8"
-                          onClick={() => { setSelectedUser(user); setActionType("disable2fa"); }}
-                          title="Disable 2FA"
+                          onClick={() => toggleUserExpanded(user.id)}
+                          title={expandedUsers.has(user.id) ? "Collapse" : "Expand wallets"}
                         >
-                          <ShieldOff size={16} />
+                          {expandedUsers.has(user.id) ? (
+                            <ChevronUp size={16} />
+                          ) : (
+                            <ChevronDown size={16} />
+                          )}
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8"
-                          onClick={() => { setSelectedUser(user); setResetPasswordOpen(true); }}
-                          title="Reset Password"
-                        >
-                          <KeyRound size={16} />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
+                      </TableCell>
+                      <TableCell className="font-medium">{user.id}</TableCell>
+                      <TableCell className="font-mono text-sm">{user.memberId}</TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        {user.firstName} {user.lastName}
+                      </TableCell>
+                      <TableCell>{user.email}</TableCell>
+                      <TableCell>{user.phoneNumber || "-"}</TableCell>
+                      <TableCell>{getStatusBadge(user.status)}</TableCell>
+                      <TableCell>{getRoleBadge(user.role)}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Switch
+                            checked={user.isWithdrawalRestricted ?? false}
+                            onCheckedChange={(checked) => handleWithdrawalToggle(user, checked)}
+                            disabled={togglingRestriction === user.id}
+                          />
+                          <span className={`text-xs ${user.isWithdrawalRestricted ? "text-destructive" : "text-green-600"}`}>
+                            {togglingRestriction === user.id ? (
+                              <Loader2 className="h-3 w-3 animate-spin" />
+                            ) : user.isWithdrawalRestricted ? (
+                              "Disabled"
+                            ) : (
+                              "Allowed"
+                            )}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">{formatDate(user.createdAt)}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center justify-end gap-1">
+                          {user.status === "ACTIVE" ? (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-destructive hover:text-destructive"
+                              onClick={() => { setSelectedUser(user); setActionType("suspend"); }}
+                              title="Suspend User"
+                            >
+                              <Ban size={16} />
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-green-600 hover:text-green-600"
+                              onClick={() => { setSelectedUser(user); setActionType("activate"); }}
+                              title="Activate User"
+                            >
+                              <CheckCircle size={16} />
+                            </Button>
+                          )}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => { setSelectedUser(user); setActionType("disable2fa"); }}
+                            title="Disable 2FA"
+                          >
+                            <ShieldOff size={16} />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => { setSelectedUser(user); setResetPasswordOpen(true); }}
+                            title="Reset Password"
+                          >
+                            <KeyRound size={16} />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                    {/* Expanded External Wallets Section */}
+                    {expandedUsers.has(user.id) && (
+                      <TableRow key={`${user.id}-wallets`} className="bg-muted/30">
+                        <TableCell colSpan={11} className="p-4">
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                              <Wallet size={16} />
+                              External Wallets
+                            </div>
+                            {user.externalWallets && user.externalWallets.length > 0 ? (
+                              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                                {user.externalWallets.map((wallet) => (
+                                  <div
+                                    key={wallet.id}
+                                    className="bg-card border border-border rounded-lg p-3 space-y-2"
+                                  >
+                                    <div className="flex items-center justify-between">
+                                      <div className="font-medium text-sm">{wallet.walletTypeName}</div>
+                                      <Badge variant="outline" className="text-xs">
+                                        {wallet.currency}
+                                      </Badge>
+                                    </div>
+                                    <div className="text-xs text-muted-foreground break-all">
+                                      {wallet.address || "No address set"}
+                                    </div>
+                                    {wallet.changeCount !== undefined && (
+                                      <div className="text-xs text-muted-foreground">
+                                        Changes: {wallet.changeCount}
+                                      </div>
+                                    )}
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="w-full mt-2"
+                                      onClick={() => handleEditWallet(user.id, wallet)}
+                                    >
+                                      <Pencil size={14} className="mr-1" />
+                                      Edit Address (Override)
+                                    </Button>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className="text-sm text-muted-foreground">
+                                No external wallets configured for this user.
+                              </p>
+                            )}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </>
                 ))
               )}
             </TableBody>
@@ -422,6 +602,45 @@ const AdminUsers = () => {
                 </>
               ) : (
                 "Reset Password"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Wallet Override Dialog */}
+      <Dialog open={editingWallet !== null} onOpenChange={() => { setEditingWallet(null); setEditWalletAddress(""); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Override Wallet Address</DialogTitle>
+            <DialogDescription>
+              Update the wallet address for {editingWallet?.wallet.walletTypeName} ({editingWallet?.wallet.currency})
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="walletAddress">Wallet Address</Label>
+              <Input
+                id="walletAddress"
+                type="text"
+                placeholder="Enter wallet address"
+                value={editWalletAddress}
+                onChange={(e) => setEditWalletAddress(e.target.value)}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setEditingWallet(null); setEditWalletAddress(""); }}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveWalletOverride} disabled={overrideWalletMutation.isPending}>
+              {overrideWalletMutation.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                "Save Override"
               )}
             </Button>
           </DialogFooter>

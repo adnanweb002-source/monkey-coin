@@ -49,12 +49,35 @@ import {
   Pencil,
 } from "lucide-react";
 
+// {
+//     "id": 1,
+//     "name": "Bitcoin",
+//     "currency": "BTC",
+//     "allowedChangeCount": 3,
+//     "createdAt": "2025-12-31T15:05:48.273Z",
+//     "updatedAt": "2025-12-31T15:05:48.273Z"
+// }
+
+interface WalletType {
+  id: number;
+  name: string;
+  currency: string;
+  allowedChangeCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface UserWallet {
   id: number;
   walletTypeName: string;
   currency: string;
   address: string;
   changeCount?: number;
+  createdAt: string;
+  supportedWalletId: number;
+  updatedAt: string;
+  userId: number;
+  supportedWallet: WalletType;
 }
 
 interface User {
@@ -81,23 +104,34 @@ const AdminUsers = () => {
   const [page, setPage] = useState(0);
   const [take] = useState(10);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [actionType, setActionType] = useState<"suspend" | "activate" | "disable2fa" | null>(null);
+  const [actionType, setActionType] = useState<
+    "suspend" | "activate" | "disable2fa" | null
+  >(null);
   const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [expandedUsers, setExpandedUsers] = useState<Set<number>>(new Set());
-  const [editingWallet, setEditingWallet] = useState<{ userId: number; wallet: UserWallet } | null>(null);
+  const [editingWallet, setEditingWallet] = useState<{
+    userId: number;
+    wallet: UserWallet;
+  } | null>(null);
   const [editWalletAddress, setEditWalletAddress] = useState("");
-  const [togglingRestriction, setTogglingRestriction] = useState<number | null>(null);
+  const [togglingRestriction, setTogglingRestriction] = useState<number | null>(
+    null
+  );
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const { data, isLoading, error } = useQuery<UsersResponse>({
     queryKey: ["admin-users", page, take],
     queryFn: async () => {
-      const response = await api.get(`/admin/users/list?take=${take}&skip=${page * take}`);
+      const response = await api.get(
+        `/admin/users/list?take=${take}&skip=${page * take}`
+      );
       return response.data;
     },
   });
+
+  console.log("Fetched users data:", data);
 
   const suspendMutation = useMutation({
     mutationFn: async (userId: number) => {
@@ -110,10 +144,10 @@ const AdminUsers = () => {
       closeDialogs();
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.response?.data?.message || "Failed to suspend user", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to suspend user",
+        variant: "destructive",
       });
     },
   });
@@ -129,10 +163,10 @@ const AdminUsers = () => {
       closeDialogs();
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.response?.data?.message || "Failed to activate user", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to activate user",
+        variant: "destructive",
       });
     },
   });
@@ -148,17 +182,25 @@ const AdminUsers = () => {
       closeDialogs();
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.response?.data?.message || "Failed to disable 2FA", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to disable 2FA",
+        variant: "destructive",
       });
     },
   });
 
   const resetPasswordMutation = useMutation({
-    mutationFn: async ({ userId, password }: { userId: number; password: string }) => {
-      const response = await api.patch(`/admin/users/${userId}/set-password`, { password });
+    mutationFn: async ({
+      userId,
+      password,
+    }: {
+      userId: number;
+      password: string;
+    }) => {
+      const response = await api.patch(`/admin/users/${userId}/set-password`, {
+        password,
+      });
       return response.data;
     },
     onSuccess: () => {
@@ -166,52 +208,80 @@ const AdminUsers = () => {
       closeDialogs();
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.response?.data?.message || "Failed to reset password", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description:
+          error.response?.data?.message || "Failed to reset password",
+        variant: "destructive",
       });
     },
   });
 
   const overrideWalletMutation = useMutation({
-    mutationFn: async ({ walletId, address }: { walletId: number; address: string }) => {
-      const response = await api.put(`/wallet/admin/${walletId}/override-external-wallet`, { address });
+    mutationFn: async ({
+      walletId,
+      address,
+    }: {
+      walletId: number;
+      address: string;
+    }) => {
+      const response = await api.put(
+        `/wallet/admin/${walletId}/override-external-wallet`,
+        { address }
+      );
       return response.data;
     },
     onSuccess: () => {
-      toast({ title: "Success", description: "Wallet address updated successfully" });
+      toast({
+        title: "Success",
+        description: "Wallet address updated successfully",
+      });
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
       setEditingWallet(null);
       setEditWalletAddress("");
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.response?.data?.message || "Failed to update wallet address", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description:
+          error.response?.data?.message || "Failed to update wallet address",
+        variant: "destructive",
       });
     },
   });
 
   const restrictWithdrawalMutation = useMutation({
-    mutationFn: async ({ userId, restrict }: { userId: number; restrict: boolean }) => {
-      const response = await api.patch(`/admin/users/${userId}/restrict-withdrawal`, { restrict });
+    mutationFn: async ({
+      userId,
+      restrict,
+    }: {
+      userId: number;
+      restrict: boolean;
+    }) => {
+      const response = await api.patch(
+        `/admin/users/${userId}/restrict-withdrawal`,
+        { restrict: restrict }
+      );
+      console.log("Restrict withdrawal response:", response.data);
       return response.data;
     },
     onSuccess: (_, variables) => {
-      toast({ 
-        title: "Success", 
-        description: variables.restrict ? "Withdrawals disabled for user" : "Withdrawals enabled for user" 
+      toast({
+        title: "Success",
+        description: variables.restrict
+          ? "Withdrawals disabled for user"
+          : "Withdrawals enabled for user",
       });
       queryClient.invalidateQueries({ queryKey: ["admin-users"] });
       setTogglingRestriction(null);
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.response?.data?.message || "Failed to update withdrawal restriction", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description:
+          error.response?.data?.message ||
+          "Failed to update withdrawal restriction",
+        variant: "destructive",
       });
       setTogglingRestriction(null);
     },
@@ -242,14 +312,21 @@ const AdminUsers = () => {
   const handleResetPassword = () => {
     if (!selectedUser) return;
     if (newPassword.length < 6) {
-      toast({ title: "Error", description: "Password must be at least 6 characters", variant: "destructive" });
+      toast({
+        title: "Error",
+        description: "Password must be at least 6 characters",
+        variant: "destructive",
+      });
       return;
     }
-    resetPasswordMutation.mutate({ userId: selectedUser.id, password: newPassword });
+    resetPasswordMutation.mutate({
+      userId: selectedUser.id,
+      password: newPassword,
+    });
   };
 
   const toggleUserExpanded = (userId: number) => {
-    setExpandedUsers(prev => {
+    setExpandedUsers((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(userId)) {
         newSet.delete(userId);
@@ -267,10 +344,17 @@ const AdminUsers = () => {
 
   const handleSaveWalletOverride = () => {
     if (!editingWallet || !editWalletAddress.trim()) {
-      toast({ title: "Error", description: "Wallet address is required", variant: "destructive" });
+      toast({
+        title: "Error",
+        description: "Wallet address is required",
+        variant: "destructive",
+      });
       return;
     }
-    overrideWalletMutation.mutate({ walletId: editingWallet.wallet.id, address: editWalletAddress.trim() });
+    overrideWalletMutation.mutate({
+      walletId: editingWallet.wallet.id,
+      address: editWalletAddress.trim(),
+    });
   };
 
   const handleWithdrawalToggle = (user: User, checked: boolean) => {
@@ -278,25 +362,44 @@ const AdminUsers = () => {
     restrictWithdrawalMutation.mutate({ userId: user.id, restrict: checked });
   };
 
-  const isProcessing = suspendMutation.isPending || activateMutation.isPending || 
-                       disable2faMutation.isPending || resetPasswordMutation.isPending;
+  const isProcessing =
+    suspendMutation.isPending ||
+    activateMutation.isPending ||
+    disable2faMutation.isPending ||
+    resetPasswordMutation.isPending;
 
   const totalPages = data ? Math.ceil(data.total / take) : 0;
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "ACTIVE":
-        return <Badge className="bg-green-500/20 text-green-600 border-green-500/30">Active</Badge>;
+        return (
+          <Badge className="bg-green-500/20 text-green-600 border-green-500/30">
+            Active
+          </Badge>
+        );
       case "SUSPENDED":
-        return <Badge className="bg-red-500/20 text-red-600 border-red-500/30">Suspended</Badge>;
+        return (
+          <Badge className="bg-red-500/20 text-red-600 border-red-500/30">
+            Suspended
+          </Badge>
+        );
       default:
-        return <Badge className="bg-gray-500/20 text-gray-600 border-gray-500/30">Inactive</Badge>;
+        return (
+          <Badge className="bg-gray-500/20 text-gray-600 border-gray-500/30">
+            Inactive
+          </Badge>
+        );
     }
   };
 
   const getRoleBadge = (role: string) => {
     if (role === "ADMIN") {
-      return <Badge className="bg-purple-500/20 text-purple-600 border-purple-500/30">Admin</Badge>;
+      return (
+        <Badge className="bg-purple-500/20 text-purple-600 border-purple-500/30">
+          Admin
+        </Badge>
+      );
     }
     return <Badge variant="outline">User</Badge>;
   };
@@ -340,7 +443,9 @@ const AdminUsers = () => {
                 <TableHead className="whitespace-nowrap">Role</TableHead>
                 <TableHead className="whitespace-nowrap">Withdrawals</TableHead>
                 <TableHead className="whitespace-nowrap">Created</TableHead>
-                <TableHead className="whitespace-nowrap text-right">Actions</TableHead>
+                <TableHead className="whitespace-nowrap text-right">
+                  Actions
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -356,7 +461,10 @@ const AdminUsers = () => {
                 ))
               ) : data?.users.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={11} className="text-center text-muted-foreground py-12">
+                  <TableCell
+                    colSpan={11}
+                    className="text-center text-muted-foreground py-12"
+                  >
                     No users found
                   </TableCell>
                 </TableRow>
@@ -370,7 +478,11 @@ const AdminUsers = () => {
                           size="icon"
                           className="h-8 w-8"
                           onClick={() => toggleUserExpanded(user.id)}
-                          title={expandedUsers.has(user.id) ? "Collapse" : "Expand wallets"}
+                          title={
+                            expandedUsers.has(user.id)
+                              ? "Collapse"
+                              : "Expand wallets"
+                          }
                         >
                           {expandedUsers.has(user.id) ? (
                             <ChevronUp size={16} />
@@ -380,7 +492,9 @@ const AdminUsers = () => {
                         </Button>
                       </TableCell>
                       <TableCell className="font-medium">{user.id}</TableCell>
-                      <TableCell className="font-mono text-sm">{user.memberId}</TableCell>
+                      <TableCell className="font-mono text-sm">
+                        {user.memberId}
+                      </TableCell>
                       <TableCell className="whitespace-nowrap">
                         {user.firstName} {user.lastName}
                       </TableCell>
@@ -392,10 +506,18 @@ const AdminUsers = () => {
                         <div className="flex items-center gap-2">
                           <Switch
                             checked={user.isWithdrawalRestricted ?? false}
-                            onCheckedChange={(checked) => handleWithdrawalToggle(user, checked)}
+                            onCheckedChange={(checked) =>
+                              handleWithdrawalToggle(user, checked)
+                            }
                             disabled={togglingRestriction === user.id}
                           />
-                          <span className={`text-xs ${user.isWithdrawalRestricted ? "text-destructive" : "text-green-600"}`}>
+                          <span
+                            className={`text-xs ${
+                              user.isWithdrawalRestricted
+                                ? "text-destructive"
+                                : "text-green-600"
+                            }`}
+                          >
                             {togglingRestriction === user.id ? (
                               <Loader2 className="h-3 w-3 animate-spin" />
                             ) : user.isWithdrawalRestricted ? (
@@ -406,7 +528,9 @@ const AdminUsers = () => {
                           </span>
                         </div>
                       </TableCell>
-                      <TableCell className="whitespace-nowrap">{formatDate(user.createdAt)}</TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        {formatDate(user.createdAt)}
+                      </TableCell>
                       <TableCell>
                         <div className="flex items-center justify-end gap-1">
                           {user.status === "ACTIVE" ? (
@@ -414,7 +538,10 @@ const AdminUsers = () => {
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8 text-destructive hover:text-destructive"
-                              onClick={() => { setSelectedUser(user); setActionType("suspend"); }}
+                              onClick={() => {
+                                setSelectedUser(user);
+                                setActionType("suspend");
+                              }}
                               title="Suspend User"
                             >
                               <Ban size={16} />
@@ -424,7 +551,10 @@ const AdminUsers = () => {
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8 text-green-600 hover:text-green-600"
-                              onClick={() => { setSelectedUser(user); setActionType("activate"); }}
+                              onClick={() => {
+                                setSelectedUser(user);
+                                setActionType("activate");
+                              }}
                               title="Activate User"
                             >
                               <CheckCircle size={16} />
@@ -434,7 +564,10 @@ const AdminUsers = () => {
                             variant="ghost"
                             size="icon"
                             className="h-8 w-8"
-                            onClick={() => { setSelectedUser(user); setActionType("disable2fa"); }}
+                            onClick={() => {
+                              setSelectedUser(user);
+                              setActionType("disable2fa");
+                            }}
                             title="Disable 2FA"
                           >
                             <ShieldOff size={16} />
@@ -443,7 +576,10 @@ const AdminUsers = () => {
                             variant="ghost"
                             size="icon"
                             className="h-8 w-8"
-                            onClick={() => { setSelectedUser(user); setResetPasswordOpen(true); }}
+                            onClick={() => {
+                              setSelectedUser(user);
+                              setResetPasswordOpen(true);
+                            }}
                             title="Reset Password"
                           >
                             <KeyRound size={16} />
@@ -453,14 +589,18 @@ const AdminUsers = () => {
                     </TableRow>
                     {/* Expanded External Wallets Section */}
                     {expandedUsers.has(user.id) && (
-                      <TableRow key={`${user.id}-wallets`} className="bg-muted/30">
+                      <TableRow
+                        key={`${user.id}-wallets`}
+                        className="bg-muted/30"
+                      >
                         <TableCell colSpan={11} className="p-4">
                           <div className="space-y-3">
                             <div className="flex items-center gap-2 text-sm font-medium text-foreground">
                               <Wallet size={16} />
                               External Wallets
                             </div>
-                            {user.externalWallets && user.externalWallets.length > 0 ? (
+                            {user.externalWallets &&
+                            user.externalWallets.length > 0 ? (
                               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                                 {user.externalWallets.map((wallet) => (
                                   <div
@@ -468,9 +608,14 @@ const AdminUsers = () => {
                                     className="bg-card border border-border rounded-lg p-3 space-y-2"
                                   >
                                     <div className="flex items-center justify-between">
-                                      <div className="font-medium text-sm">{wallet.walletTypeName}</div>
-                                      <Badge variant="outline" className="text-xs">
-                                        {wallet.currency}
+                                      <div className="font-medium text-sm">
+                                        {wallet.supportedWallet?.name}
+                                      </div>
+                                      <Badge
+                                        variant="outline"
+                                        className="text-xs"
+                                      >
+                                        {wallet.supportedWallet?.currency}
                                       </Badge>
                                     </div>
                                     <div className="text-xs text-muted-foreground break-all">
@@ -485,7 +630,9 @@ const AdminUsers = () => {
                                       variant="outline"
                                       size="sm"
                                       className="w-full mt-2"
-                                      onClick={() => handleEditWallet(user.id, wallet)}
+                                      onClick={() =>
+                                        handleEditWallet(user.id, wallet)
+                                      }
                                     >
                                       <Pencil size={14} className="mr-1" />
                                       Edit Address (Override)
@@ -513,7 +660,8 @@ const AdminUsers = () => {
         {data && data.total > take && (
           <div className="flex items-center justify-between px-4 py-3 border-t border-border">
             <p className="text-sm text-muted-foreground">
-              Showing {page * take + 1} to {Math.min((page + 1) * take, data.total)} of {data.total} users
+              Showing {page * take + 1} to{" "}
+              {Math.min((page + 1) * take, data.total)} of {data.total} users
             </p>
             <div className="flex items-center gap-2">
               <Button
@@ -543,19 +691,30 @@ const AdminUsers = () => {
       </div>
 
       {/* Confirmation Dialog */}
-      <AlertDialog open={actionType !== null} onOpenChange={() => setActionType(null)}>
+      <AlertDialog
+        open={actionType !== null}
+        onOpenChange={() => setActionType(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Confirm Action</AlertDialogTitle>
             <AlertDialogDescription>
-              {actionType === "suspend" && `Are you sure you want to suspend ${selectedUser?.firstName} ${selectedUser?.lastName}? They will not be able to access their account.`}
-              {actionType === "activate" && `Are you sure you want to activate ${selectedUser?.firstName} ${selectedUser?.lastName}?`}
-              {actionType === "disable2fa" && `Are you sure you want to disable 2FA for ${selectedUser?.firstName} ${selectedUser?.lastName}?`}
+              {actionType === "suspend" &&
+                `Are you sure you want to suspend ${selectedUser?.firstName} ${selectedUser?.lastName}? They will not be able to access their account.`}
+              {actionType === "activate" &&
+                `Are you sure you want to activate ${selectedUser?.firstName} ${selectedUser?.lastName}?`}
+              {actionType === "disable2fa" &&
+                `Are you sure you want to disable 2FA for ${selectedUser?.firstName} ${selectedUser?.lastName}?`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isProcessing}>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmAction} disabled={isProcessing}>
+            <AlertDialogCancel disabled={isProcessing}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmAction}
+              disabled={isProcessing}
+            >
               {isProcessing ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -575,7 +734,8 @@ const AdminUsers = () => {
           <DialogHeader>
             <DialogTitle>Reset Password</DialogTitle>
             <DialogDescription>
-              Set a new password for {selectedUser?.firstName} {selectedUser?.lastName}
+              Set a new password for {selectedUser?.firstName}{" "}
+              {selectedUser?.lastName}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
@@ -591,10 +751,16 @@ const AdminUsers = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setResetPasswordOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setResetPasswordOpen(false)}
+            >
               Cancel
             </Button>
-            <Button onClick={handleResetPassword} disabled={resetPasswordMutation.isPending}>
+            <Button
+              onClick={handleResetPassword}
+              disabled={resetPasswordMutation.isPending}
+            >
               {resetPasswordMutation.isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -609,12 +775,20 @@ const AdminUsers = () => {
       </Dialog>
 
       {/* Edit Wallet Override Dialog */}
-      <Dialog open={editingWallet !== null} onOpenChange={() => { setEditingWallet(null); setEditWalletAddress(""); }}>
+      <Dialog
+        open={editingWallet !== null}
+        onOpenChange={() => {
+          setEditingWallet(null);
+          setEditWalletAddress("");
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Override Wallet Address</DialogTitle>
             <DialogDescription>
-              Update the wallet address for {editingWallet?.wallet.walletTypeName} ({editingWallet?.wallet.currency})
+              Update the wallet address for{" "}
+              {editingWallet?.wallet.supportedWallet?.name} (
+              {editingWallet?.wallet.supportedWallet?.currency})
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
@@ -630,10 +804,19 @@ const AdminUsers = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => { setEditingWallet(null); setEditWalletAddress(""); }}>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setEditingWallet(null);
+                setEditWalletAddress("");
+              }}
+            >
               Cancel
             </Button>
-            <Button onClick={handleSaveWalletOverride} disabled={overrideWalletMutation.isPending}>
+            <Button
+              onClick={handleSaveWalletOverride}
+              disabled={overrideWalletMutation.isPending}
+            >
               {overrideWalletMutation.isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -1,8 +1,10 @@
+import { useState } from "react";
 import CurrentLevel from "@/components/dashboard/CurrentLevel";
 import PackagesSection from "@/components/dashboard/PackagesSection";
 import RecentlyAddedUsers from "@/components/dashboard/RecentlyAddedUsers";
 import WalletCards from "@/components/dashboard/WalletCards";
 import TwoFactorWarningBanner from "@/components/dashboard/TwoFactorWarningBanner";
+import BVDisplay from "@/components/dashboard/BVDisplay";
 import { useGetPackages, useGetUserTree, useGetWallets } from "./api";
 import type { UserProfile } from "@/types/user";
 
@@ -30,6 +32,11 @@ const DashboardHome = () => {
       {/* Wallet Cards */}
       <div className="mb-6">
         <WalletCards wallets={wallets} />
+      </div>
+
+      {/* BV Display */}
+      <div className="mb-6">
+        <BVDisplay leftBv={user?.leftBv ?? 0} rightBv={user?.rightBv ?? 0} />
       </div>
 
       {/* Three Column Grid */}

@@ -12,6 +12,8 @@ interface UserProfile {
   status: "ACTIVE" | "INACTIVE" | "SUSPENDED";
   isG2faEnabled: boolean;
   role?: "USER" | "ADMIN";
+  leftBv?: number;
+  rightBv?: number;
 }
 
 

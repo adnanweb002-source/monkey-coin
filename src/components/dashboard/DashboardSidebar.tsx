@@ -14,6 +14,7 @@ import {
   HeadphonesIcon,
   X,
   Users,
+  Package,
   Shield,
   User,
   Settings,
@@ -87,6 +88,7 @@ const sidebarItems: SidebarItem[] = [
 
 const adminItems: SidebarItem[] = [
   { label: "User Management", icon: Users, path: "/admin/users", adminOnly: true },
+  { label: "Packages Management", icon: Package, path: "/admin/packages", adminOnly: true },
   { label: "Package Wallet Rules", icon: Wrench, path: "/admin/package-wallet-rules", adminOnly: true },
   { label: "Supported Wallet Types", icon: Wallet, path: "/admin/supported-wallet-types", adminOnly: true },
   { label: "System Settings", icon: Settings, path: "/admin/settings", adminOnly: true },

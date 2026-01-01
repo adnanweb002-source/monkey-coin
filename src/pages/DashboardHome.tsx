@@ -24,6 +24,8 @@ const DashboardHome = () => {
   
   const { data } = useGetUserTree(user?.id);
 
+  console.log("DashboardHome render - user:", user);
+
   return (
     <>
       {/* 2FA Warning Banner */}

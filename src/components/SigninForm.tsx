@@ -78,12 +78,8 @@ const SigninForm = () => {
         description: "You have been signed in successfully.",
       });
 
-      // Check if 2FA is enabled - if not, redirect to setup
-      if (!userProfile.isG2faEnabled) {
-        navigate("/security/2fa/setup");
-      } else {
-        navigate("/dashboard");
-      }
+      navigate("/dashboard");
+      
     } catch (error) {
       toast({
         title: "Error",

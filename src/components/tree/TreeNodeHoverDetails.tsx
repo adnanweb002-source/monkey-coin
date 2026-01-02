@@ -35,6 +35,7 @@ const TreeNodeHoverDetails = ({ node, position, nodeHeight, isMobile, onClose }:
     leftBv?: number | string;
     rightBv?: number | string;
     sponsorMemberId?: string;
+    activePackageCount?: number;
   };
 
   const details = [
@@ -74,6 +75,7 @@ const TreeNodeHoverDetails = ({ node, position, nodeHeight, isMobile, onClose }:
     { label: "Rank", value: extendedNode.rank || "—" },
     { label: "BV Left", value: formatBV(extendedNode.leftBv) },
     { label: "BV Right", value: formatBV(extendedNode.rightBv) },
+    { label: "Active Packages", value: extendedNode.activePackageCount },
     {
       label: "Sponsor Member ID",
       value: extendedNode.sponsorMemberId || "—",

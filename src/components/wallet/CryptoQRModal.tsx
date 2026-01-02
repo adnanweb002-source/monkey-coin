@@ -156,7 +156,7 @@ const CryptoQRModal = ({
       }}
     >
       <DialogContent 
-        className="sm:max-w-md"
+        className="sm:max-w-md max-h-[90vh] overflow-y-auto rounded-xl p-4"
         onPointerDownOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >

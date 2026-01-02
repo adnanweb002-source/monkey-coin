@@ -65,6 +65,7 @@ const sidebarItems: SidebarItem[] = [
     children: [
       { label: "Direct Income", path: "/income/direct" },
       { label: "Binary Income", path: "/income/binary" },
+      { label: "Referral Income", path: "/income/referral" },
     ],
   },
   {

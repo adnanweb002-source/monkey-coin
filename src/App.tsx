@@ -34,6 +34,7 @@ import AdminPackages from "./pages/admin/AdminPackages";
 import Support from "./pages/Support";
 import Profile from "./pages/Profile";
 import BinaryIncome from "./pages/income/BinaryIncome";
+import ReferralIncome from "./pages/income/ReferralIncome";
 import DirectIncome from "./pages/income/DirectIncome";
 import Wallets from "./pages/reports/Wallets";
 import GainReport from "./pages/reports/GainReport";
@@ -111,6 +112,7 @@ const App = () => (
             <Route path="/income" element={<ProtectedDashboard />}>
               <Route path="binary" element={<BinaryIncome />} />
               <Route path="direct" element={<DirectIncome />} />
+              <Route path="referral" element={<ReferralIncome />} />
             </Route>
 
             {/* Reports Routes */}

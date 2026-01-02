@@ -15,7 +15,7 @@ export interface TreeNode {
   rank?: string;
   leftBv?: number | string;
   rightBv?: number | string;
-  activePackagesCount?: number;
+  activePackageCount?: number;
 }
 
 export interface TreeApiParams {

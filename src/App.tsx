@@ -13,6 +13,8 @@ import DashboardLayout from "./components/dashboard/DashboardLayout";
 import DashboardHome from "./pages/DashboardHome";
 import Deposit from "./pages/wallet/Deposit";
 import DepositRequests from "./pages/wallet/DepositRequests";
+import DepositHistory from "./pages/wallet/DepositHistory";
+import AdminDeposits from "./pages/admin/AdminDeposits";
 import Withdraw from "./pages/wallet/Withdraw";
 import WithdrawRequests from "./pages/wallet/WithdrawRequests";
 import Transactions from "./pages/wallet/Transactions";
@@ -98,6 +100,7 @@ const App = () => (
             <Route path="/wallet" element={<ProtectedDashboard />}>
               <Route path="deposit" element={<Deposit />} />
               <Route path="deposit-requests" element={<DepositRequests />} />
+              <Route path="deposit-history" element={<DepositHistory />} />
               <Route path="withdraw" element={<Withdraw />} />
               <Route path="withdraw-requests" element={<WithdrawRequests />} />
               <Route path="transactions" element={<Transactions />} />
@@ -128,6 +131,7 @@ const App = () => (
               <Route path="supported-wallet-types" element={<SupportedWalletTypes />} />
               <Route path="settings" element={<AdminSettings />} />
               <Route path="packages" element={<AdminPackages />} />
+              <Route path="deposits" element={<AdminDeposits />} />
             </Route>
 
             {/* Support Route */}

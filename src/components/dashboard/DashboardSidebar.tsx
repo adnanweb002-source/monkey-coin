@@ -53,6 +53,7 @@ const sidebarItems: SidebarItem[] = [
   { label: "Make Investment", icon: DollarSign, path: "/packages" },
   { label: "My Tree", icon: TreePine, path: "/tree" },
   { label: "Deposit", icon: Wallet, path: "/wallet/deposit" },
+  { label: "Deposit History", icon: FileText, path: "/wallet/deposit-history" },
   { label: "Deposit Requests", icon: FileText, path: "/wallet/deposit-requests" },
   { label: "Transfer Funds", icon: ArrowRightLeft, path: "/wallet/transfer" },
   { label: "Withdrawal Funds", icon: ArrowDownToLine, path: "/wallet/withdraw" },
@@ -89,6 +90,7 @@ const sidebarItems: SidebarItem[] = [
 const adminItems: SidebarItem[] = [
   { label: "User Management", icon: Users, path: "/admin/users", adminOnly: true },
   { label: "Packages Management", icon: Package, path: "/admin/packages", adminOnly: true },
+  { label: "Deposits", icon: Wallet, path: "/admin/deposits", adminOnly: true },
   { label: "Package Wallet Rules", icon: Wrench, path: "/admin/package-wallet-rules", adminOnly: true },
   { label: "Supported Wallet Types", icon: Wallet, path: "/admin/supported-wallet-types", adminOnly: true },
   { label: "System Settings", icon: Settings, path: "/admin/settings", adminOnly: true },

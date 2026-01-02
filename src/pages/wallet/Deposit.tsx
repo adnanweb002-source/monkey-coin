@@ -1,23 +1,43 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { QrCode, ArrowRight } from "lucide-react";
+import { QrCode, ArrowRight, Bitcoin, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
+import CryptoDepositForm from "@/components/wallet/CryptoDepositForm";
+import CryptoQRModal from "@/components/wallet/CryptoQRModal";
+
+interface CryptoDepositData {
+  depositId: string;
+  paymentId: string;
+  currency: string;
+  address: string;
+  amountCrypto: string;
+  amountFiat: string;
+  uri: string;
+  expiresAt: string;
+}
 
 const Deposit = () => {
+  // Manual deposit form state
   const [showForm, setShowForm] = useState(false);
   const [amount, setAmount] = useState("");
   const [method, setMethod] = useState("");
   const [reference, setReference] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Crypto deposit state
+  const [cryptoDepositData, setCryptoDepositData] = useState<CryptoDepositData | null>(null);
+  const [isQRModalOpen, setIsQRModalOpen] = useState(false);
+  
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleManualSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!amount || parseFloat(amount) <= 0) {
@@ -56,93 +76,137 @@ const Deposit = () => {
     }
   };
 
+  const handleCryptoDepositCreated = (data: CryptoDepositData) => {
+    setCryptoDepositData(data);
+    setIsQRModalOpen(true);
+  };
+
+  const handlePaymentComplete = () => {
+    // Optionally navigate to deposit history
+    navigate("/wallet/deposit-history");
+  };
+
+  const handleQRModalClose = () => {
+    setIsQRModalOpen(false);
+    setCryptoDepositData(null);
+  };
+
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-foreground">Deposit</h1>
 
-      <Card className="max-w-xl mx-auto">
-        <CardHeader>
-          <CardTitle className="text-center">Fund Your Account</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* QR Code Placeholder */}
-          <div className="flex flex-col items-center space-y-4">
-            <div className="w-48 h-48 border-2 border-dashed border-border rounded-lg flex items-center justify-center bg-muted/50">
-              <QrCode className="w-24 h-24 text-muted-foreground" />
-            </div>
-            <p className="text-sm text-muted-foreground text-center">
-              Scan the QR and complete the payment.
-            </p>
-          </div>
+      <Tabs defaultValue="crypto" className="w-full">
+        <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
+          <TabsTrigger value="crypto" className="flex items-center gap-2">
+            <Bitcoin className="h-4 w-4" />
+            Crypto Deposit
+          </TabsTrigger>
+          <TabsTrigger value="manual" className="flex items-center gap-2">
+            <FileText className="h-4 w-4" />
+            Manual Request
+          </TabsTrigger>
+        </TabsList>
 
-          {!showForm ? (
-            <Button
-              onClick={() => setShowForm(true)}
-              className="w-full"
-              size="lg"
-            >
-              Proceed to Deposit Form
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="amount">Amount *</Label>
-                <Input
-                  id="amount"
-                  type="number"
-                  placeholder="Enter amount"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  min="0.01"
-                  step="0.01"
-                  required
-                />
+        {/* Crypto Deposit Tab */}
+        <TabsContent value="crypto" className="mt-6">
+          <CryptoDepositForm onDepositCreated={handleCryptoDepositCreated} />
+        </TabsContent>
+
+        {/* Manual Deposit Tab */}
+        <TabsContent value="manual" className="mt-6">
+          <Card className="max-w-xl mx-auto">
+            <CardHeader>
+              <CardTitle className="text-center">Manual Deposit Request</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* QR Code Placeholder */}
+              <div className="flex flex-col items-center space-y-4">
+                <div className="w-48 h-48 border-2 border-dashed border-border rounded-lg flex items-center justify-center bg-muted/50">
+                  <QrCode className="w-24 h-24 text-muted-foreground" />
+                </div>
+                <p className="text-sm text-muted-foreground text-center">
+                  Scan the QR and complete the payment.
+                </p>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="method">Method (Optional)</Label>
-                <Input
-                  id="method"
-                  type="text"
-                  placeholder="e.g., Bank Transfer, USDT"
-                  value={method}
-                  onChange={(e) => setMethod(e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="reference">Transaction Reference (Optional)</Label>
-                <Input
-                  id="reference"
-                  type="text"
-                  placeholder="Enter transaction reference"
-                  value={reference}
-                  onChange={(e) => setReference(e.target.value)}
-                />
-              </div>
-
-              <div className="flex gap-3 pt-2">
+              {!showForm ? (
                 <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setShowForm(false)}
-                  className="flex-1"
+                  onClick={() => setShowForm(true)}
+                  className="w-full"
+                  size="lg"
                 >
-                  Cancel
+                  Proceed to Deposit Form
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-                <Button
-                  type="submit"
-                  disabled={isLoading || !amount || parseFloat(amount) <= 0}
-                  className="flex-1"
-                >
-                  {isLoading ? "Submitting..." : "Submit Deposit"}
-                </Button>
-              </div>
-            </form>
-          )}
-        </CardContent>
-      </Card>
+              ) : (
+                <form onSubmit={handleManualSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="amount">Amount *</Label>
+                    <Input
+                      id="amount"
+                      type="number"
+                      placeholder="Enter amount"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      min="0.01"
+                      step="0.01"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="method">Method (Optional)</Label>
+                    <Input
+                      id="method"
+                      type="text"
+                      placeholder="e.g., Bank Transfer, USDT"
+                      value={method}
+                      onChange={(e) => setMethod(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="reference">Transaction Reference (Optional)</Label>
+                    <Input
+                      id="reference"
+                      type="text"
+                      placeholder="Enter transaction reference"
+                      value={reference}
+                      onChange={(e) => setReference(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="flex gap-3 pt-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowForm(false)}
+                      className="flex-1"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={isLoading || !amount || parseFloat(amount) <= 0}
+                      className="flex-1"
+                    >
+                      {isLoading ? "Submitting..." : "Submit Deposit"}
+                    </Button>
+                  </div>
+                </form>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      {/* Crypto QR Modal */}
+      <CryptoQRModal
+        isOpen={isQRModalOpen}
+        depositData={cryptoDepositData}
+        onClose={handleQRModalClose}
+        onPaymentComplete={handlePaymentComplete}
+      />
     </div>
   );
 };

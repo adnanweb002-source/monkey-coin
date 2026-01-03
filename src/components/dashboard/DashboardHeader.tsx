@@ -4,6 +4,7 @@ import { Bell, Moon, Sun, Plus, ChevronDown, Menu } from "lucide-react";
 import { useTheme } from "next-themes";
 import { UserProfile } from "@/types/user";
 import { useIsMobile } from "@/hooks/use-mobile";
+import UserAvatar from "@/components/common/UserAvatar";
 
 interface DashboardHeaderProps {
   onMenuClick: () => void;
@@ -24,6 +25,23 @@ const DashboardHeader = ({ onMenuClick, showMenuButton }: DashboardHeaderProps) 
 
     const timer = setInterval(() => setCurrentDateTime(new Date()), 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  // Listen for profile updates
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const stored = localStorage.getItem("userProfile");
+      if (stored) {
+        setUserProfile(JSON.parse(stored));
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("profileUpdated", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("profileUpdated", handleStorageChange);
+    };
   }, []);
 
   const formatDateTime = (date: Date) => {
@@ -95,10 +113,12 @@ const DashboardHeader = ({ onMenuClick, showMenuButton }: DashboardHeaderProps) 
         </button>
 
         {/* User profile */}
-        <div className="flex items-center gap-2 md:gap-3">
-          <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-secondary flex items-center justify-center">
-            <span className="text-foreground">👤</span>
-          </div>
+        <Link to="/profile" className="flex items-center gap-2 md:gap-3 hover:opacity-80 transition-opacity">
+          <UserAvatar 
+            avatarId={userProfile?.avatarId} 
+            size={isMobile ? "sm" : "md"}
+            alt={userProfile ? `${userProfile.firstName} ${userProfile.lastName}` : "User avatar"}
+          />
           {!isMobile && (
             <div className="text-right">
               <p className="text-sm font-medium text-foreground">
@@ -109,7 +129,7 @@ const DashboardHeader = ({ onMenuClick, showMenuButton }: DashboardHeaderProps) 
               </p>
             </div>
           )}
-        </div>
+        </Link>
       </div>
     </header>
   );

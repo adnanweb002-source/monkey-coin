@@ -12,9 +12,11 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, User, Mail, Lock, Package, Calendar, Phone, Globe, Shield, Hash, AlertTriangle, Wallet } from "lucide-react";
+import { Loader2, User, Mail, Lock, Package, Calendar, Phone, Globe, Shield, Hash, AlertTriangle, Wallet, Image } from "lucide-react";
 import type { UserProfile } from "@/types/user";
 import ExternalWalletsTab from "@/components/profile/ExternalWalletsTab";
+import AvatarSelector from "@/components/profile/AvatarSelector";
+import UserAvatar from "@/components/common/UserAvatar";
 
 interface PackagePurchase {
   id: number;
@@ -166,8 +168,9 @@ const Profile = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-5 max-w-2xl">
+        <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6 max-w-3xl">
           <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsTrigger value="avatar">Avatar</TabsTrigger>
           <TabsTrigger value="security">Security</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
           <TabsTrigger value="wallets">Wallets</TabsTrigger>
@@ -185,6 +188,20 @@ const Profile = () => {
               <CardDescription>Your account details</CardDescription>
             </CardHeader>
             <CardContent>
+              {/* Profile Avatar Display */}
+              <div className="flex items-center gap-4 mb-6 pb-6 border-b border-border">
+                <UserAvatar avatarId={profile?.avatarId} size="xl" />
+                <div>
+                  <p className="font-semibold text-lg text-foreground">
+                    {profile?.firstName} {profile?.lastName}
+                  </p>
+                  <p className="text-sm text-muted-foreground">{profile?.email}</p>
+                  <Badge variant={profile?.status === "ACTIVE" ? "default" : "destructive"} className="mt-1">
+                    {profile?.status || "N/A"}
+                  </Badge>
+                </div>
+              </div>
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-1">
                   <Label className="text-muted-foreground text-sm">First Name</Label>
@@ -247,6 +264,11 @@ const Profile = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Avatar Tab */}
+        <TabsContent value="avatar" className="space-y-4 mt-6">
+          <AvatarSelector currentAvatarId={profile?.avatarId} />
         </TabsContent>
 
         {/* Security Tab - 2FA Setup */}

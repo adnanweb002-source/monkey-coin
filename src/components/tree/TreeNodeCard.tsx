@@ -1,6 +1,7 @@
 import { TreeNode } from "@/types/tree";
 import { cn } from "@/lib/utils";
 import type { MouseEvent as ReactMouseEvent } from "react";
+import { getAvatarImage } from "@/components/common/UserAvatar";
 
 interface TreeNodeCardProps {
   node: TreeNode;
@@ -70,6 +71,7 @@ const TreeNodeCard = ({
   };
 
   const colorScheme = getColorScheme(node.id, isRoot || false);
+  const avatarSrc = getAvatarImage(node.avatarId);
 
   return (
     <div
@@ -86,11 +88,12 @@ const TreeNodeCard = ({
       )}
     >
       {/* Avatar Container */}
-      <div className="relative w-[56px] h-[56px] rounded-lg overflow-hidden mb-1.5 bg-white/50 border border-white/60">
+      <div className="relative w-[56px] h-[56px] rounded-full overflow-hidden mb-1.5 bg-white/50 border-2 border-white/60">
         <img
-          src={`https://api.dicebear.com/7.x/notionists/svg?seed=${node.memberId}&backgroundColor=transparent`}
+          src={avatarSrc}
           alt={getName(node.email)}
           className="w-full h-full object-cover"
+          loading="lazy"
         />
         {/* Active Status Indicator */}
         {node.activePackageCount > 0 || node.memberId == 'COMPANY' ? (

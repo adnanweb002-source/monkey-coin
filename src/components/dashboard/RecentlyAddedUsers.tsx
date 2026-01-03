@@ -11,6 +11,7 @@ import {
 import { useState, useRef, useEffect } from "react";
 import { format } from "date-fns";
 import { Users } from "lucide-react";
+import UserAvatar from "@/components/common/UserAvatar";
 
 interface RecentUser {
   id: string;
@@ -21,6 +22,7 @@ interface RecentUser {
   email: string;
   createdAt: string;
   status: string;
+  avatarId?: string;
 }
 
 const LIMIT_OPTIONS = [10, 20, 50, 100];
@@ -107,11 +109,9 @@ const RecentlyAddedUsers = () => {
                 className="flex items-center gap-3 p-2 rounded-lg hover:bg-secondary/50 transition-colors"
               >
                 <div className="relative">
-                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-sm font-medium text-primary">
-                    {user.name?.charAt(0)?.toUpperCase() || "U"}
-                  </div>
+                  <UserAvatar avatarId={user.avatarId} size="sm" />
                   {user.status === "ACTIVE" && (
-                    <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-card"></span>
+                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-card"></span>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">

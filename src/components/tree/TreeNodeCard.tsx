@@ -82,7 +82,7 @@ const TreeNodeCard = ({
         colorScheme.shadow,
         "w-[100px]",
         isSelected && "ring-2 ring-[#D97706]",
-        isHighlighted && "ring-2 ring-[#D97706] scale-105"
+        isHighlighted && "ring-2 ring-[#D97706] scale-115"
       )}
     >
       {/* Avatar Container */}

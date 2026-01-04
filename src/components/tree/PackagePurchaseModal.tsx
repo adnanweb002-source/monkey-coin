@@ -58,16 +58,28 @@ const PackagePurchaseModal = ({
   packages,
   prefilledMemberId,
   prefilledUserId,
-  isAdmin = false,
 }: PackagePurchaseModalProps) => {
-  const [selectedPackage, setSelectedPackage] = useState<PackageType | null>(initialPackage);
+  const [selectedPackage, setSelectedPackage] = useState<PackageType | null>(
+    initialPackage
+  );
   const [amount, setAmount] = useState("");
   const [purchaseMode, setPurchaseMode] = useState<"self" | "downline">("self");
   const [targetMemberId, setTargetMemberId] = useState("");
-  const [targetUserId, setTargetUserId] = useState<number | undefined>(prefilledUserId);
-  const [walletAmounts, setWalletAmounts] = useState<Record<string, string>>({});
+  const [walletAmounts, setWalletAmounts] = useState<Record<string, string>>(
+    {}
+  );
+  const [isAdmin, setIsAdmin] = useState<Boolean>(false)
+   useEffect(() => {
+    const stored = localStorage.getItem("userProfile");
+    if (stored) {
+      const profile = JSON.parse(stored);
+      setIsAdmin(profile?.role === "ADMIN");
+    }
+  }, []);
+
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
-  
+  const [isAdminPurchasingForOther, setIsAdminPurchasingForOther] =
+    useState<Boolean>(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -90,8 +102,6 @@ const PackagePurchaseModal = ({
     },
   });
 
-  console.log("Wallets:", wallets);
-
   // Reset state when modal opens or prefilled data changes
   useEffect(() => {
     if (open) {
@@ -99,15 +109,13 @@ const PackagePurchaseModal = ({
       setAmount("");
       setWalletAmounts({});
       setValidationErrors([]);
-      
+
       if (prefilledMemberId) {
         setPurchaseMode("downline");
         setTargetMemberId(prefilledMemberId);
-        setTargetUserId(prefilledUserId);
       } else {
         setPurchaseMode("self");
         setTargetMemberId("");
-        setTargetUserId(undefined);
       }
     }
   }, [open, initialPackage, prefilledMemberId, prefilledUserId]);
@@ -130,7 +138,8 @@ const PackagePurchaseModal = ({
     const percentages: Record<string, number> = {};
     Object.keys(walletAmounts).forEach((wallet) => {
       const walletAmt = parseFloat(walletAmounts[wallet]) || 0;
-      percentages[wallet] = totalAmount > 0 ? (walletAmt / totalAmount) * 100 : 0;
+      percentages[wallet] =
+        totalAmount > 0 ? (walletAmt / totalAmount) * 100 : 0;
     });
     return percentages;
   }, [walletAmounts, totalAmount]);
@@ -148,14 +157,21 @@ const PackagePurchaseModal = ({
     return map;
   }, [wallets]);
 
-  // Determine if admin is purchasing for another user (show only Bonus Wallet)
-  const isAdminPurchasingForOther = isAdmin && purchaseMode === "downline";
+  useEffect(() => {
+    if (purchaseMode === "downline") {
+      if (isAdmin) {
+        setIsAdminPurchasingForOther(true);
+      }
+    } else {
+      setIsAdminPurchasingForOther(false);
+    }
+  }, [isAdmin, purchaseMode]);
 
   // Get available wallets based on user role and purchase mode (from user-wallets API)
   const availableWallets = useMemo(() => {
     if (isAdminPurchasingForOther) {
       // Admin purchasing for others: only Bonus Wallet
-      return wallets.filter(w => w.type === "BONUS_WALLET");
+      return wallets.filter((w) => w.type === "BONUS_WALLET");
     }
     return wallets;
   }, [wallets, isAdminPurchasingForOther]);
@@ -172,19 +188,27 @@ const PackagePurchaseModal = ({
       const minAmt = parseFloat(selectedPackage.investmentMin);
       const maxAmt = parseFloat(selectedPackage.investmentMax);
       if (totalAmount < minAmt || totalAmount > maxAmt) {
-        errors.push(`Amount must be between ${formatCurrency(minAmt)} and ${formatCurrency(maxAmt)}`);
+        errors.push(
+          `Amount must be between ${formatCurrency(
+            minAmt
+          )} and ${formatCurrency(maxAmt)}`
+        );
       }
     }
 
     // Calculate total from available wallets only
-    const availableWalletTypes = availableWallets.map(w => w.type);
+    const availableWalletTypes = availableWallets.map((w) => w.type);
     const totalSplitAmount = Object.entries(walletAmounts)
       .filter(([wallet]) => availableWalletTypes.includes(wallet))
       .reduce((sum, [, amt]) => sum + (parseFloat(amt) || 0), 0);
 
     // Check if split amounts equal total package amount
     if (totalAmount > 0 && Math.abs(totalSplitAmount - totalAmount) > 0.01) {
-      errors.push(`Total wallet amounts must equal $${totalAmount.toFixed(2)} (current: $${totalSplitAmount.toFixed(2)})`);
+      errors.push(
+        `Total wallet amounts must equal $${totalAmount.toFixed(
+          2
+        )} (current: $${totalSplitAmount.toFixed(2)})`
+      );
     }
 
     // Check minimum percentages per wallet (only for non-admin or self purchase)
@@ -192,7 +216,9 @@ const PackagePurchaseModal = ({
       Object.entries(walletRules).forEach(([wallet, minPct]) => {
         const currentPct = walletPercentages[wallet] || 0;
         if (currentPct > 0 && currentPct < minPct) {
-          errors.push(`${WALLET_LABELS[wallet] || wallet} must be at least ${minPct}%`);
+          errors.push(
+            `${WALLET_LABELS[wallet] || wallet} must be at least ${minPct}%`
+          );
         }
       });
     }
@@ -206,14 +232,18 @@ const PackagePurchaseModal = ({
     });
 
     // Check wallet balances (always check for admin bonus wallet usage)
-    const availableWalletTypesForBalance = availableWallets.map(w => w.type);
+    const availableWalletTypesForBalance = availableWallets.map((w) => w.type);
     Object.entries(walletAmounts)
       .filter(([wallet]) => availableWalletTypesForBalance.includes(wallet))
       .forEach(([wallet, amt]) => {
         const numAmt = parseFloat(amt) || 0;
         const balance = walletBalanceMap[wallet] || 0;
         if (numAmt > balance) {
-          errors.push(`${WALLET_LABELS[wallet] || wallet} amount exceeds balance ($${balance.toFixed(2)})`);
+          errors.push(
+            `${
+              WALLET_LABELS[wallet] || wallet
+            } amount exceeds balance ($${balance.toFixed(2)})`
+          );
         }
       });
 
@@ -223,22 +253,37 @@ const PackagePurchaseModal = ({
     }
 
     setValidationErrors(errors);
-  }, [totalAmount, walletRules, walletPercentages, walletAmounts, walletBalanceMap, selectedPackage, purchaseMode, targetMemberId, isAdminPurchasingForOther, availableWallets]);
+  }, [
+    totalAmount,
+    walletRules,
+    walletPercentages,
+    walletAmounts,
+    walletBalanceMap,
+    selectedPackage,
+    purchaseMode,
+    targetMemberId,
+    isAdminPurchasingForOther,
+    availableWallets,
+  ]);
 
-  const isValid = validationErrors.length === 0 && totalAmount > 0 && selectedPackage;
+  const isValid =
+    validationErrors.length === 0 && totalAmount > 0 && selectedPackage;
 
   const purchaseMutation = useMutation({
     mutationFn: async (data: {
       packageId: number;
       amount: string;
-      userId?: number;
+      userId?: string;
       split: Record<string, number>;
     }) => {
       const response = await api.post("/packages/purchase", data);
       return response.data;
     },
     onSuccess: () => {
-      toast({ title: "Success", description: "Package purchased successfully!" });
+      toast({
+        title: "Success",
+        description: "Package purchased successfully!",
+      });
       onOpenChange(false);
       queryClient.invalidateQueries({ queryKey: ["wallets"] });
       queryClient.invalidateQueries({ queryKey: ["packages"] });
@@ -247,7 +292,8 @@ const PackagePurchaseModal = ({
     onError: (error: any) => {
       toast({
         title: "Error",
-        description: error.response?.data?.message || "Failed to purchase package",
+        description:
+          error.response?.data?.message || "Failed to purchase package",
         variant: "destructive",
       });
     },
@@ -264,7 +310,7 @@ const PackagePurchaseModal = ({
     if (!selectedPackage || !isValid) return;
 
     // Build split object as percentages (only from available wallets)
-    const availableWalletTypes = availableWallets.map(w => w.type);
+    const availableWalletTypes = availableWallets.map((w) => w.type);
     const split: Record<string, number> = {};
     Object.entries(walletAmounts)
       .filter(([wallet]) => availableWalletTypes.includes(wallet))
@@ -278,7 +324,7 @@ const PackagePurchaseModal = ({
     const payload: {
       packageId: number;
       amount: string;
-      userId?: number;
+      userId?: string;
       split: Record<string, number>;
     } = {
       packageId: selectedPackage.id,
@@ -286,8 +332,8 @@ const PackagePurchaseModal = ({
       split,
     };
 
-    if (purchaseMode === "downline" && targetUserId) {
-      payload.userId = targetUserId;
+    if (purchaseMode === "downline" && targetMemberId) {
+      payload.userId = targetMemberId;
     }
 
     purchaseMutation.mutate(payload);
@@ -330,7 +376,8 @@ const PackagePurchaseModal = ({
                     <div className="flex justify-between items-center">
                       <span className="font-medium">{pkg.name}</span>
                       <span className="text-sm text-muted-foreground">
-                        {formatCurrency(pkg.investmentMin)} - {formatCurrency(pkg.investmentMax)}
+                        {formatCurrency(pkg.investmentMin)} -{" "}
+                        {formatCurrency(pkg.investmentMax)}
                       </span>
                     </div>
                   </div>
@@ -343,7 +390,9 @@ const PackagePurchaseModal = ({
           <div className="space-y-2">
             <Label htmlFor="purchase-amount">Amount</Label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                $
+              </span>
               <Input
                 id="purchase-amount"
                 type="number"
@@ -357,7 +406,8 @@ const PackagePurchaseModal = ({
             </div>
             {selectedPackage && (
               <p className="text-xs text-muted-foreground">
-                Range: {formatCurrency(selectedPackage.investmentMin)} - {formatCurrency(selectedPackage.investmentMax)}
+                Range: {formatCurrency(selectedPackage.investmentMin)} -{" "}
+                {formatCurrency(selectedPackage.investmentMax)}
               </p>
             )}
           </div>
@@ -373,12 +423,17 @@ const PackagePurchaseModal = ({
               <div
                 className={cn(
                   "flex items-center gap-2 p-3 rounded-lg border cursor-pointer flex-1",
-                  purchaseMode === "self" ? "border-primary bg-primary/5" : "border-border"
+                  purchaseMode === "self"
+                    ? "border-primary bg-primary/5"
+                    : "border-border"
                 )}
                 onClick={() => setPurchaseMode("self")}
               >
                 <RadioGroupItem value="self" id="self" />
-                <Label htmlFor="self" className="flex items-center gap-2 cursor-pointer">
+                <Label
+                  htmlFor="self"
+                  className="flex items-center gap-2 cursor-pointer"
+                >
                   <User className="h-4 w-4" />
                   Myself
                 </Label>
@@ -386,12 +441,17 @@ const PackagePurchaseModal = ({
               <div
                 className={cn(
                   "flex items-center gap-2 p-3 rounded-lg border cursor-pointer flex-1",
-                  purchaseMode === "downline" ? "border-primary bg-primary/5" : "border-border"
+                  purchaseMode === "downline"
+                    ? "border-primary bg-primary/5"
+                    : "border-border"
                 )}
                 onClick={() => setPurchaseMode("downline")}
               >
                 <RadioGroupItem value="downline" id="downline" />
-                <Label htmlFor="downline" className="flex items-center gap-2 cursor-pointer">
+                <Label
+                  htmlFor="downline"
+                  className="flex items-center gap-2 cursor-pointer"
+                >
                   <Users className="h-4 w-4" />
                   {isAdmin ? "Any User" : "Downline User"}
                 </Label>
@@ -459,7 +519,7 @@ const PackagePurchaseModal = ({
                           </span>
                         )}
                       </div>
-                      
+
                       <div className="flex items-center gap-2">
                         <div className="relative flex-1">
                           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
@@ -469,10 +529,13 @@ const PackagePurchaseModal = ({
                             type="number"
                             placeholder="0.00"
                             value={walletAmounts[wallet] || ""}
-                            onChange={(e) => handleWalletAmountChange(wallet, e.target.value)}
+                            onChange={(e) =>
+                              handleWalletAmountChange(wallet, e.target.value)
+                            }
                             className={cn(
                               "pl-7 h-9",
-                              exceedsBalance && "border-destructive focus-visible:ring-destructive"
+                              exceedsBalance &&
+                                "border-destructive focus-visible:ring-destructive"
                             )}
                             min="0"
                             step="0.01"
@@ -483,7 +546,9 @@ const PackagePurchaseModal = ({
                             <span
                               className={cn(
                                 "text-sm font-medium",
-                                pct > 0 && pct < minPct ? "text-destructive" : "text-foreground"
+                                pct > 0 && pct < minPct
+                                  ? "text-destructive"
+                                  : "text-foreground"
                               )}
                             >
                               {pct.toFixed(1)}%
@@ -491,12 +556,16 @@ const PackagePurchaseModal = ({
                           </div>
                         )}
                       </div>
-                      
+
                       {/* Balance hint below input */}
-                      <p className={cn(
-                        "text-xs mt-1.5",
-                        exceedsBalance ? "text-destructive" : "text-muted-foreground"
-                      )}>
+                      <p
+                        className={cn(
+                          "text-xs mt-1.5",
+                          exceedsBalance
+                            ? "text-destructive"
+                            : "text-muted-foreground"
+                        )}
+                      >
                         Available Balance: ${balance.toFixed(2)}
                       </p>
                     </div>
@@ -511,17 +580,24 @@ const PackagePurchaseModal = ({
                   <span
                     className={cn(
                       "text-sm font-semibold",
-                      Math.abs(Object.entries(walletAmounts)
-                        .filter(([w]) => w in availableWallets)
-                        .reduce((sum, [, amt]) => sum + (parseFloat(amt) || 0), 0) - totalAmount) <= 0.01
+                      Math.abs(
+                        Object.entries(walletAmounts)
+                          .filter(([w]) => w in availableWallets)
+                          .reduce(
+                            (sum, [, amt]) => sum + (parseFloat(amt) || 0),
+                            0
+                          ) - totalAmount
+                      ) <= 0.01
                         ? "text-green-600"
                         : "text-destructive"
                     )}
                   >
-                    ${Object.entries(walletAmounts)
+                    $
+                    {Object.entries(walletAmounts)
                       .filter(([w]) => w in availableWallets)
                       .reduce((sum, [, amt]) => sum + (parseFloat(amt) || 0), 0)
-                      .toFixed(2)} / ${totalAmount.toFixed(2)}
+                      .toFixed(2)}{" "}
+                    / ${totalAmount.toFixed(2)}
                   </span>
                 </div>
               )}
@@ -547,7 +623,11 @@ const PackagePurchaseModal = ({
         </div>
 
         <DialogFooter className="flex-col sm:flex-row gap-2">
-          <Button variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            className="w-full sm:w-auto"
+          >
             Cancel
           </Button>
           <Button

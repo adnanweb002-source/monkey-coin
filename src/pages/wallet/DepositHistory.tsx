@@ -27,7 +27,7 @@ import { History, ChevronLeft, ChevronRight } from "lucide-react";
 interface DepositHistoryItem {
   id: string;
   paymentId: string;
-  amountFiat: string;
+  fiatAmount: string;
   crypto: string;
   status: "pending" | "waiting" | "confirming" | "finished" | "failed";
   createdAt: string;
@@ -167,7 +167,7 @@ const DepositHistory = () => {
                           {format(new Date(item.createdAt), "MMM dd, yyyy HH:mm")}
                         </TableCell>
                         <TableCell className="font-medium">
-                          ${parseFloat(item.amountFiat).toFixed(2)}
+                          ${parseFloat(item.fiatAmount).toFixed(2)}
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline">{item.crypto}</Badge>
@@ -196,7 +196,7 @@ const DepositHistory = () => {
                     <div className="flex justify-between items-start mb-2">
                       <div>
                         <p className="font-medium">
-                          ${parseFloat(item.amountFiat).toFixed(2)}
+                          ${parseFloat(item.fiatAmount).toFixed(2)}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {format(new Date(item.createdAt), "MMM dd, yyyy HH:mm")}

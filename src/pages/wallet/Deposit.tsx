@@ -96,15 +96,15 @@ const Deposit = () => {
       <h1 className="text-2xl font-bold text-foreground">Deposit</h1>
 
       <Tabs defaultValue="crypto" className="w-full">
-        <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
+        <TabsList className="grid w-full max-w-md mx-auto grid-cols-1">
           <TabsTrigger value="crypto" className="flex items-center gap-2">
             <Bitcoin className="h-4 w-4" />
             Crypto Deposit
           </TabsTrigger>
-          <TabsTrigger value="manual" className="flex items-center gap-2">
+          {/* <TabsTrigger value="manual" className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
             Manual Request
-          </TabsTrigger>
+          </TabsTrigger> */}
         </TabsList>
 
         {/* Crypto Deposit Tab */}

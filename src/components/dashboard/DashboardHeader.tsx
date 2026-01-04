@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Bell, Moon, Sun, Plus, ChevronDown, Menu } from "lucide-react";
+import { Bell, Moon, Sun, Plus, Menu } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useTranslation } from "react-i18next";
 import { UserProfile } from "@/types/user";
 import { useIsMobile } from "@/hooks/use-mobile";
 import UserAvatar from "@/components/common/UserAvatar";
+import LanguageSelector from "@/components/common/LanguageSelector";
 
 interface DashboardHeaderProps {
   onMenuClick: () => void;
@@ -15,6 +17,7 @@ const DashboardHeader = ({ onMenuClick, showMenuButton }: DashboardHeaderProps) 
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const { theme, setTheme } = useTheme();
+  const { t } = useTranslation();
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -69,15 +72,11 @@ const DashboardHeader = ({ onMenuClick, showMenuButton }: DashboardHeaderProps) 
           </button>
         )}
         
-        <h1 className="text-lg md:text-xl font-semibold text-foreground">Dashboard</h1>
+        <h1 className="text-lg md:text-xl font-semibold text-foreground">{t("header.dashboard")}</h1>
         
         {!isMobile && (
           <>
-            <button className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-sm font-medium">
-              <span>🌐</span>
-              <span>Language</span>
-              <ChevronDown size={14} />
-            </button>
+            <LanguageSelector />
             
             <span className="text-primary text-sm font-medium">
               {formatDateTime(currentDateTime)}
@@ -88,13 +87,15 @@ const DashboardHeader = ({ onMenuClick, showMenuButton }: DashboardHeaderProps) 
 
       {/* Right section */}
       <div className="flex items-center gap-2 md:gap-4">
+        {isMobile && <LanguageSelector compact />}
+        
         {!isMobile && (
           <Link
             to="/wallet/deposit"
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
           >
             <Plus size={16} />
-            <span>Deposit</span>
+            <span>{t("header.deposit")}</span>
           </Link>
         )}
 
@@ -125,7 +126,7 @@ const DashboardHeader = ({ onMenuClick, showMenuButton }: DashboardHeaderProps) 
                 {userProfile ? `${userProfile.firstName} ${userProfile.lastName}` : "User"}
               </p>
               <p className="text-xs text-primary">
-                {userProfile?.role === "ADMIN" ? "Admin" : userProfile?.status === "ACTIVE" ? "Active" : "User"}
+                {userProfile?.role === "ADMIN" ? t("common.admin") : userProfile?.status === "ACTIVE" ? t("common.active") : t("common.user")}
               </p>
             </div>
           )}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Home,
   DollarSign,
@@ -39,64 +40,63 @@ import {
 import { Button } from "@/components/ui/button";
 
 interface SidebarItem {
-  label: string;
+  labelKey: string;
   icon: React.ElementType;
   path?: string;
-  children?: { label: string; path: string }[];
+  children?: { labelKey: string; path: string }[];
   disabled?: boolean;
   adminOnly?: boolean;
 }
 
 const sidebarItems: SidebarItem[] = [
-  { label: "Dashboard", icon: Home, path: "/dashboard" },
-  { label: "My Profile", icon: User, path: "/profile" },
-  { label: "Make Investment", icon: DollarSign, path: "/packages" },
-  { label: "My Tree", icon: TreePine, path: "/tree" },
-  { label: "Deposit", icon: Wallet, path: "/wallet/deposit" },
-  { label: "Deposit History", icon: FileText, path: "/wallet/deposit-history" },
-  // { label: "Deposit Requests", icon: FileText, path: "/wallet/deposit-requests" },
-  { label: "Transfer Funds", icon: ArrowRightLeft, path: "/wallet/transfer" },
-  { label: "Withdrawal Funds", icon: ArrowDownToLine, path: "/wallet/withdraw" },
-  { label: "Withdrawal Requests", icon: FileText, path: "/wallet/withdraw-requests" },
-  { label: "Transactions", icon: ArrowRightLeft, path: "/wallet/transactions" },
+  { labelKey: "sidebar.dashboard", icon: Home, path: "/dashboard" },
+  { labelKey: "sidebar.myProfile", icon: User, path: "/profile" },
+  { labelKey: "sidebar.makeInvestment", icon: DollarSign, path: "/packages" },
+  { labelKey: "sidebar.myTree", icon: TreePine, path: "/tree" },
+  { labelKey: "sidebar.deposit", icon: Wallet, path: "/wallet/deposit" },
+  { labelKey: "sidebar.depositHistory", icon: FileText, path: "/wallet/deposit-history" },
+  { labelKey: "sidebar.transferFunds", icon: ArrowRightLeft, path: "/wallet/transfer" },
+  { labelKey: "sidebar.withdrawalFunds", icon: ArrowDownToLine, path: "/wallet/withdraw" },
+  { labelKey: "sidebar.withdrawalRequests", icon: FileText, path: "/wallet/withdraw-requests" },
+  { labelKey: "sidebar.transactions", icon: ArrowRightLeft, path: "/wallet/transactions" },
   {
-    label: "Income",
+    labelKey: "sidebar.income",
     icon: FileText,
     children: [
-      { label: "Direct Income", path: "/income/direct" },
-      { label: "Binary Income", path: "/income/binary" },
-      { label: "Referral Income", path: "/income/referral" },
+      { labelKey: "sidebar.directIncome", path: "/income/direct" },
+      { labelKey: "sidebar.binaryIncome", path: "/income/binary" },
+      { labelKey: "sidebar.referralIncome", path: "/income/referral" },
     ],
   },
   {
-    label: "Reports",
+    labelKey: "sidebar.reports",
     icon: FileText,
     children: [
-      { label: "Wallets", path: "/reports/wallets" },
-      { label: "Gain Report", path: "/reports/gain-report" },
-      { label: "Track Referral", path: "/reports/track-referral" },
-      { label: "Rank and Reward", path: "/reports/rank-reward" },
-      { label: "Team Activation", path: "/reports/team-activation" },
-      { label: "Withdrawal", path: "/wallet/withdraw" },
-      { label: "Withdrawal Status", path: "/wallet/withdraw-requests" },
-      { label: "Deposit Funds", path: "/wallet/deposit" },
-      { label: "Holiday List", path: "/reports/holiday-list" },
-      { label: "Downline Deposit Fund", path: "/reports/downline-deposit" },
+      { labelKey: "sidebar.wallets", path: "/reports/wallets" },
+      { labelKey: "sidebar.gainReport", path: "/reports/gain-report" },
+      { labelKey: "sidebar.trackReferral", path: "/reports/track-referral" },
+      { labelKey: "sidebar.rankAndReward", path: "/reports/rank-reward" },
+      { labelKey: "sidebar.teamActivation", path: "/reports/team-activation" },
+      { labelKey: "sidebar.withdrawal", path: "/wallet/withdraw" },
+      { labelKey: "sidebar.withdrawalStatus", path: "/wallet/withdraw-requests" },
+      { labelKey: "sidebar.depositFunds", path: "/wallet/deposit" },
+      { labelKey: "sidebar.holidayList", path: "/reports/holiday-list" },
+      { labelKey: "sidebar.downlineDeposit", path: "/reports/downline-deposit" },
     ],
   },
-  { label: "Marketing Tools", icon: Wrench, path: "/marketing-tools", disabled: true },
-  { label: "Contact Support", icon: HeadphonesIcon, path: "/support" },
+  { labelKey: "sidebar.marketingTools", icon: Wrench, path: "/marketing-tools", disabled: true },
+  { labelKey: "sidebar.contactSupport", icon: HeadphonesIcon, path: "/support" },
 ];
 
 const adminItems: SidebarItem[] = [
-  { label: "User Management", icon: Users, path: "/admin/users", adminOnly: true },
-  { label: "Packages Management", icon: Package, path: "/admin/packages", adminOnly: true },
-  { label: "Deposits", icon: Wallet, path: "/admin/deposits", adminOnly: true },
-  { label: "Package Wallet Rules", icon: Wrench, path: "/admin/package-wallet-rules", adminOnly: true },
-  { label: "Supported Wallet Types", icon: Wallet, path: "/admin/supported-wallet-types", adminOnly: true },
-  { label: "System Settings", icon: Settings, path: "/admin/settings", adminOnly: true },
-  { label: "Support Queries", icon: HeadphonesIcon, path: "/admin/support/queries", adminOnly: true },
-  { label: "System Prune", icon: Shield, path: "/admin/system/prune", adminOnly: true },
+  { labelKey: "admin.userManagement", icon: Users, path: "/admin/users", adminOnly: true },
+  { labelKey: "admin.packagesManagement", icon: Package, path: "/admin/packages", adminOnly: true },
+  { labelKey: "admin.deposits", icon: Wallet, path: "/admin/deposits", adminOnly: true },
+  { labelKey: "admin.packageWalletRules", icon: Wrench, path: "/admin/package-wallet-rules", adminOnly: true },
+  { labelKey: "admin.supportedWalletTypes", icon: Wallet, path: "/admin/supported-wallet-types", adminOnly: true },
+  { labelKey: "admin.systemSettings", icon: Settings, path: "/admin/settings", adminOnly: true },
+  { labelKey: "admin.supportQueries", icon: HeadphonesIcon, path: "/admin/support/queries", adminOnly: true },
+  { labelKey: "admin.systemPrune", icon: Shield, path: "/admin/system/prune", adminOnly: true },
 ];
 
 interface DashboardSidebarProps {
@@ -108,7 +108,8 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [expandedItems, setExpandedItems] = useState<string[]>(["Reports"]);
+  const { t } = useTranslation();
+  const [expandedItems, setExpandedItems] = useState<string[]>(["sidebar.reports"]);
   const isMobile = useIsMobile();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -125,10 +126,9 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
     setIsLoggingOut(true);
     try {
       await api.post("/auth/logout");
-      toast({ title: "Success", description: "Logged out successfully" });
+      toast({ title: t("common.success"), description: t("auth.loggedOut") });
     } catch (error) {
-      // Even if API fails, still clear tokens and redirect
-      toast({ title: "Warning", description: "Logged out locally. Please try again if issues persist.", variant: "destructive" });
+      toast({ title: "Warning", description: t("auth.logoutWarning"), variant: "destructive" });
     } finally {
       tokenStorage.clearTokens();
       localStorage.removeItem("userProfile");
@@ -137,11 +137,11 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
     }
   };
 
-  const toggleExpand = (label: string) => {
+  const toggleExpand = (labelKey: string) => {
     setExpandedItems((prev) =>
-      prev.includes(label)
-        ? prev.filter((item) => item !== label)
-        : [...prev, label]
+      prev.includes(labelKey)
+        ? prev.filter((item) => item !== labelKey)
+        : [...prev, labelKey]
     );
   };
 
@@ -194,11 +194,11 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
         <nav className="flex-1 p-4 overflow-y-auto">
           <ul className="space-y-1">
             {allItems.map((item) => (
-              <li key={item.label}>
+              <li key={item.labelKey}>
                 {item.children ? (
                   <div>
                     <button
-                      onClick={() => toggleExpand(item.label)}
+                      onClick={() => toggleExpand(item.labelKey)}
                       className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-colors ${
                         isChildActive(item.children)
                           ? "bg-primary/10 text-primary"
@@ -207,15 +207,15 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
                     >
                       <div className="flex items-center gap-3">
                         <item.icon size={18} />
-                        <span>{item.label}</span>
+                        <span>{t(item.labelKey)}</span>
                       </div>
-                      {expandedItems.includes(item.label) ? (
+                      {expandedItems.includes(item.labelKey) ? (
                         <ChevronDown size={16} />
                       ) : (
                         <ChevronRight size={16} />
                       )}
                     </button>
-                    {expandedItems.includes(item.label) && (
+                    {expandedItems.includes(item.labelKey) && (
                       <ul className="mt-1 ml-6 space-y-1">
                         {item.children.map((child) => (
                           <li key={child.path}>
@@ -228,7 +228,7 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
                                   : "text-muted-foreground hover:text-foreground"
                               }`}
                             >
-                              {child.label}
+                              {t(child.labelKey)}
                             </Link>
                           </li>
                         ))}
@@ -248,7 +248,7 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
                     )}
                   >
                     <item.icon size={18} />
-                    <span>{item.label}</span>
+                    <span>{t(item.labelKey)}</span>
                     {item.adminOnly && (
                       <Shield size={12} className="ml-auto text-primary" />
                     )}
@@ -269,30 +269,30 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
                 disabled={isLoggingOut}
               >
                 <LogOut size={18} className="mr-3" />
-                {isLoggingOut ? "Logging out..." : "Logout"}
+                {isLoggingOut ? t("sidebar.loggingOut") : t("sidebar.logout")}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure you want to logout?</AlertDialogTitle>
+                <AlertDialogTitle>{t("auth.logoutConfirm")}</AlertDialogTitle>
                 <AlertDialogDescription>
-                  You will be redirected to the login page and will need to sign in again to access your account.
+                  {t("auth.logoutDescription")}
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogCancel>{t("auth.cancel")}</AlertDialogCancel>
                 <AlertDialogAction onClick={handleLogout} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                  Logout
+                  {t("auth.logout")}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
           <div className="flex gap-4 text-xs text-muted-foreground">
             <Link to="/privacy" onClick={handleNavClick} className="hover:text-foreground transition-colors">
-              Privacy Policy
+              {t("sidebar.privacyPolicy")}
             </Link>
             <Link to="/terms" onClick={handleNavClick} className="hover:text-foreground transition-colors">
-              Terms of Use
+              {t("sidebar.termsOfUse")}
             </Link>
           </div>
         </div>

@@ -73,13 +73,23 @@ const SigninForm = () => {
       // Store user profile in localStorage
       localStorage.setItem("userProfile", JSON.stringify(userProfile));
 
+      // if (userProfile?.role == "admin") {
+      //   toast({
+      //     title: "Admin Login Detected",
+      //     description: "You have been signed in successfully.",
+      //   });
+      //   window.location.href = "https://admin.vaultifinances.com";
+      // } else {
+      //   toast({
+      //     title: "Success!",
+      //     description: "You have been signed in successfully.",
+      //   });
+      // }
       toast({
-        title: "Success!",
-        description: "You have been signed in successfully.",
-      });
-
+          title: "Success!",
+          description: "You have been signed in successfully.",
+        });
       navigate("/dashboard");
-      
     } catch (error) {
       toast({
         title: "Error",
@@ -114,7 +124,9 @@ const SigninForm = () => {
             placeholder="Enter your email"
           />
           {errors.email && (
-            <p className="text-destructive text-xs mt-1">{errors.email.message}</p>
+            <p className="text-destructive text-xs mt-1">
+              {errors.email.message}
+            </p>
           )}
         </div>
 
@@ -140,7 +152,9 @@ const SigninForm = () => {
             </button>
           </div>
           {errors.password && (
-            <p className="text-destructive text-xs mt-1">{errors.password.message}</p>
+            <p className="text-destructive text-xs mt-1">
+              {errors.password.message}
+            </p>
           )}
         </div>
 
@@ -151,11 +165,7 @@ const SigninForm = () => {
             2FA Code (OTP)
           </label>
           <div className="flex justify-center">
-            <InputOTP
-              maxLength={6}
-              value={otpValue}
-              onChange={handleOtpChange}
-            >
+            <InputOTP maxLength={6} value={otpValue} onChange={handleOtpChange}>
               <InputOTPGroup className="gap-2">
                 {[0, 1, 2, 3, 4, 5].map((index) => (
                   <InputOTPSlot
@@ -168,8 +178,9 @@ const SigninForm = () => {
             </InputOTP>
           </div>
           <p className="text-muted-foreground text-xs mt-2 text-center">
-            If you have enabled Two-Factor Authentication, enter the code from your
-            authenticator app. If 2FA is not enabled on your account, leave this blank.
+            If you have enabled Two-Factor Authentication, enter the code from
+            your authenticator app. If 2FA is not enabled on your account, leave
+            this blank.
           </p>
         </div>
 

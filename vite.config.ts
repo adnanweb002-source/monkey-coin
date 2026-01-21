@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
-    allowedHosts: ["vaultifinances.com", "www.vaultifinances.com"]
+    allowedHosts: ["vaultifinances.com", "www.vaultifinances.com", "admin.vaultifinances.com"]
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {

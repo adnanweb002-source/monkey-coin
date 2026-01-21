@@ -85,7 +85,7 @@ const CryptoQRModal = ({
       const response = await api.get(`/wallet/deposit-status/${depositData.depositId}`);
       const status = response.data?.status;
 
-      if (["waiting", "confirming", "finished"].includes(status)) {
+      if (["confirming", "finished"].includes(status)) {
         toast({
           title: "Payment Received!",
           description: status === "finished" 

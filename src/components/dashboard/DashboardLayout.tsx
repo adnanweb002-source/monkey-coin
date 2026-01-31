@@ -15,7 +15,7 @@ const DashboardLayout = () => {
         const userProfile = JSON.parse(
           localStorage.getItem("userProfile") || "{}",
         );
-        if (userProfile?.role !== "admin") {
+        if (userProfile?.role !== "ADMIN") {
           window.location.href = "https://gogex.xyz/signin";
         }
       } else {

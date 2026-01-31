@@ -10,7 +10,7 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 const api = axios.create({
   baseURL: BE_URL,
   timeout: 30000,
-  withCredentials: true, // 🔴 REQUIRED FOR COOKIES
+  withCredentials: true, // REQUIRED FOR COOKIE AUTH
   headers: {
     "Content-Type": "application/json",
   },
@@ -18,38 +18,49 @@ const api = axios.create({
 
 /**
  * RESPONSE INTERCEPTOR
- * Handles expired access token → refresh via cookie
+ * Handles access token expiry using cookie-based refresh
  */
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const originalRequest = error.config as CustomAxiosRequestConfig;
 
+    // 🔴 Safety guard
+    if (!originalRequest) {
+      return Promise.reject(error);
+    }
+
+    // 🚫 NEVER retry refresh endpoint itself
+    if (originalRequest.url?.includes("/auth/refresh")) {
+      window.location.href = "/signin";
+      return Promise.reject(error);
+    }
+
+    // 🔁 Access token expired → try refresh ONCE
     if (
       error.response?.status === 401 &&
-      originalRequest &&
       !originalRequest._retry
     ) {
       originalRequest._retry = true;
 
       try {
-        // 🔑 refresh token is already in cookie
+        // refresh token is already in HttpOnly cookie
         await api.post("/auth/refresh");
 
         // retry original request
         return api(originalRequest);
       } catch (refreshError) {
-        // refresh failed → logout
+        // refresh token expired / invalid → logout
         window.location.href = "/signin";
         return Promise.reject(refreshError);
       }
     }
 
     return Promise.reject(error);
-  },
+  }
 );
 
-// Helper to extract error message export
+// Helper to extract error message
 export const getErrorMessage = (error: unknown): string => {
   if (axios.isAxiosError(error)) {
     return (
@@ -63,4 +74,5 @@ export const getErrorMessage = (error: unknown): string => {
   }
   return "An unexpected error occurred";
 };
+
 export default api;

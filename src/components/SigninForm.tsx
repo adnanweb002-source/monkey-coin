@@ -73,23 +73,19 @@ const SigninForm = () => {
       // Store user profile in localStorage
       localStorage.setItem("userProfile", JSON.stringify(userProfile));
 
-      // if (userProfile?.role == "admin") {
-      //   toast({
-      //     title: "Admin Login Detected",
-      //     description: "You have been signed in successfully.",
-      //   });
-      //   window.location.href = "https://admin.vaultifinances.com";
-      // } else {
-      //   toast({
-      //     title: "Success!",
-      //     description: "You have been signed in successfully.",
-      //   });
-      // }
-      toast({
+      if (userProfile?.role == "admin") {
+        toast({
+          title: "Admin Login Detected",
+          description: "You have been signed in successfully.",
+        });
+        window.location.href = "https://admin.gogex.xyz";
+      } else {
+        toast({
           title: "Success!",
           description: "You have been signed in successfully.",
         });
-      navigate("/dashboard");
+        navigate("/dashboard");
+      }
     } catch (error) {
       toast({
         title: "Error",

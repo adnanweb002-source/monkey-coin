@@ -23,7 +23,6 @@ import {
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import { tokenStorage } from "@/lib/api";
 import api from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -130,7 +129,6 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
     } catch (error) {
       toast({ title: "Warning", description: t("auth.logoutWarning"), variant: "destructive" });
     } finally {
-      tokenStorage.clearTokens();
       localStorage.removeItem("userProfile");
       setIsLoggingOut(false);
       navigate("/signin");

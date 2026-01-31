@@ -5,7 +5,7 @@ import { z } from "zod";
 import { Eye, EyeOff, Loader2, Shield } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import api, { tokenStorage, getErrorMessage } from "@/lib/api";
+import api, { getErrorMessage } from "@/lib/api";
 import {
   InputOTP,
   InputOTPGroup,
@@ -61,10 +61,14 @@ const SigninForm = () => {
       }
 
       const response = await api.post("/auth/login", payload);
-      const { accessToken, refreshToken } = response?.data;
+      const { ok } = response?.data;
 
-      // Store tokens using tokenStorage utility
-      tokenStorage.setTokens(accessToken, refreshToken);
+      console.log("Login response:", response?.data); 
+
+      if (!ok) {
+        throw new Error("Login failed. Please try again.");
+      }
+
 
       // Fetch user profile after successful login
       const profileResponse = await api.get("/auth/get-profile");

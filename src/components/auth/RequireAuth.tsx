@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { Loader2 } from "lucide-react";
-import { tokenStorage } from "@/lib/api";
+import api from "@/lib/api";
 import type { UserProfile } from "@/types/user";
 
 interface RequireAuthProps {
@@ -16,25 +16,20 @@ const RequireAuth = ({ children, require2FA = true }: RequireAuthProps) => {
   const location = useLocation();
 
   useEffect(() => {
-    const checkAuth = () => {
-      const token = tokenStorage.getAccessToken();
-      const profileStr = localStorage.getItem("userProfile");
-
-      if (!token || !profileStr) {
-        setIsAuthenticated(false);
-        setIsLoading(false);
-        return;
-      }
-
+    const checkAuth = async () => {
       try {
-        const profile: UserProfile = JSON.parse(profileStr);
-        setIsAuthenticated(true);
-        setHas2FA(profile.isG2faEnabled);
-      } catch {
-        setIsAuthenticated(false);
-      }
+        const res = await api.get("/auth/get-profile");
+        const profile: UserProfile = res.data;
 
-      setIsLoading(false);
+        localStorage.setItem("userProfile", JSON.stringify(profile));
+        setIsAuthenticated(true);
+        setHas2FA(profile.isG2faEnabled || false);
+      } catch (err) {
+        setIsAuthenticated(false);
+        localStorage.removeItem("userProfile");
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     checkAuth();
@@ -48,13 +43,9 @@ const RequireAuth = ({ children, require2FA = true }: RequireAuthProps) => {
     );
   }
 
-  // Not authenticated - redirect to signin
   if (!isAuthenticated) {
     return <Navigate to="/signin" state={{ from: location }} replace />;
   }
-
-  // 2FA is no longer blocking - users can access dashboard without 2FA
-  // The dashboard will show a warning banner instead
 
   return <>{children}</>;
 };

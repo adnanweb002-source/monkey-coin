@@ -40,6 +40,7 @@ import {
   ChevronDown,
   ChevronUp,
   Ban,
+  Download,
   CheckCircle,
   ShieldOff,
   KeyRound,
@@ -118,8 +119,53 @@ const AdminUsers = () => {
   const [togglingRestriction, setTogglingRestriction] = useState<number | null>(
     null
   );
+  const [isExporting, setIsExporting] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const handleExportUsers = async () => {
+    setIsExporting(true);
+    try {
+      const response = await api.get("/admin/export-user-data", {
+        responseType: "text",
+      });
+
+      const csvData = response.data;
+
+      if (!csvData || csvData.trim() === "") {
+        toast({
+          title: "No Data",
+          description: "No user data available to export",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      const date = new Date().toISOString().split("T")[0];
+      link.href = url;
+      link.download = `users_export_${date}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Success",
+        description: "Users exported successfully",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Export Failed",
+        description: error.response?.data?.message || "Failed to export users",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const { data, isLoading, error } = useQuery<UsersResponse>({
     queryKey: ["admin-users", page, take],
@@ -423,9 +469,28 @@ const AdminUsers = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">User Management</h1>
-        <p className="text-muted-foreground">Manage all users in the system</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">User Management</h1>
+          <p className="text-muted-foreground">Manage all users in the system</p>
+        </div>
+        <Button
+          onClick={handleExportUsers}
+          disabled={isExporting}
+          className="w-full sm:w-auto"
+        >
+          {isExporting ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span className="hidden sm:inline ml-2">Exporting...</span>
+            </>
+          ) : (
+            <>
+              <Download className="h-4 w-4" />
+              <span className="hidden sm:inline ml-2">Export Users</span>
+            </>
+          )}
+        </Button>
       </div>
 
       <div className="bg-card rounded-lg border border-border overflow-hidden">

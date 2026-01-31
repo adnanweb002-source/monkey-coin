@@ -32,9 +32,10 @@ interface CryptoDepositFormProps {
 const CRYPTO_OPTIONS = [
   { value: "BTC", label: "Bitcoin (BTC)" },
   { value: "ETH", label: "Ethereum (ETH)" },
-  { value: "USDT", label: "Tether (USDT)" },
+  { value: "USDTTRC20", label: "Tether (USDT TRC20)" },
   { value: "LTC", label: "Litecoin (LTC)" },
   { value: "USDC", label: "USD Coin (USDC)" },
+  { value: "DOGE", label: "Dogecoin (DOGE)" },
 ];
 
 const CryptoDepositForm = ({ onDepositCreated }: CryptoDepositFormProps) => {

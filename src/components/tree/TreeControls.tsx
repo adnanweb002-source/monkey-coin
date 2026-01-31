@@ -36,7 +36,7 @@ const TreeControls = ({
           placeholder="Search by User Name"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-10 bg-[#1e1e1e] border-[#3a3a3a] text-white placeholder:text-gray-500 focus:border-[#D97706] rounded-md h-9 text-sm"
+          className="pl-10 placeholder:text-gray-500 focus:border-[#D97706] rounded-md h-9 text-sm"
         />
       </div>
 

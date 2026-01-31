@@ -73,12 +73,16 @@ const SigninForm = () => {
       // Store user profile in localStorage
       localStorage.setItem("userProfile", JSON.stringify(userProfile));
 
-      if (userProfile?.role == "admin") {
+      if (userProfile?.role == "ADMIN") {
         toast({
           title: "Admin Login Detected",
           description: "You have been signed in successfully.",
         });
-        window.location.href = "https://admin.gogex.xyz";
+        if (import.meta.env.VITE_ENVIRONMENT === "production") {
+          window.location.href = "https://admin.gogex.xyz";
+        } else {
+          navigate("/dashboard");
+        }
       } else {
         toast({
           title: "Success!",

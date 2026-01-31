@@ -101,7 +101,7 @@ const MyTree = () => {
   const businessVolume = treeData ? countBusinessVolume(treeData) : { left: 0, right: 0 };
 
   return (
-    <div className="space-y-4 min-h-screen bg-[#0f0f1a] p-4">
+    <div className="space-y-4 min-h-screen p-4">
       {/* Wallet Cards */}
       {/* <TreeWalletCards />
       

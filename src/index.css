@@ -6,6 +6,55 @@
 
 @layer base {
   :root {
+    /* Light Mode Colors */
+    --background: 0 0% 98%;
+    --foreground: 220 25% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 25% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 25% 10%;
+
+    --primary: 36 90% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 15% 92%;
+    --secondary-foreground: 220 25% 10%;
+
+    --muted: 220 15% 92%;
+    --muted-foreground: 220 10% 45%;
+
+    --accent: 36 90% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 85%;
+    --input: 220 15% 92%;
+    --ring: 36 90% 50%;
+
+    --radius: 0.5rem;
+
+    /* Custom crypto theme tokens - Light */
+    --gradient-dark: linear-gradient(135deg, hsl(0 0% 98%) 0%, hsl(220 15% 95%) 50%, hsl(0 0% 98%) 100%);
+    --gold-glow: 0 0 30px hsl(36 90% 50% / 0.2);
+    --card-glow: 0 8px 32px hsl(220 25% 10% / 0.08);
+    --input-focus-glow: 0 0 0 2px hsl(36 90% 50% / 0.15);
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 25% 10%;
+    --sidebar-primary: 36 90% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 15% 95%;
+    --sidebar-accent-foreground: 220 25% 10%;
+    --sidebar-border: 220 15% 90%;
+    --sidebar-ring: 36 90% 50%;
+  }
+
+  .dark {
+    /* Dark Mode Colors */
     --background: 220 25% 7%;
     --foreground: 0 0% 100%;
 
@@ -34,52 +83,11 @@
     --input: 220 15% 20%;
     --ring: 36 90% 55%;
 
-    --radius: 0.5rem;
-
-    /* Custom crypto theme tokens */
+    /* Custom crypto theme tokens - Dark */
     --gradient-dark: linear-gradient(135deg, hsl(220 25% 7%) 0%, hsl(220 30% 12%) 50%, hsl(220 25% 8%) 100%);
     --gold-glow: 0 0 30px hsl(36 90% 55% / 0.3);
     --card-glow: 0 8px 32px hsl(0 0% 0% / 0.4);
     --input-focus-glow: 0 0 0 2px hsl(36 90% 55% / 0.2);
-
-    --sidebar-background: 220 25% 7%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 36 90% 55%;
-    --sidebar-primary-foreground: 220 25% 7%;
-    --sidebar-accent: 220 15% 18%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 220 15% 25%;
-    --sidebar-ring: 36 90% 55%;
-  }
-
-  .dark {
-    --background: 220 25% 7%;
-    --foreground: 0 0% 100%;
-
-    --card: 220 20% 12%;
-    --card-foreground: 0 0% 100%;
-
-    --popover: 220 20% 12%;
-    --popover-foreground: 0 0% 100%;
-
-    --primary: 36 90% 55%;
-    --primary-foreground: 220 25% 7%;
-
-    --secondary: 220 15% 18%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 220 15% 25%;
-    --muted-foreground: 220 10% 60%;
-
-    --accent: 36 90% 55%;
-    --accent-foreground: 220 25% 7%;
-
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 220 15% 25%;
-    --input: 220 15% 20%;
-    --ring: 36 90% 55%;
 
     --sidebar-background: 220 25% 7%;
     --sidebar-foreground: 0 0% 100%;

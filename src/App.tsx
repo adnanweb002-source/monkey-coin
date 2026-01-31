@@ -61,12 +61,15 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             {/* Auth Routes */}
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<ProtectedDashboard />}>
+              <Route index element={<DashboardHome />} />
+            </Route>
+
             <Route path="/signup" element={<Index />} />
             <Route path="/signin" element={<Signin />} />
             <Route path="/2fa" element={<TwoFactorAuth />} />
             <Route path="/success" element={<Success />} />
-            
+
             {/* 2FA Setup Route - requires auth but not 2FA */}
             <Route
               path="/security/2fa/setup"
@@ -76,7 +79,7 @@ const App = () => (
                 </RequireAuth>
               }
             />
-            
+
             {/* Dashboard Routes - wrapped in protected layout */}
             <Route path="/dashboard" element={<ProtectedDashboard />}>
               <Route index element={<DashboardHome />} />
@@ -129,8 +132,14 @@ const App = () => (
               <Route path="users" element={<AdminUsers />} />
               <Route path="support/queries" element={<AdminSupportQueries />} />
               <Route path="system/prune" element={<SystemPrune />} />
-              <Route path="package-wallet-rules" element={<PackageWalletRules />} />
-              <Route path="supported-wallet-types" element={<SupportedWalletTypes />} />
+              <Route
+                path="package-wallet-rules"
+                element={<PackageWalletRules />}
+              />
+              <Route
+                path="supported-wallet-types"
+                element={<SupportedWalletTypes />}
+              />
               <Route path="settings" element={<AdminSettings />} />
               <Route path="packages" element={<AdminPackages />} />
               <Route path="deposits" element={<AdminDeposits />} />
@@ -148,7 +157,7 @@ const App = () => (
             <Route path="/terms" element={<ProtectedDashboard />}>
               <Route index element={<TermsAndConditions />} />
             </Route>
-            
+
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

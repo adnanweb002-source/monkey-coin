@@ -8,6 +8,22 @@ const DashboardLayout = () => {
   const isMobile = useIsMobile();
   const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
 
+  const pageUrl = window.location.href;
+  useEffect(() => {
+    if (pageUrl.includes("admin.gogex.xyz")) {
+      if (localStorage.getItem("userProfile")) {
+        const userProfile = JSON.parse(
+          localStorage.getItem("userProfile") || "{}",
+        );
+        if (userProfile?.role !== "admin") {
+          window.location.href = "https://gogex.xyz/signin";
+        }
+      } else {
+        window.location.href = "https://gogex.xyz/signin";
+      }
+    }
+  }, [pageUrl]);
+
   useEffect(() => {
     setSidebarOpen(!isMobile);
   }, [isMobile]);
@@ -22,7 +38,10 @@ const DashboardLayout = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Fixed Header */}
-        <DashboardHeader onMenuClick={toggleSidebar} showMenuButton={isMobile || !sidebarOpen} />
+        <DashboardHeader
+          onMenuClick={toggleSidebar}
+          showMenuButton={isMobile || !sidebarOpen}
+        />
 
         {/* Scrollable Content */}
         <main className="flex-1 p-4 md:p-6 overflow-y-auto">

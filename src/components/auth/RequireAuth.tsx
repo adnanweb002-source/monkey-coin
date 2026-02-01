@@ -24,6 +24,16 @@ const RequireAuth = ({ children, require2FA = true }: RequireAuthProps) => {
         localStorage.setItem("userProfile", JSON.stringify(profile));
         setIsAuthenticated(true);
         setHas2FA(profile.isG2faEnabled || false);
+
+        // check if admin and environment is production
+        if (
+          profile.role === "ADMIN" &&
+          import.meta.env.VITE_ENVIRONMENT === "production"
+        ) {
+          window.location.href = "https://admin.gogex.xyz";
+          setIsLoading(false);
+          return;
+        }
       } catch (err) {
         setIsAuthenticated(false);
         localStorage.removeItem("userProfile");

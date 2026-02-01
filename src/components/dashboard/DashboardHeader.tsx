@@ -13,7 +13,10 @@ interface DashboardHeaderProps {
   showMenuButton: boolean;
 }
 
-const DashboardHeader = ({ onMenuClick, showMenuButton }: DashboardHeaderProps) => {
+const DashboardHeader = ({
+  onMenuClick,
+  showMenuButton,
+}: DashboardHeaderProps) => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const { theme, setTheme } = useTheme();
@@ -48,15 +51,21 @@ const DashboardHeader = ({ onMenuClick, showMenuButton }: DashboardHeaderProps) 
   }, []);
 
   const formatDateTime = (date: Date) => {
-    return date.toLocaleDateString("en-US", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }) + ", " + date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    }) + ", " + date.toLocaleDateString("en-US", { weekday: "short" });
+    return (
+      date.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }) +
+      ", " +
+      date.toLocaleTimeString("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      }) +
+      ", " +
+      date.toLocaleDateString("en-GB", { weekday: "short", timeZone: "Europe/London" })
+    );
   };
 
   return (
@@ -71,13 +80,15 @@ const DashboardHeader = ({ onMenuClick, showMenuButton }: DashboardHeaderProps) 
             <Menu size={20} />
           </button>
         )}
-        
-        <h1 className="text-lg md:text-xl font-semibold text-foreground">{t("header.dashboard")}</h1>
-        
+
+        <h1 className="text-lg md:text-xl font-semibold text-foreground">
+          {t("header.dashboard")}
+        </h1>
+
         {!isMobile && (
           <>
             <LanguageSelector />
-            
+
             <span className="text-primary text-sm font-medium">
               {formatDateTime(currentDateTime)}
             </span>
@@ -88,7 +99,7 @@ const DashboardHeader = ({ onMenuClick, showMenuButton }: DashboardHeaderProps) 
       {/* Right section */}
       <div className="flex items-center gap-2 md:gap-4">
         {isMobile && <LanguageSelector compact />}
-        
+
         {!isMobile && (
           <Link
             to="/wallet/deposit"
@@ -114,19 +125,32 @@ const DashboardHeader = ({ onMenuClick, showMenuButton }: DashboardHeaderProps) 
         </button>
 
         {/* User profile */}
-        <Link to="/profile" className="flex items-center gap-2 md:gap-3 hover:opacity-80 transition-opacity">
-          <UserAvatar 
-            avatarId={userProfile?.avatarId} 
+        <Link
+          to="/profile"
+          className="flex items-center gap-2 md:gap-3 hover:opacity-80 transition-opacity"
+        >
+          <UserAvatar
+            avatarId={userProfile?.avatarId}
             size={isMobile ? "sm" : "md"}
-            alt={userProfile ? `${userProfile.firstName} ${userProfile.lastName}` : "User avatar"}
+            alt={
+              userProfile
+                ? `${userProfile.firstName} ${userProfile.lastName}`
+                : "User avatar"
+            }
           />
           {!isMobile && (
             <div className="text-right">
               <p className="text-sm font-medium text-foreground">
-                {userProfile ? `${userProfile.firstName} ${userProfile.lastName}` : "User"}
+                {userProfile
+                  ? `${userProfile.firstName} ${userProfile.lastName}`
+                  : "User"}
               </p>
               <p className="text-xs text-primary">
-                {userProfile?.role === "ADMIN" ? t("common.admin") : userProfile?.status === "ACTIVE" ? t("common.active") : t("common.user")}
+                {userProfile?.role === "ADMIN"
+                  ? t("common.admin")
+                  : userProfile?.status === "ACTIVE"
+                    ? t("common.active")
+                    : t("common.user")}
               </p>
             </div>
           )}

@@ -28,7 +28,8 @@ const RequireAuth = ({ children, require2FA = true }: RequireAuthProps) => {
         // check if admin and environment is production
         if (
           profile.role === "ADMIN" &&
-          import.meta.env.VITE_ENVIRONMENT === "production"
+          import.meta.env.VITE_ENVIRONMENT === "production" &&
+          window.location.hostname !== "admin.gogex.xyz"
         ) {
           window.location.href = "https://admin.gogex.xyz";
           setIsLoading(false);

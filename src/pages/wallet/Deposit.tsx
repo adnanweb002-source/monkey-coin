@@ -99,7 +99,7 @@ const Deposit = () => {
         <TabsList className="grid w-full max-w-md mx-auto grid-cols-1">
           <TabsTrigger value="crypto" className="flex items-center gap-2">
             <Bitcoin className="h-4 w-4" />
-            Crypto Deposit
+            Deposit
           </TabsTrigger>
           {/* <TabsTrigger value="manual" className="flex items-center gap-2">
             <FileText className="h-4 w-4" />

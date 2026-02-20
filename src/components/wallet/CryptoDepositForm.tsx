@@ -34,7 +34,8 @@ const CRYPTO_OPTIONS = [
   { value: "ETH", label: "Ethereum (ETH)" },
   { value: "USDTTRC20", label: "Tether (USDT TRC20)" },
   { value: "LTC", label: "Litecoin (LTC)" },
-  { value: "USDC", label: "USD Coin (USDC)" },
+  { value: "USDTERC20", label: "USDT ERC20" },
+  { value: "USDTBEP20", label: "USDT BEP20" },
   { value: "DOGE", label: "Dogecoin (DOGE)" },
 ];
 

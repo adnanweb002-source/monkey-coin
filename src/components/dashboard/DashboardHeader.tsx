@@ -56,15 +56,20 @@ const DashboardHeader = ({
         day: "numeric",
         month: "long",
         year: "numeric",
+        timeZone: "Europe/London",
       }) +
       ", " +
       date.toLocaleTimeString("en-GB", {
         hour: "2-digit",
         minute: "2-digit",
         hour12: true,
+        timeZone: "Europe/London",
       }) +
       ", " +
-      date.toLocaleDateString("en-GB", { weekday: "short", timeZone: "Europe/London" })
+      date.toLocaleDateString("en-GB", {
+        weekday: "short",
+        timeZone: "Europe/London",
+      })
     );
   };
 

@@ -31,7 +31,7 @@ api.interceptors.response.use(
     }
 
     // 🚫 NEVER retry refresh endpoint itself
-    if (originalRequest.url?.includes("/auth/refresh")) {
+    if (originalRequest.url?.includes("/auth/refresh") || originalRequest.url?.includes("/auth/signin")) {
       window.location.href = "/signin";
       return Promise.reject(error);
     }

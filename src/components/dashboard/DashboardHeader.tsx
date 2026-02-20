@@ -90,7 +90,7 @@ const DashboardHeader = ({
             <LanguageSelector />
 
             <span className="text-primary text-sm font-medium">
-              {formatDateTime(currentDateTime)}
+              {formatDateTime(currentDateTime).toLocaleUpperCase()}
             </span>
           </>
         )}

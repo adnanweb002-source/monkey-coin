@@ -69,7 +69,6 @@ const SigninForm = () => {
         throw new Error("Login failed. Please try again.");
       }
 
-
       // Fetch user profile after successful login
       const profileResponse = await api.get("/auth/get-profile");
       const userProfile = profileResponse?.data;
@@ -222,7 +221,7 @@ const SigninForm = () => {
         {/* Sign Up Link */}
         <p className="text-center text-muted-foreground text-sm">
           Don't have an account?{" "}
-          <Link to="/" className="crypto-link">
+          <Link to="/signup" className="crypto-link">
             Click here to sign up.
           </Link>
         </p>

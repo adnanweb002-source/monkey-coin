@@ -96,7 +96,7 @@ const DashboardHeader = ({
             <LanguageSelector />
 
             <span className="text-primary text-sm font-medium">
-              {formatDateTime(currentDateTime).toLocaleUpperCase()}
+              {formatDateTime(currentDateTime).toLocaleUpperCase()} -  London
             </span>
           </>
         )}

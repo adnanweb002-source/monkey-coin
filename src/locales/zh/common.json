@@ -9,7 +9,7 @@
     "dashboard": "仪表板",
     "myProfile": "我的资料",
     "makeInvestment": "进行投资",
-    "myTree": "我的团队结构",
+    "myTree": "我的网络",
     "deposit": "存款",
     "depositHistory": "存款记录",
     "depositRequests": "存款请求",
@@ -38,5 +38,57 @@
     "loggingOut": "正在退出...",
     "privacyPolicy": "隐私政策",
     "termsOfUse": "使用条款"
+  },
+  "admin": {
+    "userManagement": "用户管理",
+    "packagesManagement": "套餐管理",
+    "deposits": "存款",
+    "packageWalletRules": "套餐钱包规则",
+    "supportedWalletTypes": "支持的钱包类型",
+    "systemSettings": "系统设置",
+    "supportQueries": "支持查询",
+    "systemPrune": "系统清理"
+  },
+  "auth": {
+    "logout": "退出登录",
+    "logoutConfirm": "确定要退出登录吗？",
+    "logoutDescription": "您将被重定向到登录页面，需要重新登录。",
+    "cancel": "取消",
+    "loggedOut": "已成功退出",
+    "logoutWarning": "已本地退出。如问题持续请重试。"
+  },
+  "common": {
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "cancel": "取消",
+    "save": "保存",
+    "submit": "提交",
+    "confirm": "确认",
+    "delete": "删除",
+    "edit": "编辑",
+    "view": "查看",
+    "close": "关闭",
+    "search": "搜索",
+    "filter": "筛选",
+    "noData": "暂无数据",
+    "user": "用户",
+    "admin": "管理员",
+    "active": "激活"
+  },
+  "wallet": {
+    "deposit": "存款",
+    "withdraw": "提现",
+    "transfer": "转账",
+    "balance": "余额",
+    "history": "历史"
+  },
+  "profile": {
+    "title": "我的资料",
+    "avatar": "头像",
+    "changeAvatar": "更换头像",
+    "selectAvatar": "选择您的头像",
+    "updateAvatar": "更新头像",
+    "updating": "更新中..."
   }
 }

@@ -60,16 +60,16 @@ const PackagePurchaseModal = ({
   prefilledUserId,
 }: PackagePurchaseModalProps) => {
   const [selectedPackage, setSelectedPackage] = useState<PackageType | null>(
-    initialPackage
+    initialPackage,
   );
   const [amount, setAmount] = useState("");
   const [purchaseMode, setPurchaseMode] = useState<"self" | "downline">("self");
   const [targetMemberId, setTargetMemberId] = useState("");
   const [walletAmounts, setWalletAmounts] = useState<Record<string, string>>(
-    {}
+    {},
   );
-  const [isAdmin, setIsAdmin] = useState<Boolean>(false)
-   useEffect(() => {
+  const [isAdmin, setIsAdmin] = useState<Boolean>(false);
+  useEffect(() => {
     const stored = localStorage.getItem("userProfile");
     if (stored) {
       const profile = JSON.parse(stored);
@@ -190,8 +190,8 @@ const PackagePurchaseModal = ({
       if (totalAmount < minAmt || totalAmount > maxAmt) {
         errors.push(
           `Amount must be between ${formatCurrency(
-            minAmt
-          )} and ${formatCurrency(maxAmt)}`
+            minAmt,
+          )} and ${formatCurrency(maxAmt)}`,
         );
       }
     }
@@ -206,8 +206,8 @@ const PackagePurchaseModal = ({
     if (totalAmount > 0 && Math.abs(totalSplitAmount - totalAmount) > 0.01) {
       errors.push(
         `Total wallet amounts must equal $${totalAmount.toFixed(
-          2
-        )} (current: $${totalSplitAmount.toFixed(2)})`
+          2,
+        )} (current: $${totalSplitAmount.toFixed(2)})`,
       );
     }
 
@@ -217,7 +217,7 @@ const PackagePurchaseModal = ({
         const currentPct = walletPercentages[wallet] || 0;
         if (currentPct > 0 && currentPct < minPct) {
           errors.push(
-            `${WALLET_LABELS[wallet] || wallet} must be at least ${minPct}%`
+            `${WALLET_LABELS[wallet] || wallet} must be at least ${minPct}%`,
           );
         }
       });
@@ -242,7 +242,7 @@ const PackagePurchaseModal = ({
           errors.push(
             `${
               WALLET_LABELS[wallet] || wallet
-            } amount exceeds balance ($${balance.toFixed(2)})`
+            } amount exceeds balance ($${balance.toFixed(2)})`,
           );
         }
       });
@@ -341,6 +341,21 @@ const PackagePurchaseModal = ({
 
   const activePackages = packages.filter((pkg) => pkg.isActive);
 
+  // Auto-detect package based on entered amount
+  useEffect(() => {
+    if (!totalAmount || !packages?.length) return;
+
+    const matchedPackage = packages.find((pkg) => {
+      const min = parseFloat(pkg.investmentMin);
+      const max = parseFloat(pkg.investmentMax);
+      return totalAmount >= min && totalAmount <= max;
+    });
+
+    if (matchedPackage && matchedPackage.id !== selectedPackage?.id) {
+      setSelectedPackage(matchedPackage);
+    }
+  }, [totalAmount, packages, selectedPackage]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
@@ -369,7 +384,7 @@ const PackagePurchaseModal = ({
                       "p-3 rounded-lg border cursor-pointer transition-all",
                       selectedPackage?.id === pkg.id
                         ? "border-primary bg-primary/5"
-                        : "border-border hover:border-primary/50"
+                        : "border-border hover:border-primary/50",
                     )}
                     onClick={() => setSelectedPackage(pkg)}
                   >
@@ -425,7 +440,7 @@ const PackagePurchaseModal = ({
                   "flex items-center gap-2 p-3 rounded-lg border cursor-pointer flex-1",
                   purchaseMode === "self"
                     ? "border-primary bg-primary/5"
-                    : "border-border"
+                    : "border-border",
                 )}
                 onClick={() => setPurchaseMode("self")}
               >
@@ -443,7 +458,7 @@ const PackagePurchaseModal = ({
                   "flex items-center gap-2 p-3 rounded-lg border cursor-pointer flex-1",
                   purchaseMode === "downline"
                     ? "border-primary bg-primary/5"
-                    : "border-border"
+                    : "border-border",
                 )}
                 onClick={() => setPurchaseMode("downline")}
               >
@@ -535,7 +550,7 @@ const PackagePurchaseModal = ({
                             className={cn(
                               "pl-7 h-9",
                               exceedsBalance &&
-                                "border-destructive focus-visible:ring-destructive"
+                                "border-destructive focus-visible:ring-destructive",
                             )}
                             min="0"
                             step="0.01"
@@ -548,7 +563,7 @@ const PackagePurchaseModal = ({
                                 "text-sm font-medium",
                                 pct > 0 && pct < minPct
                                   ? "text-destructive"
-                                  : "text-foreground"
+                                  : "text-foreground",
                               )}
                             >
                               {pct.toFixed(1)}%
@@ -563,7 +578,7 @@ const PackagePurchaseModal = ({
                           "text-xs mt-1.5",
                           exceedsBalance
                             ? "text-destructive"
-                            : "text-muted-foreground"
+                            : "text-muted-foreground",
                         )}
                       >
                         Available Balance: ${balance.toFixed(2)}
@@ -585,11 +600,11 @@ const PackagePurchaseModal = ({
                           .filter(([w]) => w in availableWallets)
                           .reduce(
                             (sum, [, amt]) => sum + (parseFloat(amt) || 0),
-                            0
-                          ) - totalAmount
+                            0,
+                          ) - totalAmount,
                       ) <= 0.01
                         ? "text-green-600"
-                        : "text-destructive"
+                        : "text-destructive",
                     )}
                   >
                     $

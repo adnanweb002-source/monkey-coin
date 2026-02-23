@@ -78,7 +78,6 @@ const sidebarItems: SidebarItem[] = [
       { labelKey: "sidebar.teamActivation", path: "/reports/team-activation" },
       { labelKey: "sidebar.withdrawal", path: "/wallet/withdraw" },
       { labelKey: "sidebar.withdrawalStatus", path: "/wallet/withdraw-requests" },
-      { labelKey: "sidebar.depositFunds", path: "/wallet/deposit" },
       { labelKey: "sidebar.holidayList", path: "/reports/holiday-list" },
       { labelKey: "sidebar.downlineDeposit", path: "/reports/downline-deposit" },
     ],

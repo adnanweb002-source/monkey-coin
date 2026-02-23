@@ -203,9 +203,9 @@ const TrackReferral = () => {
                         <TableCell>
                           <Badge
                             variant="outline"
-                            className={statusColors[referral.status] || ""}
+                            className={statusColors[getPackageCount(referral) > 0 ? "ACTIVE" : "INACTIVE"] || ""}
                           >
-                            {referral.status}
+                            {getPackageCount(referral) > 0 ? "Active" : "Inactive"}
                           </Badge>
                         </TableCell>
                         <TableCell>{formatDate(referral.createdAt)}</TableCell>

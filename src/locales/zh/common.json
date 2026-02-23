@@ -1,0 +1,42 @@
+{
+  "header": {
+    "dashboard": "仪表板",
+    "language": "语言",
+    "deposit": "存款",
+    "notifications": "通知"
+  },
+  "sidebar": {
+    "dashboard": "仪表板",
+    "myProfile": "我的资料",
+    "makeInvestment": "进行投资",
+    "myTree": "我的团队结构",
+    "deposit": "存款",
+    "depositHistory": "存款记录",
+    "depositRequests": "存款请求",
+    "transferFunds": "转账",
+    "withdrawalFunds": "提现",
+    "withdrawalRequests": "提现请求",
+    "transactions": "交易记录",
+    "income": "收入",
+    "directIncome": "直推收入",
+    "binaryIncome": "双轨收入",
+    "referralIncome": "推荐收入",
+    "reports": "报表",
+    "wallets": "钱包",
+    "gainReport": "收益报告",
+    "trackReferral": "推荐跟踪",
+    "rankAndReward": "等级与奖励",
+    "teamActivation": "团队激活",
+    "withdrawal": "提现",
+    "withdrawalStatus": "提现状态",
+    "depositFunds": "存入资金",
+    "holidayList": "假期列表",
+    "downlineDeposit": "下线存款",
+    "marketingTools": "营销工具",
+    "contactSupport": "联系客服",
+    "logout": "退出登录",
+    "loggingOut": "正在退出...",
+    "privacyPolicy": "隐私政策",
+    "termsOfUse": "使用条款"
+  }
+}

@@ -100,7 +100,7 @@ const Profile = () => {
       if (data.twoFactorCode) {
         payload.twoFactorCode = data.twoFactorCode;
       }
-      const response = await api.post("/change-password", payload);
+      const response = await api.post("/auth/change-password", payload);
       return response.data;
     },
     onSuccess: () => {
@@ -118,11 +118,11 @@ const Profile = () => {
 
   const changeEmailMutation = useMutation({
     mutationFn: async (data: ChangeEmailData) => {
-      const payload: Record<string, string> = { email: data.email };
+      const payload: Record<string, string> = { newEmail: data.email };
       if (data.twoFactorCode) {
         payload.twoFactorCode = data.twoFactorCode;
       }
-      const response = await api.post("/change-email", payload);
+      const response = await api.post("/auth/change-email", payload);
       return response.data;
     },
     onSuccess: () => {

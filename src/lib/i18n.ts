@@ -12,6 +12,7 @@ import zhTranslations from '@/locales/zh/common.json';
 import ruTranslations from '@/locales/ru/common.json';
 import urTranslations from '@/locales/ur/common.json';
 import viTranslations from '@/locales/vi/common.json';
+import mlTranslations from '@/locales/ml/common.json';
 
 
 export const SUPPORTED_LANGUAGES = [
@@ -24,6 +25,7 @@ export const SUPPORTED_LANGUAGES = [
   { code: 'ru', name: 'Russian', nativeName: 'Русский', dir: 'ltr' },
   { code: 'ur', name: 'Urdu', nativeName: 'اردو', dir: 'rtl' },
   { code: 'vi', name: 'Vietnamese', nativeName: 'Tiếng Việt', dir: 'ltr' },
+  {code: 'ml', name: 'Malay', nativeName: 'Bahasa Melayu', dir: 'ltr'},
 ] as const;
 
 export type LanguageCode = typeof SUPPORTED_LANGUAGES[number]['code'];

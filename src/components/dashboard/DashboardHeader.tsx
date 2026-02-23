@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Bell, Moon, Sun, Plus, Menu } from "lucide-react";
+import { Moon, Sun, Plus, Menu } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useTranslation } from "react-i18next";
 import { UserProfile } from "@/types/user";
 import { useIsMobile } from "@/hooks/use-mobile";
 import UserAvatar from "@/components/common/UserAvatar";
 import LanguageSelector from "@/components/common/LanguageSelector";
+import NotificationBell from "@/components/notifications/NotificationBell";
 
 interface DashboardHeaderProps {
   onMenuClick: () => void;
@@ -122,12 +123,7 @@ const DashboardHeader = ({
           {theme === "dark" ? <Moon size={18} /> : <Sun size={18} />}
         </button>
 
-        <button className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-secondary flex items-center justify-center text-foreground relative">
-          <Bell size={18} />
-          <span className="absolute -top-1 -right-1 w-4 h-4 bg-destructive rounded-full text-xs flex items-center justify-center text-destructive-foreground">
-            2
-          </span>
-        </button>
+        <NotificationBell />
 
         {/* User profile */}
         <Link

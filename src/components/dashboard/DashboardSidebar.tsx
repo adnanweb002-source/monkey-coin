@@ -98,7 +98,6 @@ const sidebarItems: SidebarItem[] = [
       { labelKey: "sidebar.gainReport", path: "/reports/gain-report" },
       { labelKey: "sidebar.trackReferral", path: "/reports/track-referral" },
       { labelKey: "sidebar.rankAndReward", path: "/reports/rank-reward" },
-      { labelKey: "sidebar.teamActivation", path: "/reports/team-activation" },
       { labelKey: "sidebar.withdrawal", path: "/wallet/withdraw" },
       {
         labelKey: "sidebar.withdrawalStatus",

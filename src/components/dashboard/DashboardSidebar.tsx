@@ -38,6 +38,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { useNotifications } from "@/contexts/NotificationContext";
 
 interface SidebarItem {
   labelKey: string;
@@ -51,14 +52,35 @@ interface SidebarItem {
 const sidebarItems: SidebarItem[] = [
   { labelKey: "sidebar.dashboard", icon: Home, path: "/dashboard" },
   { labelKey: "sidebar.myProfile", icon: User, path: "/profile" },
+  { labelKey: "sidebar.notifications", icon: Bell, path: "/notifications" },
   { labelKey: "sidebar.makeInvestment", icon: DollarSign, path: "/packages" },
   { labelKey: "sidebar.myTree", icon: TreePine, path: "/tree" },
   { labelKey: "sidebar.deposit", icon: Wallet, path: "/wallet/deposit" },
-  { labelKey: "sidebar.depositHistory", icon: FileText, path: "/wallet/deposit-history" },
-  { labelKey: "sidebar.transferFunds", icon: ArrowRightLeft, path: "/wallet/transfer" },
-  { labelKey: "sidebar.withdrawalFunds", icon: ArrowDownToLine, path: "/wallet/withdraw" },
-  { labelKey: "sidebar.withdrawalRequests", icon: FileText, path: "/wallet/withdraw-requests" },
-  { labelKey: "sidebar.transactions", icon: ArrowRightLeft, path: "/wallet/transactions" },
+  {
+    labelKey: "sidebar.depositHistory",
+    icon: FileText,
+    path: "/wallet/deposit-history",
+  },
+  {
+    labelKey: "sidebar.transferFunds",
+    icon: ArrowRightLeft,
+    path: "/wallet/transfer",
+  },
+  {
+    labelKey: "sidebar.withdrawalFunds",
+    icon: ArrowDownToLine,
+    path: "/wallet/withdraw",
+  },
+  {
+    labelKey: "sidebar.withdrawalRequests",
+    icon: FileText,
+    path: "/wallet/withdraw-requests",
+  },
+  {
+    labelKey: "sidebar.transactions",
+    icon: ArrowRightLeft,
+    path: "/wallet/transactions",
+  },
   {
     labelKey: "sidebar.income",
     icon: FileText,
@@ -78,25 +100,79 @@ const sidebarItems: SidebarItem[] = [
       { labelKey: "sidebar.rankAndReward", path: "/reports/rank-reward" },
       { labelKey: "sidebar.teamActivation", path: "/reports/team-activation" },
       { labelKey: "sidebar.withdrawal", path: "/wallet/withdraw" },
-      { labelKey: "sidebar.withdrawalStatus", path: "/wallet/withdraw-requests" },
+      {
+        labelKey: "sidebar.withdrawalStatus",
+        path: "/wallet/withdraw-requests",
+      },
       { labelKey: "sidebar.holidayList", path: "/reports/holiday-list" },
-      { labelKey: "sidebar.downlineDeposit", path: "/reports/downline-deposit" },
+      {
+        labelKey: "sidebar.downlineDeposit",
+        path: "/reports/downline-deposit",
+      },
     ],
   },
-  { labelKey: "sidebar.marketingTools", icon: Wrench, path: "/marketing-tools", disabled: true },
-  { labelKey: "sidebar.notifications", icon: Bell, path: "/notifications" },
-  { labelKey: "sidebar.contactSupport", icon: HeadphonesIcon, path: "/support" },
+  {
+    labelKey: "sidebar.marketingTools",
+    icon: Wrench,
+    path: "/marketing-tools",
+    disabled: true,
+  },
+  {
+    labelKey: "sidebar.contactSupport",
+    icon: HeadphonesIcon,
+    path: "/support",
+  },
 ];
 
 const adminItems: SidebarItem[] = [
-  { labelKey: "admin.userManagement", icon: Users, path: "/admin/users", adminOnly: true },
-  { labelKey: "admin.packagesManagement", icon: Package, path: "/admin/packages", adminOnly: true },
-  { labelKey: "admin.deposits", icon: Wallet, path: "/admin/deposits", adminOnly: true },
-  { labelKey: "admin.packageWalletRules", icon: Wrench, path: "/admin/package-wallet-rules", adminOnly: true },
-  { labelKey: "admin.supportedWalletTypes", icon: Wallet, path: "/admin/supported-wallet-types", adminOnly: true },
-  { labelKey: "admin.systemSettings", icon: Settings, path: "/admin/settings", adminOnly: true },
-  { labelKey: "admin.supportQueries", icon: HeadphonesIcon, path: "/admin/support/queries", adminOnly: true },
-  { labelKey: "admin.systemPrune", icon: Shield, path: "/admin/system/prune", adminOnly: true },
+  {
+    labelKey: "admin.userManagement",
+    icon: Users,
+    path: "/admin/users",
+    adminOnly: true,
+  },
+  {
+    labelKey: "admin.packagesManagement",
+    icon: Package,
+    path: "/admin/packages",
+    adminOnly: true,
+  },
+  {
+    labelKey: "admin.deposits",
+    icon: Wallet,
+    path: "/admin/deposits",
+    adminOnly: true,
+  },
+  {
+    labelKey: "admin.packageWalletRules",
+    icon: Wrench,
+    path: "/admin/package-wallet-rules",
+    adminOnly: true,
+  },
+  {
+    labelKey: "admin.supportedWalletTypes",
+    icon: Wallet,
+    path: "/admin/supported-wallet-types",
+    adminOnly: true,
+  },
+  {
+    labelKey: "admin.systemSettings",
+    icon: Settings,
+    path: "/admin/settings",
+    adminOnly: true,
+  },
+  {
+    labelKey: "admin.supportQueries",
+    icon: HeadphonesIcon,
+    path: "/admin/support/queries",
+    adminOnly: true,
+  },
+  {
+    labelKey: "admin.systemPrune",
+    icon: Shield,
+    path: "/admin/system/prune",
+    adminOnly: true,
+  },
 ];
 
 interface DashboardSidebarProps {
@@ -109,10 +185,20 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
-  const [expandedItems, setExpandedItems] = useState<string[]>(["sidebar.reports"]);
+  const [expandedItems, setExpandedItems] = useState<string[]>([
+    "sidebar.reports",
+  ]);
   const isMobile = useIsMobile();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const {
+    state,
+    loadNotifications,
+    handleMarkAsRead,
+    handleMarkAllAsRead,
+    hasMore,
+  } = useNotifications();
 
   useEffect(() => {
     const stored = localStorage.getItem("userProfile");
@@ -128,7 +214,11 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
       await api.post("/auth/logout");
       toast({ title: t("common.success"), description: t("auth.loggedOut") });
     } catch (error) {
-      toast({ title: "Warning", description: t("auth.logoutWarning"), variant: "destructive" });
+      toast({
+        title: "Warning",
+        description: t("auth.logoutWarning"),
+        variant: "destructive",
+      });
     } finally {
       localStorage.removeItem("userProfile");
       setIsLoggingOut(false);
@@ -140,7 +230,7 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
     setExpandedItems((prev) =>
       prev.includes(labelKey)
         ? prev.filter((item) => item !== labelKey)
-        : [...prev, labelKey]
+        : [...prev, labelKey],
     );
   };
 
@@ -160,10 +250,7 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
     <>
       {/* Mobile Overlay */}
       {isMobile && isOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40"
-          onClick={onToggle}
-        />
+        <div className="fixed inset-0 bg-black/50 z-40" onClick={onToggle} />
       )}
 
       {/* Sidebar */}
@@ -171,19 +258,30 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
         className={cn(
           "h-screen bg-card border-r border-border flex flex-col shrink-0 transition-all duration-300 z-50",
           isMobile ? "fixed left-0 top-0" : "relative",
-          isOpen ? "w-64" : isMobile ? "-translate-x-full w-64" : "w-0 overflow-hidden"
+          isOpen
+            ? "w-64"
+            : isMobile
+              ? "-translate-x-full w-64"
+              : "w-0 overflow-hidden",
         )}
       >
         {/* Logo */}
         <div className="p-6 border-b border-border flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">V</span>
+              <span className="text-primary-foreground font-bold text-lg">
+                V
+              </span>
             </div>
-            <span className="text-foreground font-semibold text-lg">Vaultire Finance</span>
+            <span className="text-foreground font-semibold text-lg">
+              Vaultire Finance
+            </span>
           </div>
           {isMobile && (
-            <button onClick={onToggle} className="text-muted-foreground hover:text-foreground">
+            <button
+              onClick={onToggle}
+              className="text-muted-foreground hover:text-foreground"
+            >
               <X size={20} />
             </button>
           )}
@@ -243,11 +341,17 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
                       isActive(item.path)
                         ? "bg-primary/10 text-primary"
                         : "text-muted-foreground hover:bg-secondary hover:text-foreground",
-                      item.adminOnly && "border-l-2 border-primary"
+                      item.adminOnly && "border-l-2 border-primary",
                     )}
                   >
                     <item.icon size={18} />
                     <span>{t(item.labelKey)}</span>
+
+                    {item.labelKey === "sidebar.notifications" && state.unreadCount > 0 && (
+                      <span className="min-w-[16px] h-4 px-1 bg-destructive rounded-full text-[10px] flex items-center justify-center text-destructive-foreground font-medium animate-in zoom-in-50">
+                        {state.unreadCount > 99 ? "99+" : state.unreadCount}
+                      </span>
+                    )}
                     {item.adminOnly && (
                       <Shield size={12} className="ml-auto text-primary" />
                     )}
@@ -280,17 +384,28 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>{t("auth.cancel")}</AlertDialogCancel>
-                <AlertDialogAction onClick={handleLogout} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                <AlertDialogAction
+                  onClick={handleLogout}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
                   {t("auth.logout")}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
           <div className="flex gap-4 text-xs text-muted-foreground">
-            <Link to="/privacy" onClick={handleNavClick} className="hover:text-foreground transition-colors">
+            <Link
+              to="/privacy"
+              onClick={handleNavClick}
+              className="hover:text-foreground transition-colors"
+            >
               {t("sidebar.privacyPolicy")}
             </Link>
-            <Link to="/terms" onClick={handleNavClick} className="hover:text-foreground transition-colors">
+            <Link
+              to="/terms"
+              onClick={handleNavClick}
+              className="hover:text-foreground transition-colors"
+            >
               {t("sidebar.termsOfUse")}
             </Link>
           </div>

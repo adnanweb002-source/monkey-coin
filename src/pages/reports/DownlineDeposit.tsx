@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
 import type { ExternalDeposit } from "@/types/deposit";
+import {  Coins } from "lucide-react";
 
 const PAGE_SIZE = 20;
 
@@ -24,7 +25,7 @@ const DownlineDeposit = () => {
   const fetchData = useCallback(async (pageNum: number, append: boolean) => {
     if (append) setIsLoadingMore(true); else setIsLoading(true);
     try {
-      const res = await api.get("/downline/deposit-funds", {
+      const res = await api.get("/tree/downline/deposit-funds", {
         params: { page: pageNum, pageSize: PAGE_SIZE },
       });
       const data = res.data?.data || [];
@@ -67,6 +68,22 @@ const DownlineDeposit = () => {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-foreground">Downline Deposit Fund</h1>
+
+      <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/20">
+        <CardContent className="p-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+              <Coins className="h-6 w-6 text-blue-500" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Total Downline Deposit Fund</p>
+              <p className="text-3xl font-bold text-foreground">
+                ${parseFloat(total.toString()).toLocaleString()}
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

@@ -3,18 +3,30 @@ import { Bell, CheckCheck, Loader2 } from "lucide-react";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 const NotificationBell = () => {
-  const { state, loadNotifications, handleMarkAsRead, handleMarkAllAsRead, hasMore } = useNotifications();
+  const {
+    state,
+    loadNotifications,
+    handleMarkAsRead,
+    handleMarkAllAsRead,
+    hasMore,
+  } = useNotifications();
   const [open, setOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
 
+  const navigate = useNavigate();
+
   // Close on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
         setOpen(false);
       }
     };
@@ -96,10 +108,13 @@ const NotificationBell = () => {
               state.items.map((n) => (
                 <button
                   key={n.id}
-                  onClick={() => !n.isRead && handleMarkAsRead(n.id)}
+                  onClick={() => {
+                    !n.isRead && handleMarkAsRead(n.id);
+                    navigate("/notifications");
+                  }}
                   className={cn(
                     "w-full text-left px-4 py-3 hover:bg-accent/50 transition-colors",
-                    !n.isRead && "bg-accent/20"
+                    !n.isRead && "bg-accent/20",
                   )}
                 >
                   <div className="flex items-start gap-2">

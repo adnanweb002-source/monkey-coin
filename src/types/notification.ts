@@ -18,4 +18,5 @@ export interface NotificationsState {
   unreadCount: number;
   total: number;
   isLoading: boolean;
+  redirectionRoute?: string;
 }

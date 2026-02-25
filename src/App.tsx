@@ -41,6 +41,8 @@ import GainReport from "./pages/reports/GainReport";
 import TrackReferral from "./pages/reports/TrackReferral";
 import RankReward from "./pages/reports/RankReward";
 import RequireAuth from "./components/auth/RequireAuth";
+import DownlineDeposit from "./pages/reports/DownlineDeposit";
+import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -125,6 +127,12 @@ const App = () => (
               <Route path="track-referral" element={<TrackReferral />} />
               <Route path="rank-reward" element={<RankReward />} />
               <Route path="holiday-list" element={<HolidayList />} />
+              <Route path="downline-deposit" element={<DownlineDeposit />} />
+            </Route>
+
+            {/* Notifications Page */}
+            <Route path="/notifications" element={<ProtectedDashboard />}>
+              <Route index element={<Notifications />} />
             </Route>
 
             {/* Admin Routes */}

@@ -14,6 +14,7 @@ import {
   Wrench,
   HeadphonesIcon,
   X,
+  Bell,
   Users,
   Package,
   Shield,
@@ -83,6 +84,7 @@ const sidebarItems: SidebarItem[] = [
     ],
   },
   { labelKey: "sidebar.marketingTools", icon: Wrench, path: "/marketing-tools", disabled: true },
+  { labelKey: "sidebar.notifications", icon: Bell, path: "/notifications" },
   { labelKey: "sidebar.contactSupport", icon: HeadphonesIcon, path: "/support" },
 ];
 

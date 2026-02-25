@@ -29,11 +29,12 @@ const Deposit = () => {
   const [method, setMethod] = useState("");
   const [reference, setReference] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // Crypto deposit state
-  const [cryptoDepositData, setCryptoDepositData] = useState<CryptoDepositData | null>(null);
+  const [cryptoDepositData, setCryptoDepositData] =
+    useState<CryptoDepositData | null>(null);
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);
-  
+
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -116,7 +117,9 @@ const Deposit = () => {
         <TabsContent value="manual" className="mt-6">
           <Card className="max-w-xl mx-auto">
             <CardHeader>
-              <CardTitle className="text-center">Manual Deposit Request</CardTitle>
+              <CardTitle className="text-center">
+                Manual Deposit Request
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* QR Code Placeholder */}
@@ -145,11 +148,12 @@ const Deposit = () => {
                     <Input
                       id="amount"
                       type="number"
+                      onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                      className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                       placeholder="Enter amount"
                       value={amount}
                       onChange={(e) => setAmount(e.target.value)}
                       min="0.01"
-                      step="0.01"
                       required
                     />
                   </div>
@@ -166,7 +170,9 @@ const Deposit = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="reference">Transaction Reference (Optional)</Label>
+                    <Label htmlFor="reference">
+                      Transaction Reference (Optional)
+                    </Label>
                     <Input
                       id="reference"
                       type="text"

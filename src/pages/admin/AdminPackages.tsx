@@ -347,7 +347,8 @@ const AdminPackages = () => {
                 <Input
                   id="investmentMin"
                   type="number"
-                  step="0.01"
+                  onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                  className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   value={formData.investmentMin}
                   onChange={(e) => setFormData({ ...formData, investmentMin: e.target.value })}
                   placeholder="0.00"
@@ -358,7 +359,8 @@ const AdminPackages = () => {
                 <Input
                   id="investmentMax"
                   type="number"
-                  step="0.01"
+                  onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                  className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   value={formData.investmentMax}
                   onChange={(e) => setFormData({ ...formData, investmentMax: e.target.value })}
                   placeholder="0.00"
@@ -372,10 +374,11 @@ const AdminPackages = () => {
                 <Input
                   id="dailyReturnPct"
                   type="number"
-                  step="0.01"
                   value={formData.dailyReturnPct}
                   onChange={(e) => setFormData({ ...formData, dailyReturnPct: e.target.value })}
                   placeholder="0.00"
+                  onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                  className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 />
               </div>
               <div className="space-y-2">
@@ -386,6 +389,8 @@ const AdminPackages = () => {
                   value={formData.durationDays || ""}
                   onChange={(e) => setFormData({ ...formData, durationDays: parseInt(e.target.value) || 0 })}
                   placeholder="0"
+                  onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                  className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 />
               </div>
             </div>
@@ -399,6 +404,8 @@ const AdminPackages = () => {
                 value={formData.capitalReturn}
                 onChange={(e) => setFormData({ ...formData, capitalReturn: e.target.value })}
                 placeholder="0.00"
+                onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                  className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               />
             </div>
 

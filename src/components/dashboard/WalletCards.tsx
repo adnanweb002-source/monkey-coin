@@ -87,6 +87,9 @@ const WalletCards = ({ wallets }: { wallets: WalletCard[] }) => {
             <p className="text-white font-poppins text-xl font-bold">
               {wallet?.amount}
             </p>
+             <p className="text-white font-poppins text-sm font-bold">
+              {wallet?.type === "F_WALLET" ? "Funds Wallet" : wallet?.type === "I_WALLET" ? "Referral & Binary Income" : wallet?.type === "M_WALLET" ? "Daily Returns" : wallet?.type === "BONUS_WALLET" ? "Bonus Rewards" : wallet?.type}
+            </p>
           </div>
         </div>
       ))}

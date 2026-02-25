@@ -158,7 +158,8 @@ const TransferToUserModal = ({
             <Label>Amount</Label>
             <Input 
               type="number" 
-              step="0.01" 
+              onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                  className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               placeholder="0.00" 
               {...form.register("amount")} 
             />

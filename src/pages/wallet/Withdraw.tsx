@@ -187,6 +187,8 @@ const Withdraw = () => {
                   id="amount"
                   type="number"
                   placeholder="Enter amount"
+                  onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                  className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   min="0.01"

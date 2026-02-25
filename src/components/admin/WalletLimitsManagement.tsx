@@ -442,7 +442,8 @@ const WalletLimitsManagement = () => {
                 id="minWithdrawal"
                 type="number"
                 min="0"
-                step="0.01"
+                onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 value={formData.minWithdrawal}
                 onChange={(e) => setFormData({ ...formData, minWithdrawal: e.target.value })}
                 placeholder="10.00"
@@ -456,7 +457,8 @@ const WalletLimitsManagement = () => {
                 id="maxPerTx"
                 type="number"
                 min="0"
-                step="0.01"
+                onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 value={formData.maxPerTx}
                 onChange={(e) => setFormData({ ...formData, maxPerTx: e.target.value })}
                 placeholder="500.00"
@@ -470,7 +472,8 @@ const WalletLimitsManagement = () => {
                 id="maxTxCount24h"
                 type="number"
                 min="1"
-                step="1"
+                onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 value={formData.maxTxCount24h}
                 onChange={(e) => setFormData({ ...formData, maxTxCount24h: e.target.value })}
                 placeholder="3"
@@ -484,7 +487,8 @@ const WalletLimitsManagement = () => {
                 id="maxAmount24h"
                 type="number"
                 min="0"
-                step="0.01"
+                onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 value={formData.maxAmount24h}
                 onChange={(e) => setFormData({ ...formData, maxAmount24h: e.target.value })}
                 placeholder="1000.00"

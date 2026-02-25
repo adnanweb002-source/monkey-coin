@@ -414,9 +414,10 @@ const PackagePurchaseModal = ({
                 placeholder="0.00"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="pl-7"
+                onWheel={(e) => (e.target as HTMLInputElement).blur()}
                 min="0"
-                step="0.01"
+                className="pl-7 appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+          
               />
             </div>
             {selectedPackage && (
@@ -547,13 +548,13 @@ const PackagePurchaseModal = ({
                             onChange={(e) =>
                               handleWalletAmountChange(wallet, e.target.value)
                             }
+                            onWheel={(e) => (e.target as HTMLInputElement).blur()}
                             className={cn(
-                              "pl-7 h-9",
+                              "pl-7 h-9 appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
                               exceedsBalance &&
                                 "border-destructive focus-visible:ring-destructive",
                             )}
                             min="0"
-                            step="0.01"
                           />
                         </div>
                         {!isAdminPurchasingForOther && (

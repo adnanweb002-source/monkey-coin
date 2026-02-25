@@ -102,11 +102,12 @@ const CryptoDepositForm = ({ onDepositCreated }: CryptoDepositFormProps) => {
             <Input
               id="amount"
               type="number"
+              onWheel={(e) => (e.target as HTMLInputElement).blur()}
+              className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               placeholder="Enter amount in USD"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               min="0.01"
-              step="0.01"
               required
             />
           </div>

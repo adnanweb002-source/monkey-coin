@@ -2,7 +2,12 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Bell, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,6 +18,7 @@ import { cn } from "@/lib/utils";
 import api from "@/lib/api";
 import { markAsRead, markAllAsRead } from "@/lib/notificationApi";
 import { CheckCheck } from "lucide-react";
+import { useNotifications } from "@/contexts/NotificationContext";
 
 interface NotificationItem {
   id: number;
@@ -37,30 +43,44 @@ const Notifications = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const fetchData = useCallback(async (currentSkip: number, append: boolean) => {
-    if (append) setIsLoadingMore(true); else setIsLoading(true);
-    try {
-      const res = await api.get("/notifications", {
-        params: { take: PAGE_SIZE, skip: currentSkip },
-      });
-      const data = res.data?.data || [];
-      setItems(prev => append ? [...prev, ...data] : data);
-      setTotal(res.data?.total || 0);
-      setUnreadCount(res.data?.unreadCount || 0);
-      setSkip(currentSkip + PAGE_SIZE);
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error?.response?.data?.message || "Failed to fetch notifications",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-      setIsLoadingMore(false);
-    }
-  }, [toast]);
+  const {
+    state,
+    loadNotifications,
+    handleMarkAsRead,
+    handleMarkAllAsRead,
+  } = useNotifications();
 
-  useEffect(() => { fetchData(0, false); }, [fetchData]);
+  const fetchData = useCallback(
+    async (currentSkip: number, append: boolean) => {
+      if (append) setIsLoadingMore(true);
+      else setIsLoading(true);
+      try {
+        const res = await api.get("/notifications", {
+          params: { take: PAGE_SIZE, skip: currentSkip },
+        });
+        const data = res.data?.data || [];
+        setItems((prev) => (append ? [...prev, ...data] : data));
+        setTotal(res.data?.total || 0);
+        setUnreadCount(res.data?.unreadCount || 0);
+        setSkip(currentSkip + PAGE_SIZE);
+      } catch (error: any) {
+        toast({
+          title: "Error",
+          description:
+            error?.response?.data?.message || "Failed to fetch notifications",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+        setIsLoadingMore(false);
+      }
+    },
+    [toast],
+  );
+
+  useEffect(() => {
+    fetchData(0, false);
+  }, [fetchData]);
 
   const hasMore = items.length < total;
 
@@ -73,7 +93,7 @@ const Notifications = () => {
           fetchData(skip, true);
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
     observer.observe(sentinelRef.current);
     return () => observer.disconnect();
@@ -95,11 +115,7 @@ const Notifications = () => {
 
   const handleRowClick = async (n: NotificationItem) => {
     if (!n.isRead) {
-      try {
-        await markAsRead(n.id);
-        setItems(prev => prev.map(item => item.id === n.id ? { ...item, isRead: true } : item));
-        setUnreadCount(prev => Math.max(0, prev - 1));
-      } catch { /* silent */ }
+      handleMarkAsRead(n.id);
     }
     if (n.redirectionRoute && n.redirectionRoute.trim() !== "") {
       navigate(n.redirectionRoute);
@@ -107,18 +123,18 @@ const Notifications = () => {
   };
 
   const handleMarkAll = async () => {
-    try {
-      await markAllAsRead();
-      setItems(prev => prev.map(item => ({ ...item, isRead: true })));
-      setUnreadCount(0);
-    } catch { /* silent */ }
+    await handleMarkAllAsRead();
+    setItems((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    setUnreadCount(0);
   };
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-foreground">Notifications</h1>
-        <p className="text-sm text-muted-foreground mt-1">View all your notifications</p>
+        <p className="text-sm text-muted-foreground mt-1">
+          View all your notifications
+        </p>
       </div>
 
       <Card>
@@ -127,7 +143,10 @@ const Notifications = () => {
             <div className="flex items-center gap-3">
               <CardTitle>All Notifications</CardTitle>
               {unreadCount > 0 && (
-                <Badge variant="secondary" className="bg-primary/10 text-primary">
+                <Badge
+                  variant="secondary"
+                  className="bg-primary/10 text-primary"
+                >
                   {unreadCount} unread
                 </Badge>
               )}
@@ -172,10 +191,15 @@ const Notifications = () => {
                         className={cn(
                           "cursor-pointer transition-colors",
                           !n.isRead && "bg-accent/20 hover:bg-accent/30",
-                          n.isRead && "hover:bg-muted/50"
+                          n.isRead && "hover:bg-muted/50",
                         )}
                       >
-                        <TableCell className={cn("text-sm", !n.isRead && "font-semibold text-foreground")}>
+                        <TableCell
+                          className={cn(
+                            "text-sm",
+                            !n.isRead && "font-semibold text-foreground",
+                          )}
+                        >
                           {n.title}
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground max-w-[300px] truncate">
@@ -185,11 +209,14 @@ const Notifications = () => {
                           {formatDate(n.createdAt)}
                         </TableCell>
                         <TableCell>
-                          <Badge variant={n.isRead ? "secondary" : "default"} className={cn(
-                            n.isRead
-                              ? "bg-muted text-muted-foreground"
-                              : "bg-primary/10 text-primary"
-                          )}>
+                          <Badge
+                            variant={n.isRead ? "secondary" : "default"}
+                            className={cn(
+                              n.isRead
+                                ? "bg-muted text-muted-foreground"
+                                : "bg-primary/10 text-primary",
+                            )}
+                          >
                             {n.isRead ? "Read" : "Unread"}
                           </Badge>
                         </TableCell>
@@ -200,8 +227,13 @@ const Notifications = () => {
               </div>
 
               {hasMore && (
-                <div ref={sentinelRef} className="flex items-center justify-center py-4">
-                  {isLoadingMore && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
+                <div
+                  ref={sentinelRef}
+                  className="flex items-center justify-center py-4"
+                >
+                  {isLoadingMore && (
+                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                  )}
                 </div>
               )}
 

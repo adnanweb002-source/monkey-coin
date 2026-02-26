@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { MessageSquare, ChevronLeft, ChevronRight, Plus, Loader2, Send } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
+import { RiTelegramLine } from "react-icons/ri";
+import { MdOutlineMail } from "react-icons/md";
 import {
   Table,
   TableBody,
@@ -109,10 +112,21 @@ const Support = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold text-foreground">Contact Support</h1>
+        <div className="flex items-center gap-2">
+        <Button onClick={() => setCreateModalOpen(true)}>
+          <FaWhatsapp />
+        </Button>
+        <Button onClick={() => setCreateModalOpen(true)}>
+          <RiTelegramLine />
+        </Button>
+        <Button onClick={() => setCreateModalOpen(true)}>
+          <MdOutlineMail />
+        </Button>
         <Button onClick={() => setCreateModalOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
           Raise New Query
         </Button>
+        </div>
       </div>
 
       <Card>

@@ -12,27 +12,27 @@ export const walletConfig: Record<
   Omit<WalletCard, "id" | "amount" | "type" | "balance">
 > = {
   F_WALLET: {
-    label: "F Wallet",
+    label: "D Wallet",
     color: "red",
-    src: d_wallet,
-    badge: "F",
+    src: b_wallet,
+    badge: "D",
   },
   I_WALLET: {
-    label: "I Wallet",
+    label: "P Wallet",
     color: "blue",
-    src: a_wallet,
-    badge: "I",
+    src: b_wallet,
+    badge: "P",
   },
   M_WALLET: {
-    label: "M Wallet",
+    label: "E Wallet",
     color: "green",
-    src: m_wallet,
-    badge: "M",
+    src: b_wallet,
+    badge: "E",
   },
   BONUS_WALLET: {
-    label: "Bonus Wallet",
+    label: "A Wallet",
     color: "orange",
     src: b_wallet,
-    badge: "B",
+    badge: "A",
   },
 };

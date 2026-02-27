@@ -38,10 +38,10 @@ interface PackagePurchaseModalProps {
 }
 
 const WALLET_LABELS: Record<string, string> = {
-  F_WALLET: "F Wallet",
-  M_WALLET: "M Wallet",
-  I_WALLET: "I Wallet",
-  BONUS_WALLET: "Bonus Wallet",
+  F_WALLET: "D Wallet",
+  M_WALLET: "E Wallet",
+  I_WALLET: "P Wallet",
+  BONUS_WALLET: "A Wallet",
 };
 
 const formatCurrency = (value: string | number) => {
@@ -415,8 +415,8 @@ const PackagePurchaseModal = ({
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 onWheel={(e) => (e.target as HTMLInputElement).blur()}
-                min="0"
                 className="pl-7 appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                min="0"
           
               />
             </div>

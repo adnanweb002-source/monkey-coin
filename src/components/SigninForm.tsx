@@ -117,14 +117,14 @@ const SigninForm = () => {
         {/* Email */}
         <div>
           <label htmlFor="email" className="crypto-label">
-            Email
+              Email, Phone, or Member ID
           </label>
           <input
             id="email"
-            type="email"
+            type="text"
             {...register("email")}
             className="crypto-input"
-            placeholder="Enter your email"
+            placeholder="Enter your phone number or email or member ID"
           />
           {errors.email && (
             <p className="text-destructive text-xs mt-1">

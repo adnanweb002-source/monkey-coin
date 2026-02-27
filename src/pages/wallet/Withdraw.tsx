@@ -125,10 +125,10 @@ const Withdraw = () => {
   };
 
   const walletLabels: Record<string, string> = {
-    F_WALLET: "F Wallet",
-    I_WALLET: "I Wallet",
-    M_WALLET: "M Wallet",
-    BONUS_WALLET: "Bonus Wallet",
+    F_WALLET: "D Wallet",
+    I_WALLET: "P Wallet",
+    M_WALLET: "E Wallet",
+    BONUS_WALLET: "A Wallet",
   };
 
   return (

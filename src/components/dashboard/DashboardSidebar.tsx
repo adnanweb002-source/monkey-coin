@@ -21,6 +21,7 @@ import {
   User,
   Settings,
   LogOut,
+  File,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -50,42 +51,24 @@ interface SidebarItem {
 }
 
 const sidebarItems: SidebarItem[] = [
-  { labelKey: "sidebar.dashboard", icon: Home, path: "/dashboard" },
+  { labelKey: "sidebar.panel", icon: Home, path: "/panel" },
   { labelKey: "sidebar.myProfile", icon: User, path: "/profile" },
-  { labelKey: "sidebar.notifications", icon: Bell, path: "/notifications" },
+  {
+    labelKey: "sidebar.funds",
+    icon: Wallet,
+    children: [
+      { labelKey: "sidebar.deposit", path: "/wallet/deposit" },
+      { labelKey: "sidebar.withdrawalFunds", path: "/wallet/withdraw" },
+      { labelKey: "sidebar.transferFunds", path: "/wallet/transfer" },
+    ],
+  },
   { labelKey: "sidebar.makeInvestment", icon: DollarSign, path: "/packages" },
   { labelKey: "sidebar.myTree", icon: TreePine, path: "/tree" },
-  { labelKey: "sidebar.deposit", icon: Wallet, path: "/wallet/deposit" },
-  {
-    labelKey: "sidebar.depositHistory",
-    icon: FileText,
-    path: "/wallet/deposit-history",
-  },
-  {
-    labelKey: "sidebar.transferFunds",
-    icon: ArrowRightLeft,
-    path: "/wallet/transfer",
-  },
-  {
-    labelKey: "sidebar.withdrawalFunds",
-    icon: ArrowDownToLine,
-    path: "/wallet/withdraw",
-  },
-  {
-    labelKey: "sidebar.withdrawalRequests",
-    icon: FileText,
-    path: "/wallet/withdraw-requests",
-  },
-  {
-    labelKey: "sidebar.transactions",
-    icon: ArrowRightLeft,
-    path: "/wallet/transactions",
-  },
   {
     labelKey: "sidebar.income",
     icon: FileText,
     children: [
-      { labelKey: "sidebar.directIncome", path: "/income/direct" },
+      { labelKey: "sidebar.dailyIncome", path: "/income/daily" },
       { labelKey: "sidebar.binaryIncome", path: "/income/binary" },
       { labelKey: "sidebar.referralIncome", path: "/income/referral" },
     ],
@@ -96,19 +79,32 @@ const sidebarItems: SidebarItem[] = [
     children: [
       { labelKey: "sidebar.wallets", path: "/reports/wallets" },
       { labelKey: "sidebar.gainReport", path: "/reports/gain-report" },
-      { labelKey: "sidebar.trackReferral", path: "/reports/track-referral" },
+      { labelKey: "sidebar.referralReport", path: "/reports/track-referral" },
       { labelKey: "sidebar.rankAndReward", path: "/reports/rank-reward" },
-      { labelKey: "sidebar.withdrawal", path: "/wallet/withdraw" },
       {
         labelKey: "sidebar.withdrawalStatus",
         path: "/wallet/withdraw-requests",
       },
-      { labelKey: "sidebar.holidayList", path: "/reports/holiday-list" },
+      {
+        labelKey: "sidebar.depositHistory",
+        path: "/wallet/deposit-history",
+      },
       {
         labelKey: "sidebar.downlineDeposit",
         path: "/reports/downline-deposit",
       },
     ],
+  },
+  { labelKey: "sidebar.notifications", icon: Bell, path: "/notifications" },
+  {
+    labelKey: "sidebar.holidayList",
+    icon: File,
+    path: "/reports/holiday-list",
+  },
+  {
+    labelKey: "sidebar.transactions",
+    icon: ArrowRightLeft,
+    path: "/wallet/transactions",
   },
   {
     labelKey: "sidebar.marketingTools",
@@ -346,11 +342,12 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
                     <item.icon size={18} />
                     <span>{t(item.labelKey)}</span>
 
-                    {item.labelKey === "sidebar.notifications" && state.unreadCount > 0 && (
-                      <span className="min-w-[16px] h-4 px-1 bg-destructive rounded-full text-[10px] flex items-center justify-center text-destructive-foreground font-medium animate-in zoom-in-50">
-                        {state.unreadCount > 99 ? "99+" : state.unreadCount}
-                      </span>
-                    )}
+                    {item.labelKey === "sidebar.notifications" &&
+                      state.unreadCount > 0 && (
+                        <span className="min-w-[16px] h-4 px-1 bg-destructive rounded-full text-[10px] flex items-center justify-center text-destructive-foreground font-medium animate-in zoom-in-50">
+                          {state.unreadCount > 99 ? "99+" : state.unreadCount}
+                        </span>
+                      )}
                     {item.adminOnly && (
                       <Shield size={12} className="ml-auto text-primary" />
                     )}

@@ -25,7 +25,7 @@ const TreeControls = ({
         onClick={onExtremeLeftClick}
         className="bg-[#D97706] hover:bg-[#B45309] text-white font-semibold px-4 py-2 rounded-md text-xs transition-colors whitespace-nowrap"
       >
-        EXTREME LEFT = {extremeLeft}
+        EXTREME LEFT
       </button>
 
       {/* Search Input */}
@@ -45,7 +45,7 @@ const TreeControls = ({
         onClick={onExtremeRightClick}
         className="bg-[#D97706] hover:bg-[#B45309] text-white font-semibold px-4 py-2 rounded-md text-xs transition-colors whitespace-nowrap"
       >
-        EXTREME RIGHT = {extremeRight}
+        EXTREME RIGHT
       </button>
     </div>
   );

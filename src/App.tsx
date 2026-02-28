@@ -116,7 +116,7 @@ const App = () => (
             {/* Income Routes */}
             <Route path="/income" element={<ProtectedDashboard />}>
               <Route path="binary" element={<BinaryIncome />} />
-              <Route path="direct" element={<DirectIncome />} />
+              <Route path="daily" element={<DirectIncome />} />
               <Route path="referral" element={<ReferralIncome />} />
             </Route>
 

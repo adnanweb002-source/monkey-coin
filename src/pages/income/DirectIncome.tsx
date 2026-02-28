@@ -34,7 +34,7 @@ interface IncomeResponse {
 
 const TAKE = 20;
 
-const DirectIncome = () => {
+const DailyIncome = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [total, setTotal] = useState("0");
   const [count, setCount] = useState(0);
@@ -83,7 +83,7 @@ const DirectIncome = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-foreground">Direct Income</h1>
+      <h1 className="text-2xl font-bold text-foreground">Daily Income</h1>
 
       {/* Total Earned Card */}
       <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/20">
@@ -93,7 +93,7 @@ const DirectIncome = () => {
               <Coins className="h-6 w-6 text-blue-500" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Total Direct Income Earned</p>
+              <p className="text-sm text-muted-foreground">Total Daily Income Earned</p>
               <p className="text-3xl font-bold text-foreground">
                 ${parseFloat(total).toLocaleString()}
               </p>
@@ -105,7 +105,7 @@ const DirectIncome = () => {
       <Card>
         <CardHeader>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <CardTitle>Direct Income Transactions</CardTitle>
+            <CardTitle>Daily Income Transactions</CardTitle>
             <Button
               variant="outline"
               size="sm"
@@ -127,9 +127,9 @@ const DirectIncome = () => {
           ) : transactions.length === 0 ? (
             <div className="text-center py-12">
               <Coins className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
-              <p className="text-muted-foreground">No direct income records yet</p>
+              <p className="text-muted-foreground">No daily income records yet</p>
               <p className="text-sm text-muted-foreground/70 mt-1">
-                Your direct income transactions will appear here
+                Your daily income transactions will appear here
               </p>
             </div>
           ) : (
@@ -214,4 +214,4 @@ const DirectIncome = () => {
   );
 };
 
-export default DirectIncome;
+export default DailyIncome;

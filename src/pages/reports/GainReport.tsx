@@ -15,8 +15,15 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
-import { TrendingUp, Calendar, RefreshCw, RotateCcw, DollarSign } from "lucide-react";
+import {
+  TrendingUp,
+  Calendar,
+  RefreshCw,
+  RotateCcw,
+  DollarSign,
+} from "lucide-react";
 import { format, subDays, startOfMonth } from "date-fns";
+import { useSearchParams } from "react-router-dom";
 
 interface BreakdownItem {
   type: string;
@@ -47,12 +54,18 @@ const incomeTypeColors: Record<string, string> = {
 };
 
 const GainReport = () => {
-  const [fromDate, setFromDate] = useState(format(startOfMonth(new Date()), "yyyy-MM-dd"));
+  const [fromDate, setFromDate] = useState(
+    format(startOfMonth(new Date()), "yyyy-MM-dd"),
+  );
   const [toDate, setToDate] = useState(format(new Date(), "yyyy-MM-dd"));
   const [data, setData] = useState<GainReportData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const { toast } = useToast();
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const type = searchParams.get("type") || "DAILY";
 
   const fetchGainReport = async () => {
     if (!fromDate || !toDate) {
@@ -76,13 +89,36 @@ const GainReport = () => {
     setIsLoading(true);
     setHasSearched(true);
 
+    let gainType: string;
+
+    if (type === "DAILY") {
+      gainType = "ROI_CREDIT";
+    } else if (type === "REFERRAL") {
+      gainType = "REFERRAL_INCOME";
+    } else if (type === "BINARY") {
+      gainType = "BINARY_INCOME";
+    } else if (type === "PACKAGE_PURCHASE") {
+      gainType = "PACKAGE_PURCHASE";
+    } else {
+      toast({
+        title: "Error",
+        description: "Invalid report type",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const response = await api.get(`/wallet/income/gain-report?from=${fromDate}&to=${toDate}`);
+      const response = await api.get(
+        `/wallet/income/gain-report?type=${gainType}&from=${fromDate}&to=${toDate}`,
+      );
       setData(response.data);
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.response?.data?.message || "Failed to fetch gain report",
+        description:
+          error.response?.data?.message || "Failed to fetch gain report",
         variant: "destructive",
       });
       setData(null);
@@ -134,9 +170,23 @@ const GainReport = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-bold text-foreground">Gain Report</h1>
+        <h1 className="text-2xl font-bold text-foreground capitalize">
+          {type.toLowerCase() == "package_purchase"
+            ? "Package"
+            : type.charAt(0) + type.slice(1).toLowerCase()}
+          {type != "PACKAGE_PURCHASE" ? " Earnings " : " Purchase "}
+          Report
+        </h1>
         <p className="text-muted-foreground">
-          View your income breakdown across different sources
+          {type === "DAILY"
+            ? "View your daily income breakdown"
+            : type === "REFERRAL"
+              ? "View your referral income breakdown"
+              : type === "BINARY"
+                ? "View your binary income breakdown"
+                : type === "PACKAGE_PURCHASE"
+                  ? "View your package purchase breakdown"
+                  : ""}
         </p>
       </div>
 
@@ -194,7 +244,11 @@ const GainReport = () => {
               />
             </div>
             <div className="flex items-end gap-2 sm:col-span-2 lg:col-span-2">
-              <Button onClick={fetchGainReport} disabled={isLoading} className="flex-1">
+              <Button
+                onClick={fetchGainReport}
+                disabled={isLoading}
+                className="flex-1"
+              >
                 {isLoading ? (
                   <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
                 ) : null}
@@ -263,7 +317,8 @@ const GainReport = () => {
                       {data.breakdown.map((item, index) => {
                         const amount = parseFloat(item.amount);
                         const maxAmount = getMaxAmount();
-                        const percentage = maxAmount > 0 ? (amount / maxAmount) * 100 : 0;
+                        const percentage =
+                          maxAmount > 0 ? (amount / maxAmount) * 100 : 0;
 
                         return (
                           <TableRow key={index}>
@@ -298,7 +353,8 @@ const GainReport = () => {
                   {data.breakdown.map((item, index) => {
                     const amount = parseFloat(item.amount);
                     const maxAmount = getMaxAmount();
-                    const percentage = maxAmount > 0 ? (amount / maxAmount) * 100 : 0;
+                    const percentage =
+                      maxAmount > 0 ? (amount / maxAmount) * 100 : 0;
 
                     return (
                       <div

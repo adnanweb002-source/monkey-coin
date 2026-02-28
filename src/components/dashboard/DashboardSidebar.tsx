@@ -78,12 +78,16 @@ const sidebarItems: SidebarItem[] = [
     icon: FileText,
     children: [
       { labelKey: "sidebar.wallets", path: "/reports/wallets" },
-      { labelKey: "sidebar.gainReport", path: "/reports/gain-report" },
-      { labelKey: "sidebar.referralReport", path: "/reports/track-referral" },
-      { labelKey: "sidebar.rankAndReward", path: "/reports/rank-reward" },
+      { labelKey: "sidebar.dailyEarningsReport", path: "/reports/gain-report?type=DAILY" },
+      { labelKey: "sidebar.referralEarningsReport", path: "/reports/gain-report?type=REFERRAL" },
+      { labelKey: "sidebar.binaryEarningsReport", path: "/reports/gain-report?type=BINARY" },
       {
         labelKey: "sidebar.withdrawalStatus",
         path: "/wallet/withdraw-requests",
+      },
+       {
+        labelKey: "sidebar.packagePurchaseReport",
+        path: "/reports/gain-report?type=PACKAGE_PURCHASE",
       },
       {
         labelKey: "sidebar.depositHistory",

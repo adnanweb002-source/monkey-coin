@@ -64,7 +64,7 @@ const TwoFactorSetup = () => {
         title: "2FA Enabled",
         description: "Two-factor authentication has been successfully enabled.",
       });
-      navigate("/dashboard");
+      navigate("/panel");
     },
     onError: (error) => {
       toast({

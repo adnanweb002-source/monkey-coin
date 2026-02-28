@@ -84,14 +84,14 @@ const SigninForm = () => {
         if (import.meta.env.VITE_ENVIRONMENT === "production") {
           window.location.href = "https://admin.gogex.xyz";
         } else {
-          navigate("/dashboard");
+          navigate("/panel");
         }
       } else {
         toast({
           title: "Success!",
           description: "You have been signed in successfully.",
         });
-        navigate("/dashboard");
+        navigate("/panel");
       }
     } catch (error) {
       toast({

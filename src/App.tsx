@@ -83,7 +83,7 @@ const App = () => (
             />
 
             {/* Dashboard Routes - wrapped in protected layout */}
-            <Route path="/dashboard" element={<ProtectedDashboard />}>
+            <Route path="/panel" element={<ProtectedDashboard />}>
               <Route index element={<DashboardHome />} />
             </Route>
 

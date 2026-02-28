@@ -40,13 +40,13 @@ const SystemPrune = () => {
           setIsAdmin(true);
         } else {
           // Non-admin, redirect to dashboard
-          navigate("/dashboard", { replace: true });
+          navigate("/panel", { replace: true });
         }
       } catch {
-        navigate("/dashboard", { replace: true });
+        navigate("/panel", { replace: true });
       }
     } else {
-      navigate("/dashboard", { replace: true });
+      navigate("/panel", { replace: true });
     }
     setIsCheckingRole(false);
   }, [navigate]);

@@ -8,15 +8,21 @@ interface TreeControlsProps {
   extremeRight?: number;
   onExtremeLeftClick?: () => void;
   onExtremeRightClick?: () => void;
+  setCurrentRootId?: (id: string | null) => void;
+  currentRootId?: string | null;
+  userId?: string;
 }
 
-const TreeControls = ({ 
-  searchQuery, 
-  onSearchChange, 
+const TreeControls = ({
+  searchQuery,
+  onSearchChange,
   extremeLeft = 0,
   extremeRight = 0,
   onExtremeLeftClick,
-  onExtremeRightClick
+  onExtremeRightClick,
+  setCurrentRootId,
+  currentRootId,
+  userId,
 }: TreeControlsProps) => {
   return (
     <div className="flex items-center justify-between gap-4 py-2">
@@ -39,6 +45,15 @@ const TreeControls = ({
           className="pl-10 placeholder:text-gray-500 focus:border-[#D97706] rounded-md h-9 text-sm"
         />
       </div>
+
+      {currentRootId !== userId && (
+        <button
+          onClick={() => setCurrentRootId(userId)}
+          className="bg-[#D97706] hover:bg-[#B45309] text-white font-semibold px-4 py-2 rounded-md text-xs transition-colors whitespace-nowrap"
+        >
+          MY POSITION
+        </button>
+      )}
 
       {/* Extreme Right Button */}
       <button

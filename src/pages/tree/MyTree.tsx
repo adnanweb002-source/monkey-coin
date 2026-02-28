@@ -28,7 +28,9 @@ const useGetTree = (userId: number, depth: number) => {
 };
 
 // Helper to count business volume (total nodes in left/right branches)
-const countBusinessVolume = (node: TreeNode | null): { left: number; right: number } => {
+const countBusinessVolume = (
+  node: TreeNode | null,
+): { left: number; right: number } => {
   const countNodes = (n: TreeNode | null): number => {
     if (!n) return 0;
     return 1 + countNodes(n.leftChild) + countNodes(n.rightChild);
@@ -48,12 +50,16 @@ const nodeMatchesSearch = (node: TreeNode | null, query: string): boolean => {
   const lowerQuery = query.toLowerCase().trim();
   return (
     node.memberId?.toLowerCase().includes(lowerQuery) ||
-    node.email?.toLowerCase().includes(lowerQuery)
+    node.email?.toLowerCase().includes(lowerQuery) ||
+    node.fullName?.toLowerCase().includes(lowerQuery)
   );
 };
 
 // Helper to collect all matching node IDs in the tree
-const findMatchingNodeIds = (node: TreeNode | null, query: string): Set<number> => {
+const findMatchingNodeIds = (
+  node: TreeNode | null,
+  query: string,
+): Set<number> => {
   const matches = new Set<number>();
   if (!node || !query.trim()) return matches;
 
@@ -73,6 +79,7 @@ const findMatchingNodeIds = (node: TreeNode | null, query: string): Set<number> 
 const MyTree = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [depth] = useState(20);
+
   const userId = localStorage.getItem("userProfile")
     ? JSON.parse(localStorage.getItem("userProfile") || "").id
     : 1;
@@ -81,13 +88,21 @@ const MyTree = () => {
     ? JSON.parse(localStorage.getItem("userProfile") || "").memberId
     : null;
 
-  const {data:wallets}=useGetWallets();
+  const [currentRootId, setCurrentRootId] = useState(userId);
 
-  const { data: treeData, isLoading, error } = useGetTree(userId, depth);
+  const { data: wallets } = useGetWallets();
 
-  const matchingNodeIds = treeData ? findMatchingNodeIds(treeData, searchQuery) : new Set<number>();
+  const { data: treeData, isLoading, error } = useGetTree(currentRootId, depth);
+
+  const matchingNodeIds = treeData
+    ? findMatchingNodeIds(treeData, searchQuery)
+    : new Set<number>();
+
+  console.log("Matching node IDs:", matchingNodeIds);
 
   const handleNodeClick = (node: TreeNode) => {
+    setCurrentRootId(node.id);
+
     toast.info(`Selected: ${node.email}`, {
       description: `Member ID: ${node.memberId}`,
     });
@@ -95,10 +110,34 @@ const MyTree = () => {
 
   const handleAddUser = (parentId: string, position: "LEFT" | "RIGHT") => {
     toast.info(`Add user to ${position} of parent ${parentId}`);
-    window.open(`/signup?ref=${memberId}&position=${position}&parent=${parentId}`, "_blank");
+    window.open(
+      `/signup?ref=${memberId}&position=${position}&parent=${parentId}`,
+      "_blank",
+    );
   };
 
-  const businessVolume = treeData ? countBusinessVolume(treeData) : { left: 0, right: 0 };
+  const businessVolume = treeData
+    ? countBusinessVolume(treeData)
+    : { left: 0, right: 0 };
+
+  const getExtremeLeftNode = (node: TreeNode | null): TreeNode | null => {
+    if (!node) return null;
+    let current = node;
+    while (current.leftChild) {
+      current = current.leftChild;
+    }
+    return current;
+  };
+
+  const getExtremeRightNode = (node: TreeNode | null): TreeNode | null => {
+    if (!node) return null;
+    let current = node;
+    while (current.rightChild) {
+      current = current.rightChild;
+    }
+    return current;
+  };
+
 
   return (
     <div className="space-y-4 min-h-screen p-4">
@@ -107,8 +146,8 @@ const MyTree = () => {
       
       */}
 
-       <div className="mb-6">
-        <WalletCards  wallets={wallets}/>
+      <div className="mb-6">
+        <WalletCards wallets={wallets} />
       </div>
 
       {/* Tree Controls */}
@@ -117,6 +156,17 @@ const MyTree = () => {
         onSearchChange={setSearchQuery}
         extremeLeft={businessVolume.left}
         extremeRight={businessVolume.right}
+        onExtremeLeftClick={() => {
+          const node = getExtremeLeftNode(treeData || null);
+          if (node) setCurrentRootId(node.id);
+        }}
+        onExtremeRightClick={() => {
+          const node = getExtremeRightNode(treeData || null);
+          if (node) setCurrentRootId(node.id);
+        }}
+        setCurrentRootId={setCurrentRootId}
+        currentRootId={currentRootId}
+        userId={userId}
       />
 
       {/* Tree Visualization Container */}
@@ -132,7 +182,9 @@ const MyTree = () => {
         <div className="flex flex-col items-center justify-center h-64 text-destructive gap-3">
           <AlertCircle className="w-12 h-12" />
           <span className="text-lg font-medium">Failed to load tree data</span>
-          <span className="text-muted-foreground text-sm">Please try again later</span>
+          <span className="text-muted-foreground text-sm">
+            Please try again later
+          </span>
         </div>
       ) : (
         <BinaryTreeView

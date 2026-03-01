@@ -23,7 +23,7 @@ const AffiliateLinksCard = ({ user }: { user: UserProfile | null }) => {
     queryKey: ["affiliate-tree-stats", user?.id],
     queryFn: async () => {
       try {
-        const res = await api.get(`/tree/user/${user?.id}?depth=2`);
+        const res = await api.get(`/tree/user/${user?.id}?depth=200`);
         const tree = res.data;
         return {
           leftTotal: tree?.leftChild ? 1 : 0,
@@ -39,17 +39,29 @@ const AffiliateLinksCard = ({ user }: { user: UserProfile | null }) => {
     staleTime: 5 * 60 * 1000,
   });
 
-  const leftLink = `${DOMAIN}/signup?ref=${memberId}&position=left`;
-  const rightLink = `${DOMAIN}/signup?ref=${memberId}&position=right`;
+  const buildAffiliateLink = (
+    sponsorMemberId: string,
+    position: "LEFT" | "RIGHT",
+  ) => {
+    return `${DOMAIN}/signup?ref=${sponsorMemberId}&position=${position}`;
+  };
 
-  const copyLink = (link: string, side: string) => {
-    navigator.clipboard.writeText(link);
-    toast.success(`${side} referral link copied!`);
+  const leftLink = memberId ? buildAffiliateLink(memberId, "LEFT") : "";
+
+  const rightLink = memberId ? buildAffiliateLink(memberId, "RIGHT") : "";
+
+  const copyLink = async (link: string, side: string) => {
+    if (!link) return;
+
+    await navigator.clipboard.writeText(link);
+    toast.success(`${side} affiliate link copied!`);
   };
 
   return (
     <div className="bg-card border border-border rounded-xl p-6">
-      <h3 className="text-lg font-semibold text-foreground mb-6 text-center">Affiliate Links</h3>
+      <h3 className="text-lg font-semibold text-foreground mb-6 text-center">
+        Affiliate Links
+      </h3>
 
       {/* Avatar */}
       <div className="flex justify-center mb-6">
@@ -66,10 +78,19 @@ const AffiliateLinksCard = ({ user }: { user: UserProfile | null }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Left */}
         <div className="bg-muted/30 rounded-lg p-4 border border-border">
-          <p className="text-xs text-muted-foreground font-medium mb-2">LEFT LINK</p>
+          <p className="text-xs text-muted-foreground font-medium mb-2">
+            LEFT LINK
+          </p>
           <div className="flex items-center gap-2 mb-3">
-            <p className="text-xs text-muted-foreground truncate flex-1 font-mono">{leftLink}</p>
-            <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={() => copyLink(leftLink, "Left")}>
+            <p className="text-xs text-muted-foreground truncate flex-1 font-mono">
+              {leftLink}
+            </p>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 shrink-0"
+              onClick={() => copyLink(leftLink, "Left")}
+            >
               <Copy className="h-3.5 w-3.5" />
             </Button>
           </div>
@@ -78,10 +99,12 @@ const AffiliateLinksCard = ({ user }: { user: UserProfile | null }) => {
           ) : (
             <div className="flex gap-4 text-xs">
               <span className="flex items-center gap-1 text-muted-foreground">
-                <Users className="h-3.5 w-3.5" /> {treeStats?.leftTotal ?? 0} Total
+                <Users className="h-3.5 w-3.5" /> {treeStats?.leftTotal ?? 0}{" "}
+                Total
               </span>
               <span className="flex items-center gap-1 text-primary">
-                <UserCheck className="h-3.5 w-3.5" /> {treeStats?.leftActive ?? 0} Active
+                <UserCheck className="h-3.5 w-3.5" />{" "}
+                {treeStats?.leftActive ?? 0} Active
               </span>
             </div>
           )}
@@ -89,10 +112,19 @@ const AffiliateLinksCard = ({ user }: { user: UserProfile | null }) => {
 
         {/* Right */}
         <div className="bg-muted/30 rounded-lg p-4 border border-border">
-          <p className="text-xs text-muted-foreground font-medium mb-2">RIGHT LINK</p>
+          <p className="text-xs text-muted-foreground font-medium mb-2">
+            RIGHT LINK
+          </p>
           <div className="flex items-center gap-2 mb-3">
-            <p className="text-xs text-muted-foreground truncate flex-1 font-mono">{rightLink}</p>
-            <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={() => copyLink(rightLink, "Right")}>
+            <p className="text-xs text-muted-foreground truncate flex-1 font-mono">
+              {rightLink}
+            </p>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 shrink-0"
+              onClick={() => copyLink(rightLink, "Right")}
+            >
               <Copy className="h-3.5 w-3.5" />
             </Button>
           </div>
@@ -101,10 +133,12 @@ const AffiliateLinksCard = ({ user }: { user: UserProfile | null }) => {
           ) : (
             <div className="flex gap-4 text-xs">
               <span className="flex items-center gap-1 text-muted-foreground">
-                <Users className="h-3.5 w-3.5" /> {treeStats?.rightTotal ?? 0} Total
+                <Users className="h-3.5 w-3.5" /> {treeStats?.rightTotal ?? 0}{" "}
+                Total
               </span>
               <span className="flex items-center gap-1 text-primary">
-                <UserCheck className="h-3.5 w-3.5" /> {treeStats?.rightActive ?? 0} Active
+                <UserCheck className="h-3.5 w-3.5" />{" "}
+                {treeStats?.rightActive ?? 0} Active
               </span>
             </div>
           )}

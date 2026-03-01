@@ -2,9 +2,18 @@ import { getAvatarPath } from "@/types/user";
 import type { UserProfile } from "@/types/user";
 import { MapPin, Mail, Phone, Shield } from "lucide-react";
 import UserAvatar from "@/components/common/UserAvatar";
+import { Button } from "@/components/ui/button";
+import { Copy } from "lucide-react";
+import { toast } from "sonner";
 
 const UserProfileCard = ({ user }: { user: UserProfile | null }) => {
   if (!user) return null;
+
+  const copyMemberId = async () => {
+    if (!user.memberId) return;
+    await navigator.clipboard.writeText(user.memberId);
+    toast.success("Member ID copied!");
+  };
 
   return (
     <div className="bg-card border border-border rounded-xl p-6 flex flex-col items-center text-center h-full">
@@ -19,7 +28,18 @@ const UserProfileCard = ({ user }: { user: UserProfile | null }) => {
       <h3 className="text-lg font-bold text-foreground">
         {user.firstName} {user.lastName}
       </h3>
-      <p className="text-xs text-muted-foreground mt-1 font-mono">{user.memberId}</p>
+      <p className="text-xs text-muted-foreground mt-1 font-mono">
+        {user.memberId}
+
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-7 w-7 shrink-0"
+          onClick={copyMemberId}
+        >
+          <Copy className="h-3.5 w-3.5" />
+        </Button>
+      </p>
 
       <div className="w-full mt-5 space-y-3 text-left">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -40,7 +60,11 @@ const UserProfileCard = ({ user }: { user: UserProfile | null }) => {
         )}
         <div className="flex items-center gap-2 text-sm">
           <Shield className="h-3.5 w-3.5 text-primary shrink-0" />
-          <span className={user.status === "ACTIVE" ? "text-green-500" : "text-destructive"}>
+          <span
+            className={
+              user.status === "ACTIVE" ? "text-green-500" : "text-destructive"
+            }
+          >
             {user.status}
           </span>
         </div>

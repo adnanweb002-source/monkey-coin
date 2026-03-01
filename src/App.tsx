@@ -43,7 +43,9 @@ import RankReward from "./pages/reports/RankReward";
 import RequireAuth from "./components/auth/RequireAuth";
 import DownlineDeposit from "./pages/reports/DownlineDeposit";
 import Notifications from "./pages/Notifications";
+import GrowthTools from "./pages/GrowthTools";
 import NotFound from "./pages/NotFound";
+
 
 const queryClient = new QueryClient();
 
@@ -156,6 +158,11 @@ const App = () => (
             {/* Support Route */}
             <Route path="/support" element={<ProtectedDashboard />}>
               <Route index element={<Support />} />
+            </Route>
+
+            {/* Growth Tools Route */}
+            <Route path="/growth-tools" element={<ProtectedDashboard />}>
+              <Route index element={<GrowthTools />} />
             </Route>
 
             {/* Legal Pages */}

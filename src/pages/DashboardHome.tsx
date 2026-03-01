@@ -55,7 +55,7 @@ const DashboardHome = () => {
             title="Growth Tools"
             subtitle="We always give you the right tools"
             icon={Wrench}
-            route="/packages"
+            route="/growth-tools"
           />
         </div>
       </div>

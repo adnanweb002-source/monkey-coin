@@ -113,7 +113,7 @@ const sidebarItems: SidebarItem[] = [
   {
     labelKey: "sidebar.marketingTools",
     icon: Wrench,
-    path: "/marketing-tools",
+    path: "/growth-tools",
     disabled: true,
   },
   {

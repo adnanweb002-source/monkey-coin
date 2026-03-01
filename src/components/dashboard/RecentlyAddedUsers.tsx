@@ -23,6 +23,8 @@ interface RecentUser {
   createdAt: string;
   status: string;
   avatarId?: string;
+  country?: string;
+  activePackageCount?: number;
 }
 
 const LIMIT_OPTIONS = [10, 20, 50, 100];
@@ -39,7 +41,6 @@ const RecentlyAddedUsers = () => {
     },
   });
 
-  // Reset scroll position when limit changes
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = 0;
@@ -78,11 +79,12 @@ const RecentlyAddedUsers = () => {
           <div className="space-y-3">
             {Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="flex items-center gap-3 p-2">
-                <Skeleton className="w-10 h-10 rounded-full" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-4 w-24" />
-                  <Skeleton className="h-3 w-32" />
-                </div>
+                <Skeleton className="w-8 h-8 rounded-full" />
+                <Skeleton className="h-4 w-16" />
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-4 w-16" />
+                <Skeleton className="h-4 w-12" />
+                <Skeleton className="h-4 w-14" />
               </div>
             ))}
           </div>
@@ -102,30 +104,56 @@ const RecentlyAddedUsers = () => {
             </p>
           </div>
         ) : (
-          <div className="space-y-2">
-            {users.map((user) => (
-              <div
-                key={user.id}
-                className="flex items-center gap-3 p-2 rounded-lg hover:bg-secondary/50 transition-colors"
-              >
-                <div className="relative">
-                  <UserAvatar avatarId={user.avatarId} size="sm" />
-                  {user.status === "ACTIVE" && (
-                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-card"></span>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">{user.firstName} {user.lastName}</p>
-                  <p className="text-xs text-muted-foreground truncate">ID: {user.memberId}</p>
-                </div>
-                <div className="text-right shrink-0">
-                  <p className="text-xs text-muted-foreground">
-                    {user.createdAt && format(new Date(user.createdAt), "MMM dd")}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <table className="w-full text-sm">
+            <thead className="sticky top-0 bg-card z-10">
+              <tr className="text-left text-xs text-muted-foreground border-b border-border">
+                <th className="pb-2 font-medium"></th>
+                <th className="pb-2 font-medium">Date</th>
+                <th className="pb-2 font-medium">Member ID</th>
+                <th className="pb-2 font-medium">Name</th>
+                <th className="pb-2 font-medium">Country</th>
+                <th className="pb-2 font-medium">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user) => {
+                const isActive = (user.activePackageCount ?? 0) > 0;
+                return (
+                  <tr
+                    key={user.id}
+                    className="border-b border-border/50 hover:bg-secondary/50 transition-colors"
+                  >
+                    <td className="py-2 pr-2">
+                      <UserAvatar avatarId={user.avatarId} size="sm" />
+                    </td>
+                    <td className="py-2 pr-2 text-xs text-muted-foreground whitespace-nowrap">
+                      {user.createdAt && format(new Date(user.createdAt), "MMM dd, yyyy")}
+                    </td>
+                    <td className="py-2 pr-2 text-xs font-mono text-muted-foreground">
+                      {user.memberId}
+                    </td>
+                    <td className="py-2 pr-2 text-xs text-foreground font-medium truncate max-w-[120px]">
+                      {user.firstName} {user.lastName}
+                    </td>
+                    <td className="py-2 pr-2 text-xs text-muted-foreground">
+                      {user.country || "—"}
+                    </td>
+                    <td className="py-2">
+                      <span
+                        className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                          isActive
+                            ? "bg-green-500/15 text-green-500"
+                            : "bg-muted text-muted-foreground"
+                        }`}
+                      >
+                        {isActive ? "Active" : "Inactive"}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         )}
       </div>
     </div>

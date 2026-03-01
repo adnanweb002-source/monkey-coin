@@ -8,7 +8,7 @@ const badgeColors = {
   BONUS_WALLET: "#FF971D",
 };
 
-const WalletCards = ({ wallets }: { wallets: WalletCard[] }) => {
+const WalletCards = ({ wallets, columns }: { wallets: WalletCard[]; columns?: number }) => {
   const mappedWallets: WalletCard[] = wallets?.map((wallet: WalletCard) => {
     const config = walletConfig[wallet?.type];
    
@@ -24,7 +24,7 @@ const WalletCards = ({ wallets }: { wallets: WalletCard[] }) => {
   });
  const navigate = useNavigate();
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+    <div className={`grid gap-4 w-full ${columns === 2 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"}`}>
       {mappedWallets?.map((wallet: WalletCard) => (
         <div
           key={wallet.id}

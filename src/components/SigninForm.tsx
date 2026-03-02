@@ -11,6 +11,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import logoImg from "@/assets/logo.png";
 
 const signinSchema = z.object({
   email: z.string().min(4, "Email is required"),
@@ -107,6 +108,7 @@ const SigninForm = () => {
   return (
     <div className="crypto-card w-full max-w-md mx-4 p-8 z-10">
       <div className="text-center mb-8">
+        <img src={logoImg} alt="Vaultire Infinite" className="h-14 mx-auto mb-4" />
         <h1 className="text-3xl font-bold text-foreground mb-2">Sign In</h1>
         <p className="text-muted-foreground text-sm">
           Enter your credentials to access your account

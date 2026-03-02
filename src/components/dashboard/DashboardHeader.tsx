@@ -88,7 +88,7 @@ const DashboardHeader = ({
         )}
 
         <h1 className="text-lg md:text-xl font-semibold text-foreground">
-          {t("header.panel")}
+          Vaultire Infinite
         </h1>
 
         {!isMobile && (

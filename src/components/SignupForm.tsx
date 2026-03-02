@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 import api from "@/lib/api";
+import logoImg from "@/assets/logo.png";
 // utils/captcha.ts
 export function generateCaptcha(length = 5) {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -119,6 +120,7 @@ const SignupForm = () => {
   return (
     <div className="crypto-card w-full max-w-2xl mx-auto z-10">
       <div className="text-center mb-8">
+        <img src={logoImg} alt="Vaultire Infinite" className="h-14 mx-auto mb-4" />
         <h1 className="text-3xl font-bold text-foreground mb-2">Sign Up</h1>
         <p className="text-muted-foreground">
           Create your account to get started

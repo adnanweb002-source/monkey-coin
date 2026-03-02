@@ -26,6 +26,7 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import api from "@/lib/api";
+import logoImg from "@/assets/logo.png";
 import { useToast } from "@/hooks/use-toast";
 import {
   AlertDialog,
@@ -265,17 +266,10 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
         )}
       >
         {/* Logo */}
-        <div className="p-6 border-b border-border flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">
-                V
-              </span>
-            </div>
-            <span className="text-foreground font-semibold text-lg">
-              Vaultire Finance
-            </span>
-          </div>
+        <div className="p-4 border-b border-sidebar-border flex items-center justify-between">
+          <Link to="/panel" className="flex items-center gap-2">
+            <img src={logoImg} alt="Vaultire Infinite" className="h-10 w-auto" />
+          </Link>
           {isMobile && (
             <button
               onClick={onToggle}

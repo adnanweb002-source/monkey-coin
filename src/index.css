@@ -6,97 +6,97 @@
 
 @layer base {
   :root {
-    /* Light Mode Colors */
-    --background: 0 0% 98%;
-    --foreground: 220 25% 10%;
+    /* Light Mode Colors — Vaultire Navy/Gold/Silver */
+    --background: 216 30% 96%;
+    --foreground: 218 40% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 25% 10%;
+    --card-foreground: 218 40% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 25% 10%;
+    --popover-foreground: 218 40% 15%;
 
-    --primary: 36 90% 50%;
+    --primary: 40 72% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 15% 92%;
-    --secondary-foreground: 220 25% 10%;
+    --secondary: 216 25% 90%;
+    --secondary-foreground: 218 40% 15%;
 
-    --muted: 220 15% 92%;
-    --muted-foreground: 220 10% 45%;
+    --muted: 216 20% 90%;
+    --muted-foreground: 218 15% 45%;
 
-    --accent: 36 90% 50%;
+    --accent: 218 55% 28%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 85%;
-    --input: 220 15% 92%;
-    --ring: 36 90% 50%;
+    --border: 216 20% 82%;
+    --input: 216 20% 92%;
+    --ring: 40 72% 50%;
 
     --radius: 0.5rem;
 
-    /* Custom crypto theme tokens - Light */
-    --gradient-dark: linear-gradient(135deg, hsl(0 0% 98%) 0%, hsl(220 15% 95%) 50%, hsl(0 0% 98%) 100%);
-    --gold-glow: 0 0 30px hsl(36 90% 50% / 0.2);
-    --card-glow: 0 8px 32px hsl(220 25% 10% / 0.08);
-    --input-focus-glow: 0 0 0 2px hsl(36 90% 50% / 0.15);
+    /* Custom theme tokens - Light */
+    --gradient-dark: linear-gradient(135deg, hsl(216 30% 96%) 0%, hsl(218 25% 92%) 50%, hsl(216 30% 96%) 100%);
+    --gold-glow: 0 0 30px hsl(40 72% 50% / 0.2);
+    --card-glow: 0 8px 32px hsl(218 40% 15% / 0.08);
+    --input-focus-glow: 0 0 0 2px hsl(40 72% 50% / 0.15);
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 25% 10%;
-    --sidebar-primary: 36 90% 50%;
+    --sidebar-background: 218 50% 18%;
+    --sidebar-foreground: 216 20% 90%;
+    --sidebar-primary: 40 72% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 15% 95%;
-    --sidebar-accent-foreground: 220 25% 10%;
-    --sidebar-border: 220 15% 90%;
-    --sidebar-ring: 36 90% 50%;
+    --sidebar-accent: 218 45% 24%;
+    --sidebar-accent-foreground: 216 20% 90%;
+    --sidebar-border: 218 40% 25%;
+    --sidebar-ring: 40 72% 50%;
   }
 
   .dark {
-    /* Dark Mode Colors */
-    --background:222 35% 11%;
-    --foreground: 0 0% 100%;
+    /* Dark Mode Colors — Vaultire Navy/Gold/Silver */
+    --background: 220 40% 8%;
+    --foreground: 210 20% 95%;
 
-    --card: 220 20% 12%;
-    --card-foreground: 0 0% 100%;
+    --card: 220 35% 12%;
+    --card-foreground: 210 20% 95%;
 
-    --popover: 220 20% 12%;
-    --popover-foreground: 0 0% 100%;
+    --popover: 220 35% 12%;
+    --popover-foreground: 210 20% 95%;
 
-    --primary: 36 90% 55%;
-    --primary-foreground: 220 25% 7%;
+    --primary: 40 72% 52%;
+    --primary-foreground: 220 40% 8%;
 
-    --secondary: 220 15% 18%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 220 30% 18%;
+    --secondary-foreground: 210 20% 95%;
 
-    --muted: 220 15% 25%;
-    --muted-foreground: 220 10% 60%;
+    --muted: 220 25% 22%;
+    --muted-foreground: 216 15% 58%;
 
-    --accent: 36 90% 55%;
-    --accent-foreground: 220 25% 7%;
+    --accent: 218 55% 28%;
+    --accent-foreground: 210 20% 95%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 25%;
-    --input: 220 15% 20%;
-    --ring: 36 90% 55%;
+    --border: 220 25% 22%;
+    --input: 220 30% 16%;
+    --ring: 40 72% 52%;
 
-    /* Custom crypto theme tokens - Dark */
-    --gradient-dark: linear-gradient(135deg, hsl(220 25% 7%) 0%, hsl(220 30% 12%) 50%, hsl(220 25% 8%) 100%);
-    --gold-glow: 0 0 30px hsl(36 90% 55% / 0.3);
+    /* Custom theme tokens - Dark */
+    --gradient-dark: linear-gradient(135deg, hsl(220 40% 6%) 0%, hsl(220 35% 12%) 50%, hsl(220 40% 7%) 100%);
+    --gold-glow: 0 0 30px hsl(40 72% 52% / 0.3);
     --card-glow: 0 8px 32px hsl(0 0% 0% / 0.4);
-    --input-focus-glow: 0 0 0 2px hsl(36 90% 55% / 0.2);
+    --input-focus-glow: 0 0 0 2px hsl(40 72% 52% / 0.2);
 
-    --sidebar-background: 220 25% 7%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 36 90% 55%;
-    --sidebar-primary-foreground: 220 25% 7%;
-    --sidebar-accent: 220 15% 18%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 220 15% 25%;
-    --sidebar-ring: 36 90% 55%;
+    --sidebar-background: 220 45% 7%;
+    --sidebar-foreground: 210 20% 90%;
+    --sidebar-primary: 40 72% 52%;
+    --sidebar-primary-foreground: 220 40% 8%;
+    --sidebar-accent: 220 35% 16%;
+    --sidebar-accent-foreground: 210 20% 90%;
+    --sidebar-border: 220 30% 20%;
+    --sidebar-ring: 40 72% 52%;
   }
 }
 

@@ -87,7 +87,7 @@ const DashboardHeader = ({
           </button>
         )}
 
-        <h1 className="text-lg md:text-xl font-semibold text-foreground">
+        <h1 className="text-sm md:text-xl font-semibold text-foreground">
           Vaultire Infinite
         </h1>
 

@@ -26,7 +26,9 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import api from "@/lib/api";
-import logoImg from "@/assets/logo.png";
+import logoImg from "@/assets/logo-auth.png";
+import logoDark from "@/assets/logo-dark.png";
+import logoLight from "@/assets/logo-light.png";
 import { useToast } from "@/hooks/use-toast";
 import {
   AlertDialog,
@@ -41,6 +43,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { useNotifications } from "@/contexts/NotificationContext";
+import { useTheme } from "next-themes";
 
 interface SidebarItem {
   labelKey: string;
@@ -192,6 +195,8 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+  const { theme } = useTheme();
+
   const {
     state,
     loadNotifications,
@@ -256,7 +261,7 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
       {/* Sidebar */}
       <aside
         className={cn(
-          "h-screen bg-card border-r border-border flex flex-col shrink-0 transition-all duration-300 z-50",
+          "h-screen bg-sidebar-background border-r border-sidebar-border flex flex-col shrink-0 transition-all duration-300 z-50",
           isMobile ? "fixed left-0 top-0" : "relative",
           isOpen
             ? "w-64"
@@ -268,7 +273,14 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
         {/* Logo */}
         <div className="p-4 border-b border-sidebar-border flex items-center justify-between">
           <Link to="/panel" className="flex items-center gap-2">
-            <img src={logoImg} alt="Vaultire Infinite" className="h-10 w-auto" />
+            {
+              theme === "dark" ? (
+                <img src={logoDark} alt="Vaultire Infinite" className="h-[69px] w-auto" />
+              ) : (
+                <img src={logoLight} alt="Vaultire Infinite" className="h-[69px] w-auto" />
+              )
+            }
+
           </Link>
           {isMobile && (
             <button

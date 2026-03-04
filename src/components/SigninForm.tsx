@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTheme } from "next-themes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Eye, EyeOff, Loader2, Shield } from "lucide-react";
@@ -11,7 +12,9 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import logoImg from "@/assets/logo.png";
+import logoImg from "@/assets/logo-auth.png";
+import logoDark from "@/assets/logo-dark.png";
+import logoLight from "@/assets/logo-light.png";
 
 const signinSchema = z.object({
   email: z.string().min(4, "Email is required"),
@@ -28,6 +31,7 @@ const SigninForm = () => {
   const [otpValue, setOtpValue] = useState("");
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
 
   const {
     register,
@@ -64,7 +68,7 @@ const SigninForm = () => {
       const response = await api.post("/auth/login", payload);
       const { ok } = response?.data;
 
-      console.log("Login response:", response?.data); 
+      console.log("Login response:", response?.data);
 
       if (!ok) {
         throw new Error("Login failed. Please try again.");
@@ -108,7 +112,26 @@ const SigninForm = () => {
   return (
     <div className="crypto-card w-full max-w-md mx-4 p-8 z-10">
       <div className="text-center mb-8">
-        <img src={logoImg} alt="Vaultire Infinite" className="h-14 mx-auto mb-4" />
+        {theme === "dark" ? (
+          <img
+            src={logoDark}
+            alt="Vaultire Infinite"
+            className="h-20 mx-auto mb-4"
+          />
+        ) : theme === "light" ? (
+          <img
+            src={logoLight}
+            alt="Vaultire Infinite"
+            className="h-20 mx-auto mb-4"
+          />
+        ) : (
+          <img
+            src={logoImg}
+            alt="Vaultire Infinite"
+            className="h-20 mx-auto mb-4"
+          />
+        )}
+
         <h1 className="text-3xl font-bold text-foreground mb-2">Sign In</h1>
         <p className="text-muted-foreground text-sm">
           Enter your credentials to access your account
@@ -119,7 +142,7 @@ const SigninForm = () => {
         {/* Email */}
         <div>
           <label htmlFor="email" className="crypto-label">
-              Email, Phone, or Member ID
+            Email, Phone, or Member ID
           </label>
           <input
             id="email"

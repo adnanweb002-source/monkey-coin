@@ -40,6 +40,13 @@ interface Transaction {
   createdAt: string;
 }
 
+const walletLabels: Record<WalletType, string> = {
+  F_WALLET: "D Wallet",
+  I_WALLET: "P Wallet",
+  M_WALLET: "E Wallet",
+  BONUS_WALLET: "A Wallet",
+};
+
 const walletConfig: Record<
   WalletType,
   { name: string; description: string; icon: React.ElementType; color: string }
@@ -51,19 +58,19 @@ const walletConfig: Record<
     color: "bg-blue-500",
   },
   M_WALLET: {
-    name: "ROI / Direct Income Wallet",
+    name: "Earning Wallet",
     description: "Direct Income and ROI earnings",
     icon: TrendingUp,
     color: "bg-green-500",
   },
   I_WALLET: {
-    name: "Binary Income Wallet",
+    name: "Passive Income Wallet",
     description: "Binary network income",
     icon: PiggyBank,
     color: "bg-purple-500",
   },
   BONUS_WALLET: {
-    name: "Bonus Wallet",
+    name: "Awards Wallet",
     description: "Admin bonuses and rewards",
     icon: Gift,
     color: "bg-orange-500",
@@ -261,7 +268,7 @@ const Wallets = () => {
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Badge variant="secondary" className="mt-1 cursor-help">
-                                {wallet.type}
+                                {walletLabels[wallet.type as WalletType] || wallet.type}
                               </Badge>
                             </TooltipTrigger>
                             <TooltipContent>

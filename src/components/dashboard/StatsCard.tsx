@@ -38,7 +38,7 @@ const AnimatedNumber = ({ value, prefix = "$" }: { value: number; prefix?: strin
   }, [value]);
 
   return (
-    <span className="text-2xl font-bold text-foreground">
+    <span className="text-2xl font-bold text-foreground break-all">
       {prefix}{displayed.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
     </span>
   );

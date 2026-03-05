@@ -107,7 +107,6 @@ const CryptoDepositForm = ({ onDepositCreated }: CryptoDepositFormProps) => {
               placeholder="Enter amount in USD"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              min="0.01"
               required
             />
           </div>

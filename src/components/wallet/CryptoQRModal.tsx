@@ -50,7 +50,7 @@ const CryptoQRModal = ({
       const expiryTime = new Date(depositData.expiresAt).getTime();
       const now = Date.now();
       const remaining = Math.max(0, Math.floor((expiryTime - now) / 1000));
-      
+
       if (remaining <= 0) {
         setIsExpired(true);
         setTimeRemaining(0);
@@ -70,7 +70,8 @@ const CryptoQRModal = ({
     if (isExpired) {
       toast({
         title: "Deposit Expired",
-        description: "The payment window has expired. Please create a new deposit.",
+        description:
+          "The payment window has expired. Please create a new deposit.",
         variant: "destructive",
       });
       onClose();
@@ -82,15 +83,18 @@ const CryptoQRModal = ({
     if (!depositData?.depositId || isExpired) return;
 
     try {
-      const response = await api.get(`/wallet/deposit-status/${depositData.depositId}`);
+      const response = await api.get(
+        `/wallet/deposit-status/${depositData.depositId}`,
+      );
       const status = response.data?.status;
 
       if (["confirming", "finished"].includes(status)) {
         toast({
           title: "Payment Received!",
-          description: status === "finished" 
-            ? "Your deposit has been confirmed successfully." 
-            : "Payment detected, awaiting confirmation...",
+          description:
+            status === "finished"
+              ? "Your deposit has been confirmed successfully."
+              : "Payment detected, awaiting confirmation...",
         });
         onPaymentComplete();
         onClose();
@@ -148,22 +152,33 @@ const CryptoQRModal = ({
   if (!depositData) return null;
 
   return (
-    <Dialog 
-      open={isOpen} 
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
     >
-      <DialogContent 
+      <DialogContent
         className="sm:max-w-md max-h-[90vh] overflow-y-auto rounded-xl p-4"
         onPointerDownOutside={(e) => e.preventDefault()}
       >
         <DialogHeader>
-          <DialogTitle className="text-center">Complete Your Payment</DialogTitle>
+          <DialogTitle className="text-center">
+            Complete Your Payment
+          </DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col items-center space-y-4">
           {/* Timer */}
           <div className="flex items-center gap-2 text-sm">
             <Clock className="h-4 w-4 text-muted-foreground" />
-            <span className={timeRemaining < 60 ? "text-destructive font-semibold" : "text-muted-foreground"}>
+            <span
+              className={
+                timeRemaining < 60
+                  ? "text-destructive font-semibold"
+                  : "text-muted-foreground"
+              }
+            >
               Expires in: {formatTime(timeRemaining)}
             </span>
             {isPolling && (
@@ -201,7 +216,9 @@ const CryptoQRModal = ({
                   variant="ghost"
                   size="sm"
                   className="h-6 px-2"
-                  onClick={() => copyToClipboard(depositData.address, "Address")}
+                  onClick={() =>
+                    copyToClipboard(depositData.address, "Address")
+                  }
                 >
                   {copiedField === "Address" ? (
                     <CheckCircle className="h-3 w-3 text-green-500" />
@@ -210,7 +227,9 @@ const CryptoQRModal = ({
                   )}
                 </Button>
               </div>
-              <p className="text-xs font-mono break-all">{depositData.address}</p>
+              <p className="text-xs font-mono break-all">
+                {depositData.address}
+              </p>
             </div>
 
             {/* Coin Type */}
@@ -227,7 +246,9 @@ const CryptoQRModal = ({
                   variant="ghost"
                   size="sm"
                   className="h-6 px-2"
-                  onClick={() => copyToClipboard(depositData.amountCrypto, "Amount")}
+                  onClick={() =>
+                    copyToClipboard(depositData.amountCrypto, "Amount")
+                  }
                 >
                   {copiedField === "Amount" ? (
                     <CheckCircle className="h-3 w-3 text-green-500" />
@@ -246,7 +267,7 @@ const CryptoQRModal = ({
           <div className="flex items-start gap-2 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg w-full">
             <AlertCircle className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" />
             <p className="text-xs text-muted-foreground">
-              Send only <strong>{depositData.currency}</strong> to this address. 
+              Send only <strong>{depositData.currency}</strong> to this address.
               Sending any other cryptocurrency may result in permanent loss.
             </p>
           </div>

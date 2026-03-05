@@ -8,12 +8,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 import api from "@/lib/api";
 import logoImg from "@/assets/logo.png";
+import logoDark from "@/assets/logo-dark.png";
+import logoLight from "@/assets/logo-light.png";
+import { useTheme } from "next-themes";
 // utils/captcha.ts
 export function generateCaptcha(length = 5) {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   return Array.from(
     { length },
-    () => chars[Math.floor(Math.random() * chars.length)]
+    () => chars[Math.floor(Math.random() * chars.length)],
   ).join("");
 }
 
@@ -61,11 +64,12 @@ const SignupForm = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [captchaValue, setCaptchaValue] = useState(generateCaptcha());
   const { toast } = useToast();
+  const { theme } = useTheme();
 
   const [searchParams] = useSearchParams();
   const sponsorIdParam = searchParams.get("ref");
   const parentIdParam = searchParams.get("parent");
-  const positionParam = searchParams.get("position")
+  const positionParam = searchParams.get("position");
 
   const {
     register,
@@ -76,7 +80,7 @@ const SignupForm = () => {
     resolver: zodResolver(signupSchema),
   });
 
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const onSubmit = async (data: SignupFormData) => {
     setIsSubmitting(true);
     // const { firstName, lastName, phone, country, email, password, sponsorMemberId, parentMemberId, position } = dto;
@@ -89,20 +93,44 @@ const SignupForm = () => {
         email: data.email,
         password: data.password,
         sponsorMemberId: sponsorIdParam || data.sponsorId || null,
-        position: positionParam ?? (data.position === "AUTO" ? null : data.position ?? null),
+        position:
+          positionParam ??
+          (data.position === "AUTO" ? null : (data.position ?? null)),
         parentMemberId: parentIdParam || null,
       };
       console.log(payload);
-      const response = await api.post("/auth/register",payload,);
+      const response = await api.post("/auth/register", payload);
 
-      if(response?.data){
-        navigate("/signin")
+      if (!response?.data?.id) {
+        toast({
+          title: "Error",
+          description:
+            response?.data?.message || "Registration failed. Please try again.",
+          variant: "destructive",
+        });
+        return;
       }
+
+      const profileResponse = await api.get("/auth/get-profile");
+      const userProfile = profileResponse?.data;
+
+      if(!userProfile) {
+        toast({
+          title: "Error",
+          description: "Failed to retrieve user profile after registration.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      localStorage.setItem("userProfile", JSON.stringify(userProfile));
 
       toast({
         title: "Success!",
         description: "Your account has been created successfully.",
       });
+
+      navigate("/profile");
     } catch (error) {
       toast({
         title: "Error",
@@ -120,7 +148,25 @@ const SignupForm = () => {
   return (
     <div className="crypto-card w-full max-w-2xl mx-auto z-10">
       <div className="text-center mb-8">
-        <img src={logoImg} alt="Vaultire Infinite" className="h-14 mx-auto mb-4" />
+       {theme === "dark" ? (
+          <img
+            src={logoDark}
+            alt="Vaultire Infinite"
+            className="h-20 mx-auto mb-4"
+          />
+        ) : theme === "light" ? (
+          <img
+            src={logoLight}
+            alt="Vaultire Infinite"
+            className="h-20 mx-auto mb-4"
+          />
+        ) : (
+          <img
+            src={logoImg}
+            alt="Vaultire Infinite"
+            className="h-20 mx-auto mb-4"
+          />
+        )}
         <h1 className="text-3xl font-bold text-foreground mb-2">Sign Up</h1>
         <p className="text-muted-foreground">
           Create your account to get started
@@ -154,7 +200,7 @@ const SignupForm = () => {
                 defaultValue={positionParam}
                 disabled
               >
-                 <option value="AUTO">Auto</option>
+                <option value="AUTO">Auto</option>
                 <option value="LEFT">Left</option>
                 <option value="RIGHT">Right</option>
               </select>

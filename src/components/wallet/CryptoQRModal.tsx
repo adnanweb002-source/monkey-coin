@@ -150,15 +150,10 @@ const CryptoQRModal = ({
   return (
     <Dialog 
       open={isOpen} 
-      onOpenChange={(open) => {
-        // Prevent closing via backdrop click
-        if (!open) return;
-      }}
     >
       <DialogContent 
         className="sm:max-w-md max-h-[90vh] overflow-y-auto rounded-xl p-4"
         onPointerDownOutside={(e) => e.preventDefault()}
-        onEscapeKeyDown={(e) => e.preventDefault()}
       >
         <DialogHeader>
           <DialogTitle className="text-center">Complete Your Payment</DialogTitle>

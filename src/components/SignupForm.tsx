@@ -64,6 +64,9 @@ const SignupForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [captchaValue, setCaptchaValue] = useState(generateCaptcha());
+  const [phoneCode, setPhoneCode] = useState("");
+  const [countryOpen, setCountryOpen] = useState(false);
+  const [countrySearch, setCountrySearch] = useState("");
   const { toast } = useToast();
   const { theme } = useTheme();
 
@@ -77,9 +80,17 @@ const SignupForm = () => {
     handleSubmit,
     formState: { errors },
     resetField,
+    setValue,
+    watch,
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
   });
+
+  const selectedCountry = watch("country");
+
+  const filteredCountries = countries.filter((c) =>
+    c.name.toLowerCase().includes(countrySearch.toLowerCase())
+  );
 
   const navigate = useNavigate();
   const onSubmit = async (data: SignupFormData) => {

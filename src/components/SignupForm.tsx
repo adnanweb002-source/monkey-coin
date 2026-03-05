@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { RefreshCw, ChevronDown, Eye, EyeOff } from "lucide-react";
+import { RefreshCw, ChevronDown, Eye, EyeOff, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
@@ -11,6 +11,7 @@ import logoImg from "@/assets/logo.png";
 import logoDark from "@/assets/logo-dark.png";
 import logoLight from "@/assets/logo-light.png";
 import { useTheme } from "next-themes";
+import { countries } from "@/lib/countries";
 // utils/captcha.ts
 export function generateCaptcha(length = 5) {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";

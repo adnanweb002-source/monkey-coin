@@ -283,13 +283,59 @@ const SignupForm = () => {
 
         {/* Row 4: Country & Phone */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
+          <div className="relative">
             <label className="crypto-label">Country</label>
-            <input
-              type="text"
-              className="crypto-input"
-              {...register("country")}
-            />
+            <button
+              type="button"
+              onClick={() => setCountryOpen(!countryOpen)}
+              className="crypto-input w-full text-left flex items-center justify-between"
+            >
+              <span className={selectedCountry ? "text-foreground" : "text-muted-foreground"}>
+                {selectedCountry || "Select country"}
+              </span>
+              <ChevronDown className="w-4 h-4 text-muted-foreground" />
+            </button>
+            {countryOpen && (
+              <div className="absolute z-50 mt-1 w-full rounded-lg border border-border bg-popover shadow-lg max-h-60 overflow-hidden">
+                <div className="flex items-center gap-2 px-3 py-2 border-b border-border">
+                  <Search className="w-4 h-4 text-muted-foreground" />
+                  <input
+                    type="text"
+                    placeholder="Search country..."
+                    className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+                    value={countrySearch}
+                    onChange={(e) => setCountrySearch(e.target.value)}
+                    autoFocus
+                  />
+                </div>
+                <div className="max-h-48 overflow-y-auto">
+                  {filteredCountries.map((c) => (
+                    <button
+                      key={c.code}
+                      type="button"
+                      className="w-full text-left px-3 py-2 text-sm hover:bg-accent/50 transition-colors flex justify-between items-center"
+                      onClick={() => {
+                        setValue("country", c.name, { shouldValidate: true });
+                        setPhoneCode(c.dialCode);
+                        const currentPhone = watch("phoneNumber") || "";
+                        // Replace old code or set new one
+                        const phoneWithoutCode = currentPhone.replace(/^\+[\d-]+\s?/, "");
+                        setValue("phoneNumber", `${c.dialCode} ${phoneWithoutCode}`, { shouldValidate: true });
+                        setCountryOpen(false);
+                        setCountrySearch("");
+                      }}
+                    >
+                      <span>{c.name}</span>
+                      <span className="text-muted-foreground text-xs">{c.dialCode}</span>
+                    </button>
+                  ))}
+                  {filteredCountries.length === 0 && (
+                    <p className="px-3 py-2 text-sm text-muted-foreground">No countries found</p>
+                  )}
+                </div>
+              </div>
+            )}
+            <input type="hidden" {...register("country")} />
             {errors.country && (
               <p className="text-destructive text-sm mt-1">
                 {errors.country.message}

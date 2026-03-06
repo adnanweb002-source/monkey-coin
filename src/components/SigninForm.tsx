@@ -222,9 +222,14 @@ const SigninForm = () => {
             />
             <span className="text-muted-foreground text-sm">Remember me?</span>
           </label>
-          <Link to="/forgot-password" className="crypto-link text-sm">
-            Forgot Password
-          </Link>
+          <div className="flex flex-col items-end gap-1">
+            <Link to="/forgot-password" className="crypto-link text-sm">
+              Forgot Password
+            </Link>
+            <Link to="/request-2fa-reset" className="crypto-link text-sm">
+              Forgot 2FA
+            </Link>
+          </div>
         </div>
 
         {/* Submit Button */}

@@ -6,6 +6,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import Signin from "./pages/Signin";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import Request2FAReset from "./pages/Request2FAReset";
+import Reset2FA from "./pages/Reset2FA";
 import TwoFactorAuth from "./pages/TwoFactorAuth";
 import TwoFactorSetup from "./pages/security/TwoFactorSetup";
 import Success from "./pages/Success";
@@ -71,6 +75,10 @@ const App = () => (
 
             <Route path="/signup" element={<Index />} />
             <Route path="/signin" element={<Signin />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/request-2fa-reset" element={<Request2FAReset />} />
+            <Route path="/reset-2fa" element={<Reset2FA />} />
             <Route path="/2fa" element={<TwoFactorAuth />} />
             <Route path="/success" element={<Success />} />
 

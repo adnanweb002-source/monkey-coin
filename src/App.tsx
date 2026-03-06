@@ -75,6 +75,10 @@ const App = () => (
 
             <Route path="/signup" element={<Index />} />
             <Route path="/signin" element={<Signin />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/request-2fa-reset" element={<Request2FAReset />} />
+            <Route path="/reset-2fa" element={<Reset2FA />} />
             <Route path="/2fa" element={<TwoFactorAuth />} />
             <Route path="/success" element={<Success />} />
 

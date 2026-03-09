@@ -47,20 +47,25 @@ const ResetPassword = () => {
 
   if (!token || !email) {
     return (
-      <div className="min-h-screen bg-gradient-crypto flex items-center justify-center relative overflow-hidden">
+      <div className="min-h-screen bg-gradient-crypto flex flex-col relative overflow-hidden">
         <FloatingCoins />
-        <div className="crypto-card w-full max-w-md mx-4 p-8 z-10 text-center space-y-4">
-          <div className="w-16 h-16 rounded-full bg-destructive/20 flex items-center justify-center mx-auto">
-            <AlertTriangle className="text-destructive" size={28} />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="crypto-card w-full max-w-md mx-4 p-8 z-10 text-center space-y-4">
+            <div className="w-16 h-16 rounded-full bg-destructive/20 flex items-center justify-center mx-auto">
+              <AlertTriangle className="text-destructive" size={28} />
+            </div>
+            <h1 className="text-2xl font-bold text-foreground">Invalid Reset Link</h1>
+            <p className="text-muted-foreground text-sm">
+              This password reset link is invalid or has expired. Please request a new one.
+            </p>
+            <Link to="/forgot-password" className="crypto-link text-sm">
+              Request New Link
+            </Link>
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Invalid Reset Link</h1>
-          <p className="text-muted-foreground text-sm">
-            This password reset link is invalid or has expired. Please request a new one.
-          </p>
-          <Link to="/forgot-password" className="crypto-link text-sm">
-            Request New Link
-          </Link>
         </div>
+        <footer className="relative z-10 py-4 text-center text-xs text-muted-foreground">
+          © {new Date().getFullYear()} Vaultire Infinite | All Rights Reserved
+        </footer>
       </div>
     );
   }

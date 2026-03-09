@@ -62,54 +62,59 @@ const Reset2FA = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-crypto flex items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-crypto flex flex-col relative overflow-hidden">
       <FloatingCoins />
-      <div className="crypto-card w-full max-w-md mx-4 p-8 z-10">
-        <div className="text-center mb-8">
-          <img src={logo} alt="Vaultire Infinite" className="h-20 mx-auto mb-4" />
-          <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
-            <ShieldOff className="text-primary" size={24} />
-          </div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Reset 2FA</h1>
-        </div>
-
-        {success ? (
-          <div className="text-center space-y-4">
-            <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto">
-              <CheckCircle className="text-primary" size={28} />
+      <div className="flex-1 flex items-center justify-center">
+        <div className="crypto-card w-full max-w-md mx-4 p-8 z-10">
+          <div className="text-center mb-8">
+            <img src={logo} alt="Vaultire Infinite" className="h-20 mx-auto mb-4" />
+            <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
+              <ShieldOff className="text-primary" size={24} />
             </div>
-            <p className="text-foreground font-medium">2FA Disabled Successfully</p>
-            <p className="text-muted-foreground text-sm">
-              Two-factor authentication has been disabled. Redirecting to sign in...
-            </p>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Reset 2FA</h1>
           </div>
-        ) : (
-          <div className="space-y-5">
-            <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
-              <p className="text-foreground text-sm">
-                <strong>Warning:</strong> This action will disable two-factor authentication on your account.
-                You can re-enable it later from your security settings.
+
+          {success ? (
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto">
+                <CheckCircle className="text-primary" size={28} />
+              </div>
+              <p className="text-foreground font-medium">2FA Disabled Successfully</p>
+              <p className="text-muted-foreground text-sm">
+                Two-factor authentication has been disabled. Redirecting to sign in...
               </p>
             </div>
+          ) : (
+            <div className="space-y-5">
+              <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
+                <p className="text-foreground text-sm">
+                  <strong>Warning:</strong> This action will disable two-factor authentication on your account.
+                  You can re-enable it later from your security settings.
+                </p>
+              </div>
 
-            <button onClick={handleReset} disabled={isLoading} className="crypto-button w-full">
-              {isLoading ? (
-                <div className="flex items-center justify-center">
-                  <Loader2 className="animate-spin mr-2" size={18} />
-                  <span>Disabling 2FA...</span>
-                </div>
-              ) : (
-                "Confirm & Disable 2FA"
-              )}
-            </button>
+              <button onClick={handleReset} disabled={isLoading} className="crypto-button w-full">
+                {isLoading ? (
+                  <div className="flex items-center justify-center">
+                    <Loader2 className="animate-spin mr-2" size={18} />
+                    <span>Disabling 2FA...</span>
+                  </div>
+                ) : (
+                  "Confirm & Disable 2FA"
+                )}
+              </button>
 
-            <p className="text-center text-muted-foreground text-sm">
-              Changed your mind?{" "}
-              <Link to="/signin" className="crypto-link">Back to Sign In</Link>
-            </p>
-          </div>
-        )}
+              <p className="text-center text-muted-foreground text-sm">
+                Changed your mind?{" "}
+                <Link to="/signin" className="crypto-link">Back to Sign In</Link>
+              </p>
+            </div>
+          )}
+        </div>
       </div>
+      <footer className="relative z-10 py-4 text-center text-xs text-muted-foreground">
+        © {new Date().getFullYear()} Vaultire Infinite | All Rights Reserved
+      </footer>
     </div>
   );
 };

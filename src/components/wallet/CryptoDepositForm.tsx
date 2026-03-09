@@ -59,8 +59,8 @@ const CryptoDepositForm = ({ onDepositCreated }: CryptoDepositFormProps) => {
 
     if (!crypto) {
       toast({
-        title: "Select Cryptocurrency",
-        description: "Please select a cryptocurrency",
+        title: "Select payment method",
+        description: "Please select a payment method to proceed",
         variant: "destructive",
       });
       return;
@@ -112,10 +112,10 @@ const CryptoDepositForm = ({ onDepositCreated }: CryptoDepositFormProps) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="crypto">Cryptocurrency *</Label>
+            <Label htmlFor="crypto">Method *</Label>
             <Select value={crypto} onValueChange={setCrypto}>
               <SelectTrigger>
-                <SelectValue placeholder="Select cryptocurrency" />
+                <SelectValue placeholder="Method of payment" />
               </SelectTrigger>
               <SelectContent>
                 {CRYPTO_OPTIONS.map((option) => (

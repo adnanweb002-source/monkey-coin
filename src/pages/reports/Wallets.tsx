@@ -177,7 +177,7 @@ const Wallets = () => {
 
   const totalBalance = wallets.reduce((sum, w) => sum + parseFloat(w.balance || "0"), 0);
 
-  const handleViewTransactions = (walletType: WalletType) => {
+  const handleViewTransactions = (walletType) => {
     navigate(`/wallet/transactions?walletType=${walletType}`);
   };
 
@@ -346,7 +346,9 @@ const Wallets = () => {
                     <Button
                       variant="outline"
                       className="w-full"
-                      onClick={() => handleViewTransactions(wallet.type as WalletType)}
+                      onClick={() => handleViewTransactions(
+                        walletLabels[wallet.type as WalletType]
+                      )}
                     >
                       <ExternalLink className="h-4 w-4 mr-2" />
                       View Transactions

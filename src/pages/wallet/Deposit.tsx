@@ -97,10 +97,10 @@ const Deposit = () => {
       <h1 className="text-2xl font-bold text-foreground">Deposit</h1>
 
       <Tabs defaultValue="crypto" className="w-full">
-        <TabsList className="grid w-full max-w-md mx-auto grid-cols-1">
-          <TabsTrigger value="crypto" className="flex items-center gap-2">
+        <TabsList className="grid w-full max-w-md mx-auto grid-cols-1 bg-primary text-primary-foreground hover:bg-primary/90 p-1 rounded-lg ">
+          <TabsTrigger value="crypto" className="flex items-center gap-2 font-bold bg-transparent border-0 data-[state=active]:bg-primary/90 data-[state=active]:text-white">
             <Bitcoin className="h-4 w-4" />
-            Deposit
+            Deposit. Invest. Grow.
           </TabsTrigger>
           {/* <TabsTrigger value="manual" className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
@@ -109,7 +109,7 @@ const Deposit = () => {
         </TabsList>
 
         {/* Crypto Deposit Tab */}
-        <TabsContent value="crypto" className="mt-6">
+        <TabsContent value="crypto" className="mt-8">
           <CryptoDepositForm onDepositCreated={handleCryptoDepositCreated} />
         </TabsContent>
 

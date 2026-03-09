@@ -78,6 +78,15 @@ const Transfer = () => {
     "BONUS_WALLET",
   ];
 
+  
+  const walletLabels: Record<string, string> = {
+    F_WALLET: "D Wallet",
+    I_WALLET: "P Wallet",
+    M_WALLET: "E Wallet",
+    BONUS_WALLET: "A Wallet",
+  };
+
+
   const getWalletBalance = (type: string) => {
     const wallet = wallets.find((w: WalletCardType) => w.type === type);
     return wallet ? parseFloat(wallet.balance || "0") : 0;
@@ -106,7 +115,7 @@ const Transfer = () => {
         onSubmit={externalForm.handleSubmit((data) =>
           externalMutation.mutate(data),
         )}
-        className="bg-card rounded-lg p-6 space-y-4 max-w-md"
+        className="bg-card rounded-lg p-6 space-y-4 max-w-md mx-auto"
       >
         <div className="flex items-center gap-2 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-yellow-600 text-sm">
           <AlertTriangle size={16} />

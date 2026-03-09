@@ -5,7 +5,13 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -48,35 +54,98 @@ interface WalletTypeFormData {
   allowedChangeCount: string;
 }
 
+interface FormFieldsProps {
+  formData: WalletTypeFormData;
+  setFormData: React.Dispatch<React.SetStateAction<WalletTypeFormData>>;
+  handleChangeCountInput: (value: string) => void;
+}
+
+const FormFields = ({
+  formData,
+  setFormData,
+  handleChangeCountInput,
+}: FormFieldsProps) => (
+  <div className="space-y-4">
+    <div className="space-y-2">
+      <Label htmlFor="name">Wallet Name *</Label>
+      <Input
+        id="name"
+        value={formData.name}
+        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+        placeholder="e.g., Bitcoin, Ethereum"
+      />
+    </div>
+
+    <div className="space-y-2">
+      <Label htmlFor="currency">Currency *</Label>
+      <Input
+        id="currency"
+        value={formData.currency}
+        onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
+        placeholder="e.g., BTC, ETH, USDT"
+      />
+    </div>
+
+    <div className="space-y-2">
+      <Label htmlFor="allowedChangeCount">Allowed Change Count *</Label>
+      <Input
+        id="allowedChangeCount"
+        type="text"
+        inputMode="numeric"
+        value={formData.allowedChangeCount}
+        onChange={(e) => handleChangeCountInput(e.target.value)}
+        placeholder="0"
+      />
+      <p className="text-sm text-muted-foreground">
+        Number of times users can change their wallet address
+      </p>
+    </div>
+  </div>
+);
+
 const SupportedWalletTypes = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const isMobile = useIsMobile();
-  
+
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [editingWallet, setEditingWallet] = useState<SupportedWalletType | null>(null);
-  const [deletingWallet, setDeletingWallet] = useState<SupportedWalletType | null>(null);
+  const [editingWallet, setEditingWallet] =
+    useState<SupportedWalletType | null>(null);
+  const [deletingWallet, setDeletingWallet] =
+    useState<SupportedWalletType | null>(null);
   const [formData, setFormData] = useState<WalletTypeFormData>({
     name: "",
     currency: "",
     allowedChangeCount: "0",
   });
 
-  const { data: walletTypes = [], isLoading } = useQuery<SupportedWalletType[]>({
-    queryKey: ["supportedWalletTypes"],
-    queryFn: async () => {
-      const response = await api.get("/wallet/admin/supported-wallet-types");
-      return response.data;
+  const { data: walletTypes = [], isLoading } = useQuery<SupportedWalletType[]>(
+    {
+      queryKey: ["supportedWalletTypes"],
+      queryFn: async () => {
+        const response = await api.get("/wallet/admin/supported-wallet-types");
+        return response.data;
+      },
     },
-  });
+  );
 
   const createMutation = useMutation({
-    mutationFn: async (data: { name: string; currency: string; allowedChangeCount: number }) => {
-      const response = await api.post("/wallet/admin/create-external-wallet-type", data);
+    mutationFn: async (data: {
+      name: string;
+      currency: string;
+      allowedChangeCount: number;
+    }) => {
+      const response = await api.post(
+        "/wallet/admin/create-external-wallet-type",
+        data,
+      );
       return response.data;
     },
     onSuccess: () => {
-      toast({ title: "Success", description: "Wallet type created successfully" });
+      toast({
+        title: "Success",
+        description: "Wallet type created successfully",
+      });
       queryClient.invalidateQueries({ queryKey: ["supportedWalletTypes"] });
       setIsCreateOpen(false);
       resetForm();
@@ -84,19 +153,32 @@ const SupportedWalletTypes = () => {
     onError: (error: any) => {
       toast({
         title: "Error",
-        description: error.response?.data?.message || "Failed to create wallet type",
+        description:
+          error.response?.data?.message || "Failed to create wallet type",
         variant: "destructive",
       });
     },
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: { name: string; currency: string; allowedChangeCount: number } }) => {
-      const response = await api.put(`/wallet/admin/${id}/update-external-wallet-type`, data);
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number;
+      data: { name: string; currency: string; allowedChangeCount: number };
+    }) => {
+      const response = await api.put(
+        `/wallet/admin/${id}/update-external-wallet-type`,
+        data,
+      );
       return response.data;
     },
     onSuccess: () => {
-      toast({ title: "Success", description: "Wallet type updated successfully" });
+      toast({
+        title: "Success",
+        description: "Wallet type updated successfully",
+      });
       queryClient.invalidateQueries({ queryKey: ["supportedWalletTypes"] });
       setEditingWallet(null);
       resetForm();
@@ -104,7 +186,8 @@ const SupportedWalletTypes = () => {
     onError: (error: any) => {
       toast({
         title: "Error",
-        description: error.response?.data?.message || "Failed to update wallet type",
+        description:
+          error.response?.data?.message || "Failed to update wallet type",
         variant: "destructive",
       });
     },
@@ -112,18 +195,24 @@ const SupportedWalletTypes = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      const response = await api.delete(`/wallet/admin/${id}/delete-external-wallet-type`);
+      const response = await api.delete(
+        `/wallet/admin/${id}/delete-external-wallet-type`,
+      );
       return response.data;
     },
     onSuccess: () => {
-      toast({ title: "Success", description: "Wallet type deleted successfully" });
+      toast({
+        title: "Success",
+        description: "Wallet type deleted successfully",
+      });
       queryClient.invalidateQueries({ queryKey: ["supportedWalletTypes"] });
       setDeletingWallet(null);
     },
     onError: (error: any) => {
       toast({
         title: "Error",
-        description: error.response?.data?.message || "Failed to delete wallet type",
+        description:
+          error.response?.data?.message || "Failed to delete wallet type",
         variant: "destructive",
       });
     },
@@ -149,16 +238,28 @@ const SupportedWalletTypes = () => {
 
   const validateForm = (): boolean => {
     if (!formData.name.trim()) {
-      toast({ title: "Validation Error", description: "Name is required", variant: "destructive" });
+      toast({
+        title: "Validation Error",
+        description: "Name is required",
+        variant: "destructive",
+      });
       return false;
     }
     if (!formData.currency.trim()) {
-      toast({ title: "Validation Error", description: "Currency is required", variant: "destructive" });
+      toast({
+        title: "Validation Error",
+        description: "Currency is required",
+        variant: "destructive",
+      });
       return false;
     }
     const changeCount = parseInt(formData.allowedChangeCount);
     if (isNaN(changeCount) || changeCount < 0) {
-      toast({ title: "Validation Error", description: "Allowed change count must be 0 or greater", variant: "destructive" });
+      toast({
+        title: "Validation Error",
+        description: "Allowed change count must be 0 or greater",
+        variant: "destructive",
+      });
       return false;
     }
     return true;
@@ -196,43 +297,6 @@ const SupportedWalletTypes = () => {
     }
   };
 
-  const FormFields = () => (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="name">Wallet Name *</Label>
-        <Input
-          id="name"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          placeholder="e.g., Bitcoin, Ethereum"
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="currency">Currency *</Label>
-        <Input
-          id="currency"
-          value={formData.currency}
-          onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-          placeholder="e.g., BTC, ETH, USDT"
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="allowedChangeCount">Allowed Change Count *</Label>
-        <Input
-          id="allowedChangeCount"
-          type="text"
-          inputMode="numeric"
-          value={formData.allowedChangeCount}
-          onChange={(e) => handleChangeCountInput(e.target.value)}
-          placeholder="0"
-        />
-        <p className="text-sm text-muted-foreground">
-          Number of times users can change their wallet address
-        </p>
-      </div>
-    </div>
-  );
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -245,8 +309,12 @@ const SupportedWalletTypes = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Supported External Wallet Types</h1>
-          <p className="text-muted-foreground">Manage external wallet types that users can add</p>
+          <h1 className="text-2xl font-bold text-foreground">
+            Supported External Wallet Types
+          </h1>
+          <p className="text-muted-foreground">
+            Manage external wallet types that users can add
+          </p>
         </div>
         <Button onClick={handleOpenCreate} className="w-full sm:w-auto">
           <Plus className="h-4 w-4 mr-2" />
@@ -261,7 +329,8 @@ const SupportedWalletTypes = () => {
             Wallet Types
           </CardTitle>
           <CardDescription>
-            {walletTypes.length} wallet type{walletTypes.length !== 1 ? "s" : ""} configured
+            {walletTypes.length} wallet type
+            {walletTypes.length !== 1 ? "s" : ""} configured
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -279,13 +348,18 @@ const SupportedWalletTypes = () => {
                   className="border border-border rounded-lg p-4 space-y-3"
                 >
                   <div className="flex items-center justify-between">
-                    <h4 className="font-semibold text-foreground">{wallet.name}</h4>
+                    <h4 className="font-semibold text-foreground">
+                      {wallet.name}
+                    </h4>
                     <span className="text-sm font-mono bg-secondary px-2 py-1 rounded">
                       {wallet.currency}
                     </span>
                   </div>
                   <div className="text-sm text-muted-foreground">
-                    Allowed Changes: <span className="font-medium text-foreground">{wallet.allowedChangeCount}</span>
+                    Allowed Changes:{" "}
+                    <span className="font-medium text-foreground">
+                      {wallet.allowedChangeCount}
+                    </span>
                   </div>
                   <div className="flex gap-2 pt-2 border-t border-border">
                     <Button
@@ -364,12 +438,21 @@ const SupportedWalletTypes = () => {
           <DialogHeader>
             <DialogTitle>Add New Wallet Type</DialogTitle>
             <DialogDescription>
-              Create a new external wallet type that users can add to their profile.
+              Create a new external wallet type that users can add to their
+              profile.
             </DialogDescription>
           </DialogHeader>
-          <FormFields />
+          <FormFields
+            formData={formData}
+            setFormData={setFormData}
+            handleChangeCountInput={handleChangeCountInput}
+          />
           <DialogFooter className="flex-col sm:flex-row gap-2">
-            <Button variant="outline" onClick={() => setIsCreateOpen(false)} className="w-full sm:w-auto">
+            <Button
+              variant="outline"
+              onClick={() => setIsCreateOpen(false)}
+              className="w-full sm:w-auto"
+            >
               Cancel
             </Button>
             <Button
@@ -391,7 +474,10 @@ const SupportedWalletTypes = () => {
       </Dialog>
 
       {/* Edit Dialog */}
-      <Dialog open={!!editingWallet} onOpenChange={(open) => !open && setEditingWallet(null)}>
+      <Dialog
+        open={!!editingWallet}
+        onOpenChange={(open) => !open && setEditingWallet(null)}
+      >
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Edit Wallet Type</DialogTitle>
@@ -399,9 +485,17 @@ const SupportedWalletTypes = () => {
               Update the wallet type configuration.
             </DialogDescription>
           </DialogHeader>
-          <FormFields />
+          <FormFields
+            formData={formData}
+            setFormData={setFormData}
+            handleChangeCountInput={handleChangeCountInput}
+          />
           <DialogFooter className="flex-col sm:flex-row gap-2">
-            <Button variant="outline" onClick={() => setEditingWallet(null)} className="w-full sm:w-auto">
+            <Button
+              variant="outline"
+              onClick={() => setEditingWallet(null)}
+              className="w-full sm:w-auto"
+            >
               Cancel
             </Button>
             <Button
@@ -423,13 +517,17 @@ const SupportedWalletTypes = () => {
       </Dialog>
 
       {/* Delete Confirmation */}
-      <AlertDialog open={!!deletingWallet} onOpenChange={(open) => !open && setDeletingWallet(null)}>
+      <AlertDialog
+        open={!!deletingWallet}
+        onOpenChange={(open) => !open && setDeletingWallet(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Wallet Type</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete "{deletingWallet?.name}"? This action cannot be undone
-              and may affect users who have added this wallet type.
+              Are you sure you want to delete "{deletingWallet?.name}"? This
+              action cannot be undone and may affect users who have added this
+              wallet type.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

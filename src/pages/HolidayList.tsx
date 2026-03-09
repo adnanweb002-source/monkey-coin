@@ -189,7 +189,7 @@ const HolidayList = () => {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-foreground">Holiday List</h1>
-            <p className="text-muted-foreground">Global and Indian public holidays</p>
+            <p className="text-muted-foreground">Global public holidays</p>
           </div>
         </div>
         

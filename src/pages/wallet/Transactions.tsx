@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { ArrowDownLeft, ArrowUpRight, ChevronLeft, ChevronRight, RefreshCw } from "lucide-react";
+import {
+  ArrowDownLeft,
+  ArrowUpRight,
+  ChevronLeft,
+  ChevronRight,
+  RefreshCw,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -22,6 +28,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
 import type { ApiWallet } from "@/types/wallet";
+import { useSearchParams } from "react-router-dom";
 
 type WalletType = "F_WALLET" | "I_WALLET" | "M_WALLET" | "BONUS_WALLET";
 
@@ -53,9 +60,18 @@ const walletLabels: Record<WalletType, string> = {
   BONUS_WALLET: "A Wallet",
 };
 
+const reverseWalletLabels: Record<string, WalletType> = {
+  "D Wallet": "F_WALLET",
+  "P Wallet": "I_WALLET",
+  "E Wallet": "M_WALLET",
+  "A Wallet": "BONUS_WALLET",
+};
+
 const Transactions = () => {
   const [wallets, setWallets] = useState<ApiWallet[]>([]);
-  const [selectedWalletType, setSelectedWalletType] = useState<WalletType | "">("");
+  const [selectedWalletType, setSelectedWalletType] = useState<WalletType | "">(
+    "",
+  );
   const [transactions, setTransactions] = useState<any>([]);
   const [total, setTotal] = useState(0);
   const [skip, setSkip] = useState(0);
@@ -63,6 +79,7 @@ const Transactions = () => {
   const [isLoadingTransactions, setIsLoadingTransactions] = useState(false);
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
   const { toast } = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const role = localStorage.getItem("userProfile")
     ? JSON.parse(localStorage.getItem("userProfile") || "").role
@@ -75,14 +92,11 @@ const Transactions = () => {
         const response = await api.get("/wallet/user-wallets");
         const walletData = response.data || [];
         setWallets(walletData);
-        // Default to first wallet
-        if (walletData.length > 0 && !selectedWalletType) {
-          setSelectedWalletType(walletData[0].type);
-        }
       } catch (error: any) {
         toast({
           title: "Error",
-          description: error?.response?.data?.message || "Failed to fetch wallets",
+          description:
+            error?.response?.data?.message || "Failed to fetch wallets",
           variant: "destructive",
         });
       } finally {
@@ -100,19 +114,23 @@ const Transactions = () => {
     const fetchTransactions = async () => {
       setIsLoadingTransactions(true);
       try {
-        const response = await api.post<TransactionsResponse>("/wallet/transactions", {
-          data: {
-            walletType: selectedWalletType,
-            skip,
-            take: TAKE,
+        const response = await api.post<TransactionsResponse>(
+          "/wallet/transactions",
+          {
+            data: {
+              walletType: selectedWalletType,
+              skip,
+              take: TAKE,
+            },
           },
-        });
+        );
         setTransactions(response.data || []);
         setTotal(response.data?.total || 0);
       } catch (error: any) {
         toast({
           title: "Error",
-          description: error?.response?.data?.message || "Failed to fetch transactions",
+          description:
+            error?.response?.data?.message || "Failed to fetch transactions",
           variant: "destructive",
         });
         setTransactions([]);
@@ -126,7 +144,8 @@ const Transactions = () => {
   }, [selectedWalletType, skip]);
 
   const handleWalletChange = (value: string) => {
-    setSelectedWalletType(value as WalletType);
+    const walletType = reverseWalletLabels[value];
+    setSelectedWalletType(walletType as WalletType);
     setSkip(0); // Reset pagination
     setExpandedRow(null);
   };
@@ -147,6 +166,14 @@ const Transactions = () => {
 
   const currentPage = Math.floor(skip / TAKE) + 1;
   const totalPages = Math.ceil(total / TAKE);
+
+  useEffect(() => {
+    const walletTypeFromParams = searchParams.get("walletType") as WalletType;
+    console.log("Wallet type from URL params:", walletTypeFromParams);
+    if (walletTypeFromParams) {
+      setSelectedWalletType(reverseWalletLabels[walletTypeFromParams] || walletTypeFromParams);
+    }
+  }, [searchParams]);
 
   const getDirectionBadge = (direction: string) => {
     if (direction === "CREDIT") {
@@ -180,11 +207,13 @@ const Transactions = () => {
 
   const selectedWallet = wallets.find((w) => w.type === selectedWalletType);
 
-  console.log("Transactions:", transactions);
+  console.log("Selected Wallet Type:", selectedWalletType);
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-foreground">Wallet Transactions</h1>
+      <h1 className="text-2xl font-bold text-foreground">
+        Wallet Transactions
+      </h1>
 
       <Card>
         <CardHeader>
@@ -204,8 +233,8 @@ const Transactions = () => {
                   <SelectContent>
                     {wallets.map((wallet) => (
                       <SelectItem key={wallet.id} value={wallet.type}>
-                        {walletLabels[wallet.type as WalletType] || wallet.type} - $
-                        {parseFloat(wallet.balance).toLocaleString()}
+                        {walletLabels[wallet.type as WalletType] || wallet.type}{" "}
+                        - ${parseFloat(wallet.balance).toLocaleString()}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -217,13 +246,16 @@ const Transactions = () => {
                 onClick={handleRefresh}
                 disabled={isLoadingTransactions || !selectedWalletType}
               >
-                <RefreshCw className={`h-4 w-4 ${isLoadingTransactions ? "animate-spin" : ""}`} />
+                <RefreshCw
+                  className={`h-4 w-4 ${isLoadingTransactions ? "animate-spin" : ""}`}
+                />
               </Button>
             </div>
           </div>
           {selectedWallet && (
             <p className="text-sm text-muted-foreground">
-              Current Balance: ${parseFloat(selectedWallet.balance).toLocaleString()}
+              Current Balance: $
+              {parseFloat(selectedWallet.balance).toLocaleString()}
             </p>
           )}
         </CardHeader>
@@ -251,17 +283,15 @@ const Transactions = () => {
                     <TableRow>
                       <TableHead>ID</TableHead>
                       <TableHead>Tx Number</TableHead>
-                      {
-                        role === "ADMIN" && <TableHead>User ID</TableHead>
-                      }
-                      {
-                        role === "ADMIN" && <TableHead>Wallet ID</TableHead>
-                      }
+                      {role === "ADMIN" && <TableHead>User ID</TableHead>}
+                      {role === "ADMIN" && <TableHead>Wallet ID</TableHead>}
                       <TableHead>Type</TableHead>
                       <TableHead>Direction</TableHead>
                       <TableHead className="text-right">Amount</TableHead>
                       <TableHead>Purpose</TableHead>
-                      <TableHead className="text-right">Balance After</TableHead>
+                      <TableHead className="text-right">
+                        Balance After
+                      </TableHead>
                       <TableHead>Created At</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -271,20 +301,38 @@ const Transactions = () => {
                         <TableRow
                           key={tx.id}
                           className={`cursor-pointer hover:bg-muted/50 ${tx.meta ? "cursor-pointer" : ""}`}
-                          onClick={() => tx.meta && setExpandedRow(expandedRow === tx.id ? null : tx.id)}
-                        >
-                          <TableCell className="font-mono text-sm">{tx.id}</TableCell>
-                          <TableCell className="font-mono text-sm">{tx.txNumber}</TableCell>
-                          { role === "ADMIN" && <TableCell className="font-mono text-sm">{tx.userId || "-"}</TableCell> }
-                          {
-                            role === "ADMIN" && <TableCell className="font-mono text-sm">{tx.walletId || "-"}</TableCell>
+                          onClick={() =>
+                            tx.meta &&
+                            setExpandedRow(expandedRow === tx.id ? null : tx.id)
                           }
+                        >
+                          <TableCell className="font-mono text-sm">
+                            {tx.id}
+                          </TableCell>
+                          <TableCell className="font-mono text-sm">
+                            {tx.txNumber}
+                          </TableCell>
+                          {role === "ADMIN" && (
+                            <TableCell className="font-mono text-sm">
+                              {tx.userId || "-"}
+                            </TableCell>
+                          )}
+                          {role === "ADMIN" && (
+                            <TableCell className="font-mono text-sm">
+                              {tx.walletId || "-"}
+                            </TableCell>
+                          )}
                           <TableCell>{getTypeBadge(tx.type)}</TableCell>
-                          <TableCell>{getDirectionBadge(tx.direction)}</TableCell>
+                          <TableCell>
+                            {getDirectionBadge(tx.direction)}
+                          </TableCell>
                           <TableCell className="text-right font-medium">
                             ${parseFloat(tx.amount).toLocaleString()}
                           </TableCell>
-                          <TableCell className="max-w-[200px] truncate" title={tx.purpose}>
+                          <TableCell
+                            className="max-w-[200px] truncate"
+                            title={tx.purpose}
+                          >
                             {tx.purpose || "-"}
                           </TableCell>
                           <TableCell className="text-right">
@@ -298,7 +346,9 @@ const Transactions = () => {
                           <TableRow key={`${tx.id}-meta`}>
                             <TableCell colSpan={8} className="bg-muted/30">
                               <div className="p-3">
-                                <p className="text-sm font-medium mb-2">Meta Information:</p>
+                                <p className="text-sm font-medium mb-2">
+                                  Meta Information:
+                                </p>
                                 <pre className="text-xs bg-background rounded p-2 overflow-x-auto">
                                   {JSON.stringify(tx.meta, null, 2)}
                                 </pre>
@@ -316,7 +366,8 @@ const Transactions = () => {
               {totalPages > 1 && (
                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
                   <p className="text-sm text-muted-foreground">
-                    Showing {skip + 1}-{Math.min(skip + TAKE, total)} of {total} transactions
+                    Showing {skip + 1}-{Math.min(skip + TAKE, total)} of {total}{" "}
+                    transactions
                   </p>
                   <div className="flex items-center gap-2">
                     <Button

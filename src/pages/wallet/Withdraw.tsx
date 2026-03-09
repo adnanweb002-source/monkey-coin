@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Wallet } from "lucide-react";
+import { CloudCog, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,6 +16,23 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
 import type { ApiWallet } from "@/types/wallet";
+import { useQuery } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+
+interface SupportedWalletType {
+  id: number;
+  name: string;
+  currency: string;
+  allowedChangeCount: number;
+}
+
+interface UserExternalWallet {
+  id: number;
+  supportedWalletId: number;
+  address: string;
+  changeCount: number;
+  supportedWallet: SupportedWalletType;
+}
 
 const Withdraw = () => {
   const [wallets, setWallets] = useState<ApiWallet[]>([]);
@@ -26,7 +43,25 @@ const Withdraw = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingWallets, setIsLoadingWallets] = useState(true);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+
   const navigate = useNavigate();
+
+  const { data: userWallets = [], isLoading: walletsLoading } = useQuery<
+    UserExternalWallet[]
+  >({
+    queryKey: ["myExternalWallets"],
+    queryFn: async () => {
+      const response = await api.get("/wallet/my-external-wallets");
+      return response.data;
+    },
+  });
+
+  const getUserWallet = (
+    supportedId: number,
+  ): UserExternalWallet | undefined => {
+    return userWallets.find((w) => w.supportedWalletId === supportedId);
+  };
 
   useEffect(() => {
     const fetchWallets = async () => {
@@ -116,7 +151,8 @@ const Withdraw = () => {
       toast({
         title: "Error",
         description:
-          error?.response?.data?.message || "Failed to submit withdrawal request",
+          error?.response?.data?.message ||
+          "Failed to submit withdrawal request",
         variant: "destructive",
       });
     } finally {
@@ -130,6 +166,8 @@ const Withdraw = () => {
     M_WALLET: "E Wallet",
     BONUS_WALLET: "A Wallet",
   };
+
+  console.log(wallets)
 
   return (
     <div className="space-y-6">
@@ -161,17 +199,23 @@ const Withdraw = () => {
                     <SelectValue placeholder="Select a wallet" />
                   </SelectTrigger>
                   <SelectContent>
-                    {wallets.map((wallet) => (
-                      <SelectItem
-                        key={wallet.id}
-                        value={wallet.type}
-                        disabled={parseFloat(wallet.balance) <= 0}
-                      >
-                        {walletLabels[wallet.type] || wallet.type} - $
-                        {parseFloat(wallet.balance).toLocaleString()}
-                        {parseFloat(wallet.balance) <= 0 && " (No balance)"}
-                      </SelectItem>
-                    ))}
+                    {wallets
+                      .filter(
+                        (wallet) =>
+                          wallet.type !== "BONUS_WALLET" &&
+                          wallet.type !== "F_WALLET",
+                      )
+                      .map((wallet) => (
+                        <SelectItem
+                          key={wallet.id}
+                          value={wallet.type}
+                          disabled={parseFloat(wallet.balance) <= 0}
+                        >
+                          {walletLabels[wallet.type] || wallet.type} - $
+                          {parseFloat(wallet.balance).toLocaleString()}
+                          {parseFloat(wallet.balance) <= 0 && " (No balance)"}
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
                 {selectedWallet && (
@@ -191,11 +235,16 @@ const Withdraw = () => {
                   className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  min="0.01"
+                  min="20"
                   step="0.01"
                   max={selectedBalance}
                   required
                 />
+                {parseFloat(amount) < 20 && (
+                  <p className="text-sm text-destructive">
+                    Amount must be at least $20
+                  </p>
+                )}
                 {parseFloat(amount) > selectedBalance && selectedWallet && (
                   <p className="text-sm text-destructive">
                     Amount exceeds available balance
@@ -212,20 +261,24 @@ const Withdraw = () => {
                   <SelectContent>
                     <SelectItem value="USDT_TRX">USDT (TRC20)</SelectItem>
                     <SelectItem value="USDT_ERC">USDT (ERC20)</SelectItem>
-                    <SelectItem value="BANK_TRANSFER">Bank Transfer</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="address">Withdrawal Address (Optional)</Label>
-                <Input
-                  id="address"
-                  type="text"
-                  placeholder="Enter wallet address or bank details"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                />
+                <Label htmlFor="address">Withdrawal Address</Label>
+                <Select value={method} onValueChange={setMethod}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select withdrawal Address" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {userWallets.map((w) => (
+                      <SelectItem key={w.id} value={w.address}>
+                        {w.address}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <Button

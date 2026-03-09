@@ -153,12 +153,7 @@ const GainReport = () => {
   };
 
   const formatCurrency = (value: string) => {
-    const num = parseFloat(value);
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      minimumFractionDigits: 2,
-    }).format(num);
+    return `$ ${value}`
   };
 
   const getMaxAmount = () => {

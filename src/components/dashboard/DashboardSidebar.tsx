@@ -261,8 +261,7 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
       {/* Sidebar */}
       <aside
         className={cn(
-          "h-screen border-r border-sidebar-border flex flex-col shrink-0 transition-all duration-300 z-50",
-          "bg-[hsl(var(--sidebar-background))]",
+          "h-screen border-r border-sidebar-border flex flex-col shrink-0 transition-all duration-300 z-50 bg-sidebar",
           isMobile ? "fixed left-0 top-0" : "relative",
           isOpen
             ? "w-64"

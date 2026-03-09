@@ -48,13 +48,13 @@
     --card-glow: 0 8px 32px hsl(218 40% 15% / 0.08);
     --input-focus-glow: 0 0 0 2px hsl(40 72% 50% / 0.15);
 
-    --sidebar-background: 218 50% 18%;
-    --sidebar-foreground: 216 20% 90%;
-    --sidebar-primary: 40 72% 50%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 218 40% 15%;
+    --sidebar-primary: 43 95% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 218 45% 24%;
-    --sidebar-accent-foreground: 216 20% 90%;
-    --sidebar-border: 218 40% 25%;
+    --sidebar-accent: 216 25% 94%;
+    --sidebar-accent-foreground: 218 40% 15%;
+    --sidebar-border: 216 20% 82%;
     --sidebar-ring: 40 72% 50%;
   }
 

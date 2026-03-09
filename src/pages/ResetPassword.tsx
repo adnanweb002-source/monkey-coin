@@ -47,20 +47,25 @@ const ResetPassword = () => {
 
   if (!token || !email) {
     return (
-      <div className="min-h-screen bg-gradient-crypto flex items-center justify-center relative overflow-hidden">
+      <div className="min-h-screen bg-gradient-crypto flex flex-col relative overflow-hidden">
         <FloatingCoins />
-        <div className="crypto-card w-full max-w-md mx-4 p-8 z-10 text-center space-y-4">
-          <div className="w-16 h-16 rounded-full bg-destructive/20 flex items-center justify-center mx-auto">
-            <AlertTriangle className="text-destructive" size={28} />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="crypto-card w-full max-w-md mx-4 p-8 z-10 text-center space-y-4">
+            <div className="w-16 h-16 rounded-full bg-destructive/20 flex items-center justify-center mx-auto">
+              <AlertTriangle className="text-destructive" size={28} />
+            </div>
+            <h1 className="text-2xl font-bold text-foreground">Invalid Reset Link</h1>
+            <p className="text-muted-foreground text-sm">
+              This password reset link is invalid or has expired. Please request a new one.
+            </p>
+            <Link to="/forgot-password" className="crypto-link text-sm">
+              Request New Link
+            </Link>
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Invalid Reset Link</h1>
-          <p className="text-muted-foreground text-sm">
-            This password reset link is invalid or has expired. Please request a new one.
-          </p>
-          <Link to="/forgot-password" className="crypto-link text-sm">
-            Request New Link
-          </Link>
         </div>
+        <footer className="relative z-10 py-4 text-center text-xs text-muted-foreground">
+          © {new Date().getFullYear()} Vaultire Infinite | All Rights Reserved
+        </footer>
       </div>
     );
   }
@@ -80,72 +85,77 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-crypto flex items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-crypto flex flex-col relative overflow-hidden">
       <FloatingCoins />
-      <div className="crypto-card w-full max-w-md mx-4 p-8 z-10">
-        <div className="text-center mb-8">
-          <img src={logo} alt="Vaultire Infinite" className="h-20 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold text-foreground mb-2">Reset Password</h1>
-          <p className="text-muted-foreground text-sm">Enter your new password</p>
-        </div>
-
-        {success ? (
-          <div className="text-center space-y-4">
-            <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto">
-              <CheckCircle className="text-primary" size={28} />
-            </div>
-            <p className="text-foreground font-medium">Password Reset Successful</p>
-            <p className="text-muted-foreground text-sm">Redirecting to sign in...</p>
+      <div className="flex-1 flex items-center justify-center">
+        <div className="crypto-card w-full max-w-md mx-4 p-8 z-10">
+          <div className="text-center mb-8">
+            <img src={logo} alt="Vaultire Infinite" className="h-20 mx-auto mb-4" />
+            <h1 className="text-3xl font-bold text-foreground mb-2">Reset Password</h1>
+            <p className="text-muted-foreground text-sm">Enter your new password</p>
           </div>
-        ) : (
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-            <div>
-              <label htmlFor="newPassword" className="crypto-label">New Password</label>
-              <div className="relative">
-                <input
-                  id="newPassword"
-                  type={showPassword ? "text" : "password"}
-                  {...register("newPassword")}
-                  className="crypto-input pr-10"
-                  placeholder="Enter new password"
-                />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-              {errors.newPassword && <p className="text-destructive text-xs mt-1">{errors.newPassword.message}</p>}
-            </div>
 
-            <div>
-              <label htmlFor="confirmPassword" className="crypto-label">Confirm Password</label>
-              <div className="relative">
-                <input
-                  id="confirmPassword"
-                  type={showConfirm ? "text" : "password"}
-                  {...register("confirmPassword")}
-                  className="crypto-input pr-10"
-                  placeholder="Confirm new password"
-                />
-                <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
-                  {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
+          {success ? (
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto">
+                <CheckCircle className="text-primary" size={28} />
               </div>
-              {errors.confirmPassword && <p className="text-destructive text-xs mt-1">{errors.confirmPassword.message}</p>}
+              <p className="text-foreground font-medium">Password Reset Successful</p>
+              <p className="text-muted-foreground text-sm">Redirecting to sign in...</p>
             </div>
-
-            <button type="submit" disabled={isLoading} className="crypto-button w-full">
-              {isLoading ? (
-                <div className="flex items-center justify-center">
-                  <Loader2 className="animate-spin mr-2" size={18} />
-                  <span>Resetting...</span>
+          ) : (
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+              <div>
+                <label htmlFor="newPassword" className="crypto-label">New Password</label>
+                <div className="relative">
+                  <input
+                    id="newPassword"
+                    type={showPassword ? "text" : "password"}
+                    {...register("newPassword")}
+                    className="crypto-input pr-10"
+                    placeholder="Enter new password"
+                  />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
                 </div>
-              ) : (
-                "Reset Password"
-              )}
-            </button>
-          </form>
-        )}
+                {errors.newPassword && <p className="text-destructive text-xs mt-1">{errors.newPassword.message}</p>}
+              </div>
+
+              <div>
+                <label htmlFor="confirmPassword" className="crypto-label">Confirm Password</label>
+                <div className="relative">
+                  <input
+                    id="confirmPassword"
+                    type={showConfirm ? "text" : "password"}
+                    {...register("confirmPassword")}
+                    className="crypto-input pr-10"
+                    placeholder="Confirm new password"
+                  />
+                  <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
+                    {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+                {errors.confirmPassword && <p className="text-destructive text-xs mt-1">{errors.confirmPassword.message}</p>}
+              </div>
+
+              <button type="submit" disabled={isLoading} className="crypto-button w-full">
+                {isLoading ? (
+                  <div className="flex items-center justify-center">
+                    <Loader2 className="animate-spin mr-2" size={18} />
+                    <span>Resetting...</span>
+                  </div>
+                ) : (
+                  "Reset Password"
+                )}
+              </button>
+            </form>
+          )}
+        </div>
       </div>
+      <footer className="relative z-10 py-4 text-center text-xs text-muted-foreground">
+        © {new Date().getFullYear()} Vaultire Infinite | All Rights Reserved
+      </footer>
     </div>
   );
 };

@@ -48,6 +48,9 @@ const DashboardLayout = () => {
           {/* Scrollable Content */}
           <main className="flex-1 p-4 md:p-6 overflow-y-auto">
             <Outlet />
+            <footer className="mt-8 py-4 text-center text-xs text-muted-foreground">
+              © {new Date().getFullYear()} Vaultire Infinite | All Rights Reserved
+            </footer>
           </main>
         </div>
       </div>

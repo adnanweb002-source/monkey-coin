@@ -180,6 +180,12 @@ const adminItems: SidebarItem[] = [
     path: "/admin/system/prune",
     adminOnly: true,
   },
+  {
+    labelKey: "admin.ranks",
+    icon: Trophy,
+    path: "/admin/ranks",
+    adminOnly: true,
+  },
 ];
 
 interface DashboardSidebarProps {

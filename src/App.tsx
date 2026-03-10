@@ -164,6 +164,7 @@ const App = () => (
               <Route path="settings" element={<AdminSettings />} />
               <Route path="packages" element={<AdminPackages />} />
               <Route path="deposits" element={<AdminDeposits />} />
+              <Route path="ranks" element={<AdminRanks />} />
             </Route>
 
             {/* Support Route */}

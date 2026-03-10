@@ -18,6 +18,7 @@ import {
   Users,
   Package,
   Shield,
+  Trophy,
   User,
   Settings,
   LogOut,

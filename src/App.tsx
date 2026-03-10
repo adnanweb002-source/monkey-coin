@@ -48,6 +48,8 @@ import RequireAuth from "./components/auth/RequireAuth";
 import DownlineDeposit from "./pages/reports/DownlineDeposit";
 import Notifications from "./pages/Notifications";
 import GrowthTools from "./pages/GrowthTools";
+import AdminRanks from "./pages/admin/AdminRanks";
+import AwardsAndRanks from "./pages/reports/AwardsAndRanks";
 import NotFound from "./pages/NotFound";
 
 
@@ -138,6 +140,7 @@ const App = () => (
               <Route path="rank-reward" element={<RankReward />} />
               <Route path="holiday-list" element={<HolidayList />} />
               <Route path="downline-deposit" element={<DownlineDeposit />} />
+              <Route path="ranks" element={<AwardsAndRanks />} />
             </Route>
 
             {/* Notifications Page */}
@@ -161,6 +164,7 @@ const App = () => (
               <Route path="settings" element={<AdminSettings />} />
               <Route path="packages" element={<AdminPackages />} />
               <Route path="deposits" element={<AdminDeposits />} />
+              <Route path="ranks" element={<AdminRanks />} />
             </Route>
 
             {/* Support Route */}

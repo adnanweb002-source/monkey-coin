@@ -18,6 +18,7 @@ import {
   Users,
   Package,
   Shield,
+  Trophy,
   User,
   Settings,
   LogOut,
@@ -101,6 +102,10 @@ const sidebarItems: SidebarItem[] = [
         labelKey: "sidebar.downlineDeposit",
         path: "/reports/downline-deposit",
       },
+      {
+        labelKey: "sidebar.awardsAndRanks",
+        path: "/reports/ranks",
+      },
     ],
   },
   { labelKey: "sidebar.notifications", icon: Bell, path: "/notifications" },
@@ -174,6 +179,12 @@ const adminItems: SidebarItem[] = [
     labelKey: "admin.systemPrune",
     icon: Shield,
     path: "/admin/system/prune",
+    adminOnly: true,
+  },
+  {
+    labelKey: "admin.ranks",
+    icon: Trophy,
+    path: "/admin/ranks",
     adminOnly: true,
   },
 ];

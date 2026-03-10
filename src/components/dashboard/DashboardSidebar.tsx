@@ -101,6 +101,10 @@ const sidebarItems: SidebarItem[] = [
         labelKey: "sidebar.downlineDeposit",
         path: "/reports/downline-deposit",
       },
+      {
+        labelKey: "sidebar.awardsAndRanks",
+        path: "/reports/ranks",
+      },
     ],
   },
   { labelKey: "sidebar.notifications", icon: Bell, path: "/notifications" },

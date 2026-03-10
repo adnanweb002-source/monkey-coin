@@ -48,6 +48,8 @@ import RequireAuth from "./components/auth/RequireAuth";
 import DownlineDeposit from "./pages/reports/DownlineDeposit";
 import Notifications from "./pages/Notifications";
 import GrowthTools from "./pages/GrowthTools";
+import AdminRanks from "./pages/admin/AdminRanks";
+import AwardsAndRanks from "./pages/reports/AwardsAndRanks";
 import NotFound from "./pages/NotFound";
 
 

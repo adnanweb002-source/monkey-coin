@@ -53,7 +53,8 @@
     "supportedWalletTypes": "Supported Wallet Types",
     "systemSettings": "System Settings",
     "supportQueries": "Support Queries",
-    "systemPrune": "System Prune"
+    "systemPrune": "System Prune",
+    "ranks": "Ranks"
   },
   "auth": {
     "logout": "Logout",

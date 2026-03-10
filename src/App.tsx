@@ -140,6 +140,7 @@ const App = () => (
               <Route path="rank-reward" element={<RankReward />} />
               <Route path="holiday-list" element={<HolidayList />} />
               <Route path="downline-deposit" element={<DownlineDeposit />} />
+              <Route path="ranks" element={<AwardsAndRanks />} />
             </Route>
 
             {/* Notifications Page */}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,9 @@ import {
   RefreshCw,
   RotateCcw,
   DollarSign,
+  ChevronLeft,
+  ChevronRight,
+  ArrowDownLeft,
 } from "lucide-react";
 import { format, subDays, startOfMonth } from "date-fns";
 import { useSearchParams } from "react-router-dom";
@@ -30,9 +33,21 @@ interface BreakdownItem {
   amount: string;
 }
 
+interface Transaction {
+  id: number;
+  txNumber: string;
+  type: string;
+  direction: "CREDIT" | "DEBIT";
+  amount: string;
+  purpose: string;
+  balanceAfter: string;
+  createdAt: string;
+}
+
 interface GainReportData {
   total: string;
-  breakdown: BreakdownItem[];
+  breakdown?: BreakdownItem[];
+  transactions: Transaction[];
 }
 
 const incomeTypeLabels: Record<string, string> = {
@@ -53,6 +68,8 @@ const incomeTypeColors: Record<string, string> = {
   TRANSFER: "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
 };
 
+const TAKE = 20;
+
 const GainReport = () => {
   const [fromDate, setFromDate] = useState(
     format(startOfMonth(new Date()), "yyyy-MM-dd"),
@@ -61,6 +78,9 @@ const GainReport = () => {
   const [data, setData] = useState<GainReportData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [total, setTotal] = useState("0");
+  const [count, setCount] = useState(0);
+  const [skip, setSkip] = useState(0);
   const { toast } = useToast();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -111,9 +131,11 @@ const GainReport = () => {
 
     try {
       const response = await api.get(
-        `/wallet/income/gain-report?type=${gainType}&from=${fromDate}&to=${toDate}`,
+        `/wallet/income/gain-report?type=${gainType}&from=${fromDate}&to=${toDate}&skip=${skip}&take=${TAKE}`,
       );
       setData(response.data);
+      setTotal(response.data?.total || "0");
+      setCount(response.data?.count || 0);
     } catch (error: any) {
       toast({
         title: "Error",
@@ -152,14 +174,37 @@ const GainReport = () => {
     }
   };
 
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleString();
+  };
+
   const formatCurrency = (value: string) => {
-    return `$ ${value}`
+    return `$ ${value}`;
   };
 
   const getMaxAmount = () => {
     if (!data?.breakdown?.length) return 0;
     return Math.max(...data.breakdown.map((item) => parseFloat(item.amount)));
   };
+
+  useEffect(() => {
+    setDatePreset("month");
+    fetchGainReport();
+  }, [type]);
+
+  const currentPage = Math.floor(skip / TAKE) + 1;
+  const totalPages = Math.ceil(count / TAKE);
+
+  useEffect(() => {
+    fetchGainReport();
+  }, [skip]);
+
+  const handleRefresh = () => {
+    setSkip(0);
+    fetchGainReport();
+  };
+
+  console.log(data);
 
   return (
     <div className="space-y-6">
@@ -288,108 +333,148 @@ const GainReport = () => {
             </CardContent>
           </Card>
 
-          {/* Breakdown Table */}
-          {data?.breakdown && data.breakdown.length > 0 ? (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <DollarSign size={18} />
-                  Income Breakdown
+          <Card>
+            <CardHeader>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <CardTitle>
+                  {type === "DAILY"
+                    ? "View your daily income breakdown"
+                    : type === "REFERRAL"
+                      ? "View your referral income breakdown"
+                      : type === "BINARY"
+                        ? "View your binary income breakdown"
+                        : type === "PACKAGE_PURCHASE"
+                          ? "View your package purchase breakdown"
+                          : ""}
                 </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {/* Desktop Table */}
-                <div className="hidden md:block overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Income Type</TableHead>
-                        <TableHead className="text-right">Amount</TableHead>
-                        <TableHead className="w-1/3">Distribution</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {data.breakdown.map((item, index) => {
-                        const amount = parseFloat(item.amount);
-                        const maxAmount = getMaxAmount();
-                        const percentage =
-                          maxAmount > 0 ? (amount / maxAmount) * 100 : 0;
-
-                        return (
-                          <TableRow key={index}>
-                            <TableCell>
-                              <Badge
-                                variant="outline"
-                                className={incomeTypeColors[item.type] || ""}
-                              >
-                                {incomeTypeLabels[item.type] || item.type}
-                              </Badge>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={fetchGainReport}
+                  disabled={isLoading}
+                >
+                  <RefreshCw
+                    className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
+                  />
+                  Refresh
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {isLoading ? (
+                <div className="space-y-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Skeleton key={i} className="h-12 w-full" />
+                  ))}
+                </div>
+              ) : data?.transactions.length === 0 ? (
+                <div className="text-center py-12">
+                  <TrendingUp className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
+                  <p className="text-muted-foreground">
+                    No{" "}
+                    {type === "DAILY"
+                      ? "daily income"
+                      : type === "REFERRAL"
+                        ? "referral income"
+                        : type === "BINARY"
+                          ? "binary income"
+                          : type === "PACKAGE_PURCHASE"
+                            ? "package purchase"
+                            : ""}{" "}
+                    records yet
+                  </p>
+                  <p className="text-sm text-muted-foreground/70 mt-1">
+                    Your transactions will appear here
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Date</TableHead>
+                          <TableHead>Tx Number</TableHead>
+                          <TableHead className="text-right">Amount</TableHead>
+                          <TableHead>Purpose</TableHead>
+                          <TableHead className="text-right">
+                            Balance After
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {data?.transactions.map((tx) => (
+                          <TableRow key={tx.id}>
+                            <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
+                              {formatDate(tx.createdAt)}
                             </TableCell>
-                            <TableCell className="text-right font-medium">
-                              {formatCurrency(item.amount)}
+                            <TableCell className="font-mono text-sm">
+                              {tx.txNumber}
                             </TableCell>
-                            <TableCell>
-                              <div className="w-full bg-secondary rounded-full h-2">
-                                <div
-                                  className="bg-primary h-2 rounded-full transition-all"
-                                  style={{ width: `${percentage}%` }}
-                                />
+                            <TableCell className="text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <Badge className="bg-green-500/20 text-green-500 hover:bg-green-500/30">
+                                  <ArrowDownLeft className="h-3 w-3 mr-1" />
+                                  CREDIT
+                                </Badge>
+                                <span className="font-medium text-green-500">
+                                  +${parseFloat(tx.amount).toLocaleString()}
+                                </span>
                               </div>
                             </TableCell>
+                            <TableCell
+                              className="max-w-[200px] truncate"
+                              title={tx.purpose}
+                            >
+                              {tx.purpose || "-"}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              ${parseFloat(tx.balanceAfter).toLocaleString()}
+                            </TableCell>
                           </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </div>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
 
-                {/* Mobile Cards */}
-                <div className="md:hidden space-y-3">
-                  {data.breakdown.map((item, index) => {
-                    const amount = parseFloat(item.amount);
-                    const maxAmount = getMaxAmount();
-                    const percentage =
-                      maxAmount > 0 ? (amount / maxAmount) * 100 : 0;
-
-                    return (
-                      <div
-                        key={index}
-                        className="p-4 rounded-lg border border-border bg-card/50"
-                      >
-                        <div className="flex justify-between items-start mb-3">
-                          <Badge
-                            variant="outline"
-                            className={incomeTypeColors[item.type] || ""}
-                          >
-                            {incomeTypeLabels[item.type] || item.type}
-                          </Badge>
-                          <span className="font-bold text-foreground">
-                            {formatCurrency(item.amount)}
-                          </span>
-                        </div>
-                        <div className="w-full bg-secondary rounded-full h-2">
-                          <div
-                            className="bg-primary h-2 rounded-full transition-all"
-                            style={{ width: `${percentage}%` }}
-                          />
-                        </div>
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+                      <p className="text-sm text-muted-foreground">
+                        Showing {skip + 1}-{Math.min(skip + TAKE, count)} of{" "}
+                        {count} transactions
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setSkip(Math.max(0, skip - TAKE))}
+                          disabled={skip === 0}
+                        >
+                          <ChevronLeft className="h-4 w-4 mr-1" />
+                          Previous
+                        </Button>
+                        <span className="text-sm text-muted-foreground px-2">
+                          Page {currentPage} of {totalPages}
+                        </span>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setSkip(skip + TAKE)}
+                          disabled={skip + TAKE >= count}
+                        >
+                          Next
+                          <ChevronRight className="h-4 w-4 ml-1" />
+                        </Button>
                       </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <Card>
-              <CardContent className="py-12">
-                <div className="text-center text-muted-foreground">
-                  <TrendingUp className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg font-medium">No income records found</p>
-                  <p className="text-sm">Try adjusting your date range</p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+                    </div>
+                  )}
+                </>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Breakdown Table */}
         </>
       )}
 

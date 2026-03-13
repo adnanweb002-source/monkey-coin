@@ -13,7 +13,7 @@ import logoDark from "@/assets/logo-dark.png";
 import logoLight from "@/assets/logo-light.png";
 
 const schema = z.object({
-  email: z.string().trim().email("Please enter a valid email address"),
+  email: z.string().trim(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -56,7 +56,7 @@ const Request2FAReset = () => {
             </div>
             <h1 className="text-3xl font-bold text-foreground mb-2">Reset 2FA</h1>
             <p className="text-muted-foreground text-sm">
-              Enter your email to receive a 2FA reset link
+              Enter your email or member ID to receive a 2FA reset link
             </p>
           </div>
 

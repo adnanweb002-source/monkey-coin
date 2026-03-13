@@ -48,6 +48,9 @@ import {
   Users,
   Wallet,
   Pencil,
+  LogIn,
+  Check,
+  Copy,
 } from "lucide-react";
 
 // {
@@ -92,6 +95,9 @@ interface User {
   role: "USER" | "ADMIN";
   createdAt: string;
   updatedAt: string;
+  twoFactorSecret: any;
+  totalDeposits: number;
+  totalWithdrawals: number;
   externalWallets?: UserWallet[];
   isWithdrawalRestricted?: boolean;
 }
@@ -109,6 +115,7 @@ const AdminUsers = () => {
     "suspend" | "activate" | "disable2fa" | null
   >(null);
   const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [expandedUsers, setExpandedUsers] = useState<Set<number>>(new Set());
   const [editingWallet, setEditingWallet] = useState<{
@@ -117,7 +124,7 @@ const AdminUsers = () => {
   } | null>(null);
   const [editWalletAddress, setEditWalletAddress] = useState("");
   const [togglingRestriction, setTogglingRestriction] = useState<number | null>(
-    null
+    null,
   );
   const [isExporting, setIsExporting] = useState(false);
   const { toast } = useToast();
@@ -167,11 +174,46 @@ const AdminUsers = () => {
     }
   };
 
+  const adminLoginMutation = useMutation({
+    mutationFn: async (phoneOrEmail: string) => {
+      const response = await api.post("/auth/admin-login-for-user", {
+        phoneOrEmail,
+      });
+      return response.data;
+    },
+    onSuccess: async () => {
+      toast({
+        title: "Success",
+        description: "Logged in as user",
+      });
+
+      // fetch profile of impersonated user
+      const profileResponse = await api.get("/auth/get-profile");
+      const userProfile = profileResponse.data;
+
+      localStorage.setItem("userProfile", JSON.stringify(userProfile));
+
+      // redirect to user panel
+      if (import.meta.env.VITE_ENVIRONMENT === "production") {
+        window.location.href = "https://app.gogex.xyz";
+      } else {
+        window.location.href = "/panel";
+      }
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to login as user",
+        variant: "destructive",
+      });
+    },
+  });
+
   const { data, isLoading, error } = useQuery<UsersResponse>({
     queryKey: ["admin-users", page, take],
     queryFn: async () => {
       const response = await api.get(
-        `/admin/users/list?take=${take}&skip=${page * take}`
+        `/admin/users/list?take=${take}&skip=${page * take}`,
       );
       return response.data;
     },
@@ -273,7 +315,7 @@ const AdminUsers = () => {
     }) => {
       const response = await api.put(
         `/wallet/admin/${walletId}/override-external-wallet`,
-        { address }
+        { address },
       );
       return response.data;
     },
@@ -306,7 +348,7 @@ const AdminUsers = () => {
     }) => {
       const response = await api.patch(
         `/admin/users/${userId}/restrict-withdrawal`,
-        { restrict: restrict }
+        { restrict: restrict },
       );
       console.log("Restrict withdrawal response:", response.data);
       return response.data;
@@ -467,12 +509,28 @@ const AdminUsers = () => {
     );
   }
 
+  const handleCopySecret = async (secret: string) => {
+    if (secret) {
+      await navigator.clipboard.writeText(secret);
+      setCopied(true);
+      toast({
+        title: "Copied",
+        description: "Secret key copied to clipboard",
+      });
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">User Management</h1>
-          <p className="text-muted-foreground">Manage all users in the system</p>
+          <h1 className="text-2xl font-bold text-foreground">
+            User Management
+          </h1>
+          <p className="text-muted-foreground">
+            Manage all users in the system
+          </p>
         </div>
         <Button
           onClick={handleExportUsers}
@@ -505,8 +563,12 @@ const AdminUsers = () => {
                 <TableHead className="whitespace-nowrap">Email</TableHead>
                 <TableHead className="whitespace-nowrap">Phone</TableHead>
                 <TableHead className="whitespace-nowrap">Status</TableHead>
-                <TableHead className="whitespace-nowrap">Role</TableHead>
+                <TableHead className="whitespace-nowrap">Deposits</TableHead>
                 <TableHead className="whitespace-nowrap">Withdrawals</TableHead>
+                <TableHead className="whitespace-nowrap">Role</TableHead>
+                <TableHead className="whitespace-nowrap">
+                  Withdrawal Restrictions
+                </TableHead>
                 <TableHead className="whitespace-nowrap">Created</TableHead>
                 <TableHead className="whitespace-nowrap text-right">
                   Actions
@@ -566,6 +628,17 @@ const AdminUsers = () => {
                       <TableCell>{user.email}</TableCell>
                       <TableCell>{user.phoneNumber || "-"}</TableCell>
                       <TableCell>{getStatusBadge(user.status)}</TableCell>
+                      <TableCell>
+                        <span className="text-green-600 font-medium">
+                          ${Number(user.totalDeposits).toFixed(2)}
+                        </span>
+                      </TableCell>
+
+                      <TableCell>
+                        <span className="text-red-600 font-medium">
+                          ${Number(user.totalWithdrawals).toFixed(2)}
+                        </span>
+                      </TableCell>
                       <TableCell>{getRoleBadge(user.role)}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
@@ -598,6 +671,17 @@ const AdminUsers = () => {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center justify-end gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-primary hover:text-blue-600"
+                            onClick={() =>
+                              adminLoginMutation.mutate(user.email)
+                            }
+                            title="Login as User"
+                          >
+                            <LogIn size={16} />
+                          </Button>
                           {user.status === "ACTIVE" ? (
                             <Button
                               variant="ghost"
@@ -654,65 +738,103 @@ const AdminUsers = () => {
                     </TableRow>
                     {/* Expanded External Wallets Section */}
                     {expandedUsers.has(user.id) && (
-                      <TableRow
-                        key={`${user.id}-wallets`}
-                        className="bg-muted/30"
-                      >
-                        <TableCell colSpan={11} className="p-4">
-                          <div className="space-y-3">
-                            <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-                              <Wallet size={16} />
-                              External Wallets
-                            </div>
-                            {user.externalWallets &&
-                            user.externalWallets.length > 0 ? (
-                              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                                {user.externalWallets.map((wallet) => (
-                                  <div
-                                    key={wallet.id}
-                                    className="bg-card border border-border rounded-lg p-3 space-y-2"
-                                  >
-                                    <div className="flex items-center justify-between">
-                                      <div className="font-medium text-sm">
-                                        {wallet.supportedWallet?.name}
-                                      </div>
-                                      <Badge
-                                        variant="outline"
-                                        className="text-xs"
-                                      >
-                                        {wallet.supportedWallet?.currency}
-                                      </Badge>
-                                    </div>
-                                    <div className="text-xs text-muted-foreground break-all">
-                                      {wallet.address || "No address set"}
-                                    </div>
-                                    {wallet.changeCount !== undefined && (
-                                      <div className="text-xs text-muted-foreground">
-                                        Changes: {wallet.changeCount}
-                                      </div>
-                                    )}
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="w-full mt-2"
-                                      onClick={() =>
-                                        handleEditWallet(user.id, wallet)
-                                      }
-                                    >
-                                      <Pencil size={14} className="mr-1" />
-                                      Edit Address (Override)
-                                    </Button>
-                                  </div>
-                                ))}
+                      <>
+                        <TableRow
+                          key={`${user.id}-wallets`}
+                          className="bg-muted/30"
+                        >
+                          <TableCell colSpan={13} className="p-4">
+                            <div className="space-y-3">
+                              <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                                <Wallet size={16} />
+                                External Wallets
                               </div>
-                            ) : (
-                              <p className="text-sm text-muted-foreground">
-                                No external wallets configured for this user.
-                              </p>
+                              {user.externalWallets &&
+                              user.externalWallets.length > 0 ? (
+                                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                                  {user.externalWallets.map((wallet) => (
+                                    <div
+                                      key={wallet.id}
+                                      className="bg-card border border-border rounded-lg p-3 space-y-2"
+                                    >
+                                      <div className="flex items-center justify-between">
+                                        <div className="font-medium text-sm">
+                                          {wallet.supportedWallet?.name}
+                                        </div>
+                                        <Badge
+                                          variant="outline"
+                                          className="text-xs"
+                                        >
+                                          {wallet.supportedWallet?.currency}
+                                        </Badge>
+                                      </div>
+                                      <div className="text-xs text-muted-foreground break-all">
+                                        {wallet.address || "No address set"}
+                                      </div>
+                                      {wallet.changeCount !== undefined && (
+                                        <div className="text-xs text-muted-foreground">
+                                          Changes: {wallet.changeCount}
+                                        </div>
+                                      )}
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="w-full mt-2"
+                                        onClick={() =>
+                                          handleEditWallet(user.id, wallet)
+                                        }
+                                      >
+                                        <Pencil size={14} className="mr-1" />
+                                        Edit Address (Override)
+                                      </Button>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="text-sm text-muted-foreground">
+                                  No external wallets configured for this user.
+                                </p>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell colSpan={13} className="p-4">
+                            {user.twoFactorSecret && (
+                              <div className="mt-3 p-3 rounded-lg border border-border bg-muted/30 flex items-center justify-between gap-3">
+                                <div className="flex flex-col">
+                                  <span className="text-xs text-muted-foreground">
+                                    2FA Secret Key
+                                  </span>
+
+                                  <code className="text-sm font-mono break-all text-foreground">
+                                    {user.twoFactorSecret.secretEnc}
+                                  </code>
+                                </div>
+
+                                <Button
+                                  variant="outline"
+                                  size="icon"
+                                  onClick={() =>
+                                    handleCopySecret(
+                                      user.twoFactorSecret.secretEnc,
+                                    )
+                                  }
+                                >
+                                  {copied ? (
+                                    <Check
+                                      size={16}
+                                      className="text-green-500"
+                                    />
+                                  ) : (
+                                    <Copy size={16} />
+                                  )}
+                                </Button>
+                              </div>
                             )}
-                          </div>
-                        </TableCell>
-                      </TableRow>
+                          </TableCell>
+                        </TableRow>
+                      </>
                     )}
                   </>
                 ))

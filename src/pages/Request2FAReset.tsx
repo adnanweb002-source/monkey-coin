@@ -13,7 +13,7 @@ import logoDark from "@/assets/logo-dark.png";
 import logoLight from "@/assets/logo-light.png";
 
 const schema = z.object({
-  email: z.string().trim(),
+  email: z.string().trim().email("Please enter a valid email address"),
 });
 
 type FormData = z.infer<typeof schema>;

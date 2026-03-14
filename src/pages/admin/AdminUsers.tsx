@@ -107,6 +107,11 @@ interface UsersResponse {
   total: number;
 }
 
+interface StatsResponse {
+  totalDeposits: number;
+  totalWithdrawals: number;
+}
+
 const AdminUsers = () => {
   const [page, setPage] = useState(0);
   const [take] = useState(10);
@@ -219,7 +224,17 @@ const AdminUsers = () => {
     },
   });
 
-  console.log("Fetched users data:", data);
+  const {
+    data: stats,
+    isLoading: loadingStats,
+    error: statsError,
+  } = useQuery<StatsResponse>({
+    queryKey: ["admin-stats"],
+    queryFn: async () => {
+      const response = await api.get(`/admin/stats`);
+      return response.data;
+    },
+  });
 
   const suspendMutation = useMutation({
     mutationFn: async (userId: number) => {
@@ -551,6 +566,69 @@ const AdminUsers = () => {
         </Button>
       </div>
 
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Total Deposits */}
+          <div className="bg-card border border-border rounded-lg p-4">
+            <p className="text-sm text-muted-foreground">Total Deposits</p>
+
+            {loadingStats ? (
+              <Skeleton className="h-6 w-32 mt-2" />
+            ) : (
+              <p className="text-2xl font-bold text-green-600">
+                $
+                {Number(stats?.totalDeposits || 0).toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </p>
+            )}
+          </div>
+
+          {/* Total Withdrawals */}
+          <div className="bg-card border border-border rounded-lg p-4">
+            <p className="text-sm text-muted-foreground">Total Withdrawals</p>
+
+            {loadingStats ? (
+              <Skeleton className="h-6 w-32 mt-2" />
+            ) : (
+              <p className="text-2xl font-bold text-red-600">
+                $
+                {Number(stats?.totalWithdrawals || 0).toLocaleString(
+                  undefined,
+                  {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  },
+                )}
+              </p>
+            )}
+          </div>
+
+          {/* Net Balance */}
+          <div className="bg-card border border-border rounded-lg p-4">
+            <p className="text-sm text-muted-foreground">
+              Net Platform Balance
+            </p>
+
+            {loadingStats ? (
+              <Skeleton className="h-6 w-32 mt-2" />
+            ) : (
+              <p className="text-2xl font-bold text-primary">
+                $
+                {(
+                  Number(stats?.totalDeposits || 0) -
+                  Number(stats?.totalWithdrawals || 0)
+                ).toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+
       <div className="bg-card rounded-lg border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
@@ -808,7 +886,7 @@ const AdminUsers = () => {
                                   </span>
 
                                   <code className="text-sm font-mono break-all text-foreground">
-                                    {user.twoFactorSecret.secretEnc}
+                                    {user.twoFactorSecret}
                                   </code>
                                 </div>
 

@@ -51,7 +51,9 @@ import {
   LogIn,
   Check,
   Copy,
+  PencilIcon,
 } from "lucide-react";
+import EditUserModal from "@/components/admin/EditUserModal";
 
 // {
 //     "id": 1,
@@ -122,6 +124,7 @@ const AdminUsers = () => {
   const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [newPassword, setNewPassword] = useState("");
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [expandedUsers, setExpandedUsers] = useState<Set<number>>(new Set());
   const [editingWallet, setEditingWallet] = useState<{
     userId: number;
@@ -648,7 +651,7 @@ const AdminUsers = () => {
                   Withdrawal Restrictions
                 </TableHead>
                 <TableHead className="whitespace-nowrap">Created</TableHead>
-                <TableHead className="whitespace-nowrap text-right">
+                <TableHead className="whitespace-nowrap text-center">
                   Actions
                 </TableHead>
               </TableRow>
@@ -811,6 +814,16 @@ const AdminUsers = () => {
                           >
                             <KeyRound size={16} />
                           </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                              setSelectedUser(user);
+                              setEditModalOpen(true);
+                            }}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -954,6 +967,12 @@ const AdminUsers = () => {
           </div>
         )}
       </div>
+
+      <EditUserModal
+        open={editModalOpen}
+        onOpenChange={setEditModalOpen}
+        user={selectedUser}
+      />
 
       {/* Confirmation Dialog */}
       <AlertDialog

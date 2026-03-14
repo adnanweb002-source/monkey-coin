@@ -78,7 +78,7 @@ const findMatchingNodeIds = (
 
 const MyTree = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [depth] = useState(20);
+  const [depth] = useState(3);
 
   const userId = localStorage.getItem("userProfile")
     ? JSON.parse(localStorage.getItem("userProfile") || "").id

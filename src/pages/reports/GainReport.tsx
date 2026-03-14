@@ -20,10 +20,10 @@ import {
   Calendar,
   RefreshCw,
   RotateCcw,
-  DollarSign,
   ChevronLeft,
   ChevronRight,
   ArrowDownLeft,
+  ArrowUpRight,
 } from "lucide-react";
 import { format, subDays, startOfMonth } from "date-fns";
 import { useSearchParams } from "react-router-dom";
@@ -318,7 +318,7 @@ const GainReport = () => {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Total Gain</p>
+                  <p className="text-sm text-muted-foreground">Total Amount</p>
                   <p className="text-3xl font-bold text-foreground">
                     {data ? formatCurrency(data.total) : formatCurrency("0")}
                   </p>
@@ -414,8 +414,15 @@ const GainReport = () => {
                             <TableCell className="text-right">
                               <div className="flex items-center justify-end gap-2">
                                 <Badge className="bg-green-500/20 text-green-500 hover:bg-green-500/30">
-                                  <ArrowDownLeft className="h-3 w-3 mr-1" />
-                                  CREDIT
+                                  {type == "PACKAGE_PURCHASE" ? (
+                                    <ArrowUpRight className="h-3 w-3 mr-1" />
+                                  ) : (
+                                    <ArrowDownLeft className="h-3 w-3 mr-1" />
+                                  )}
+
+                                  {type == "PACKAGE_PURCHASE"
+                                    ? "DEBIT"
+                                    : "CREDIT"}
                                 </Badge>
                                 <span className="font-medium text-green-500">
                                   +${parseFloat(tx.amount).toLocaleString()}

@@ -39,6 +39,7 @@ const Withdraw = () => {
   const [selectedWalletType, setSelectedWalletType] = useState("");
   const [amount, setAmount] = useState("");
   const [method, setMethod] = useState("");
+  const [wallet, setWallet] = useState("");
   const [address, setAddress] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingWallets, setIsLoadingWallets] = useState(true);
@@ -167,7 +168,7 @@ const Withdraw = () => {
     BONUS_WALLET: "A Wallet",
   };
 
-  console.log(wallets)
+  console.log(wallets);
 
   return (
     <div className="space-y-6">
@@ -259,15 +260,15 @@ const Withdraw = () => {
                     <SelectValue placeholder="Select method" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="USDT_TRX">USDT (TRC20)</SelectItem>
-                    <SelectItem value="USDT_ERC">USDT (ERC20)</SelectItem>
+                    <SelectItem value="USDT_TRC_20" key="USDT_TRC_20">USDT (TRC20)</SelectItem>
+                    <SelectItem value="USDT_ERC_20" key="USDT_ERC_20">USDT (ERC20)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="address">Withdrawal Address</Label>
-                <Select value={method} onValueChange={setMethod}>
+                <Select value={wallet} onValueChange={setWallet}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select withdrawal Address" />
                   </SelectTrigger>

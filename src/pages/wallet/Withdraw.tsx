@@ -186,6 +186,15 @@ const Withdraw = () => {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-foreground">Withdraw Funds</h1>
 
+      {isTargetLocked && (
+        <div className="flex items-start gap-3 p-4 rounded-lg border border-destructive/30 bg-destructive/10">
+          <CloudCog className="h-5 w-5 text-destructive mt-0.5 shrink-0" />
+          <p className="text-sm text-foreground">
+            <strong>Withdrawals Locked:</strong> Please reach your assigned target before placing a withdrawal request.
+          </p>
+        </div>
+      )}
+
       <Card className="max-w-xl mx-auto">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

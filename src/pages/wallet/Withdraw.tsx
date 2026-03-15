@@ -289,7 +289,7 @@ const Withdraw = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="address">Withdrawal Address</Label>
-                <Select value={wallet} onValueChange={setWallet}>
+                <Select value={address} onValueChange={setAddress}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select withdrawal Address" />
                   </SelectTrigger>

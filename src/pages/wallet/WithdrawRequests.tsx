@@ -23,6 +23,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
 import AdminWithdrawActions from "@/components/admin/AdminWithdrawActions";
+import { walletConfig } from "@/lib/config";
 
 interface WithdrawRequest {
   id: number;
@@ -34,6 +35,7 @@ interface WithdrawRequest {
   adminNote: string | null;
   createdAt: string;
   updatedAt: string;
+  wallet: any
 }
 
 const PAGE_SIZE = 20;
@@ -166,10 +168,10 @@ const WithdrawRequests = () => {
                     {requests.map((request) => (
                       <TableRow key={request.id}>
                         <TableCell className="font-mono text-xs">
-                          {request.id.toString().slice(0, 8)}...
+                          {request.id.toString()}
                         </TableCell>
                         <TableCell>
-                          {walletLabels[request.walletType] || request.walletType}
+                          {walletLabels[request.wallet.type] || request.walletType}
                         </TableCell>
                         <TableCell>${parseFloat(request.amount).toLocaleString()}</TableCell>
                         <TableCell>{request.method}</TableCell>

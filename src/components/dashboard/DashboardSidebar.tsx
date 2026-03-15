@@ -23,6 +23,7 @@ import {
   Settings,
   LogOut,
   File,
+  Target,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -108,6 +109,7 @@ const sidebarItems: SidebarItem[] = [
       },
     ],
   },
+  { labelKey: "sidebar.targets", icon: Target, path: "/targets" },
   { labelKey: "sidebar.notifications", icon: Bell, path: "/notifications" },
   {
     labelKey: "sidebar.holidayList",
@@ -185,6 +187,12 @@ const adminItems: SidebarItem[] = [
     labelKey: "admin.ranks",
     icon: Trophy,
     path: "/admin/ranks",
+    adminOnly: true,
+  },
+  {
+    labelKey: "admin.targets",
+    icon: Target,
+    path: "/admin/targets",
     adminOnly: true,
   },
 ];

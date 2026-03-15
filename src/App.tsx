@@ -49,7 +49,9 @@ import DownlineDeposit from "./pages/reports/DownlineDeposit";
 import Notifications from "./pages/Notifications";
 import GrowthTools from "./pages/GrowthTools";
 import AdminRanks from "./pages/admin/AdminRanks";
+import AdminTargets from "./pages/admin/AdminTargets";
 import AwardsAndRanks from "./pages/reports/AwardsAndRanks";
+import UserTargets from "./pages/UserTargets";
 import NotFound from "./pages/NotFound";
 
 
@@ -165,6 +167,12 @@ const App = () => (
               <Route path="packages" element={<AdminPackages />} />
               <Route path="deposits" element={<AdminDeposits />} />
               <Route path="ranks" element={<AdminRanks />} />
+              <Route path="targets" element={<AdminTargets />} />
+            </Route>
+
+            {/* User Targets Route */}
+            <Route path="/targets" element={<ProtectedDashboard />}>
+              <Route index element={<UserTargets />} />
             </Route>
 
             {/* Support Route */}

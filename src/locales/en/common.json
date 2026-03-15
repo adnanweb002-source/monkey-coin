@@ -38,6 +38,7 @@
     "holidayList": "Holiday List",
     "downlineDeposit": "Downline Deposit Report",
     "awardsAndRanks": "Awards & Ranks",
+    "targets": "Targets",
     "marketingTools": "Promo Tools",
     "notifications": "Notices",
     "contactSupport": "Contact Support",
@@ -55,7 +56,8 @@
     "systemSettings": "System Settings",
     "supportQueries": "Support Queries",
     "systemPrune": "System Prune",
-    "ranks": "Ranks"
+    "ranks": "Ranks",
+    "targets": "Targets"
   },
   "auth": {
     "logout": "Logout",

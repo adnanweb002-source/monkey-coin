@@ -229,3 +229,28 @@
   overflow-y: auto;
   scrollbar-gutter: stable both-edges; /* prevents layout shift */
 }
+
+
+.perspective {
+  perspective: 1200px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.card-flip {
+  transition: transform 0.7s;
+}
+
+.group:hover .card-flip {
+  transform: rotateY(180deg);
+}

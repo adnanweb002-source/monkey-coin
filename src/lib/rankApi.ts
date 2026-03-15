@@ -14,6 +14,7 @@ export interface UserRank {
   id: string;
   name: string;
   reward: number;
+  order: number;
   rewardTitle?: string;
   requiredLeft: number;
   requiredRight: number;

@@ -189,6 +189,12 @@ const adminItems: SidebarItem[] = [
     path: "/admin/ranks",
     adminOnly: true,
   },
+  {
+    labelKey: "admin.targets",
+    icon: Target,
+    path: "/admin/targets",
+    adminOnly: true,
+  },
 ];
 
 interface DashboardSidebarProps {

@@ -167,6 +167,12 @@ const App = () => (
               <Route path="packages" element={<AdminPackages />} />
               <Route path="deposits" element={<AdminDeposits />} />
               <Route path="ranks" element={<AdminRanks />} />
+              <Route path="targets" element={<AdminTargets />} />
+            </Route>
+
+            {/* User Targets Route */}
+            <Route path="/targets" element={<ProtectedDashboard />}>
+              <Route index element={<UserTargets />} />
             </Route>
 
             {/* Support Route */}

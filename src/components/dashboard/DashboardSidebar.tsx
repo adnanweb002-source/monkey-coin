@@ -109,6 +109,7 @@ const sidebarItems: SidebarItem[] = [
       },
     ],
   },
+  { labelKey: "sidebar.targets", icon: Target, path: "/targets" },
   { labelKey: "sidebar.notifications", icon: Bell, path: "/notifications" },
   {
     labelKey: "sidebar.holidayList",

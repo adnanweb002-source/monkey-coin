@@ -54,7 +54,7 @@ const TreeNodeHoverDetails = ({ node, position, nodeHeight, isMobile, onClose }:
               : "bg-red-500/10 text-red-600 border-red-500/30"
           )}
         >
-          {node.isActive ? "ACTIVE" : "INACTIVE"}
+          {node.activePackageCount > 0 ? "ACTIVE" : "INACTIVE"}
         </Badge>
       ),
     },

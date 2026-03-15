@@ -43,6 +43,7 @@ const Withdraw = () => {
   const [address, setAddress] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingWallets, setIsLoadingWallets] = useState(true);
+  const [isTargetLocked, setIsTargetLocked] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 

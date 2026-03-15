@@ -1,16 +1,31 @@
 import api from "@/lib/api";
 
+interface TargetUser {
+  id: number;
+  memberId: string,
+  firstName: string,
+  lastName: string
+}
+
+interface TargetPackage {
+  id: number;
+  amount: string;
+  packageId: number
+}
+
 export interface Target {
   id: number;
   memberId: string;
   packageAmount: number;
-  targetMultiplier: string;
+  multiplier: string;
   targetAmount: number;
   achieved: number;
-  remaining: number;
   salesType: string;
   completed: boolean;
   createdAt: string;
+  user: TargetUser;
+  purchase: TargetPackage
+
 }
 
 export interface TargetStats {
@@ -42,9 +57,12 @@ export interface AssignTargetPayload {
   memberId: string;
   split: Record<string, number>;
   packageAmount: number;
-  targetMultiplier: string;
-  targetType: string;
+  multiplier?: string;
+  salesType?: string;
+  targetAmount?: string;
   targetNeededToUnlockDailyRoi: number;
+  targetMultiplier: string;
+  targetType: string
 }
 
 export const assignTarget = async (data: AssignTargetPayload) => {
@@ -59,7 +77,7 @@ export const getTargets = async (params: {
   salesType?: string;
   completed?: string;
 }): Promise<TargetListResponse> => {
-  const res = await api.get("/admin/targets", { params });
+  const res = await api.get("/targets", { params });
   return res.data;
 };
 
@@ -67,21 +85,23 @@ export const updateTarget = async (
   targetId: number,
   data: Partial<AssignTargetPayload>,
 ) => {
-  const res = await api.patch(`/admin/targets/${targetId}`, data);
+  console.log("the data is", data)
+  const res = await api.patch(`/targets/${targetId}`, data);
+  console.log("the response", res)
   return res.data;
 };
 
 export const deleteTarget = async (targetId: number) => {
-  const res = await api.delete(`/admin/targets/${targetId}`);
+  const res = await api.delete(`/targets/${targetId}`);
   return res.data;
 };
 
 export const getTargetStats = async (): Promise<TargetStats> => {
-  const res = await api.get("/admin/targets/stats");
+  const res = await api.get("/targets/stats");
   return res.data;
 };
 
 export const getBusinessVolumeStats = async (): Promise<BusinessVolumeStats> => {
-  const res = await api.get("/admin/targets/business-volume");
+  const res = await api.get("/targets/business-volume");
   return res.data;
 };

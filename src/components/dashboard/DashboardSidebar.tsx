@@ -24,6 +24,7 @@ import {
   LogOut,
   File,
   Target,
+  PlusIcon
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -107,9 +108,9 @@ const sidebarItems: SidebarItem[] = [
         labelKey: "sidebar.awardsAndRanks",
         path: "/reports/ranks",
       },
+      { labelKey: "sidebar.targets", path: "/targets" },
     ],
   },
-  { labelKey: "sidebar.targets", icon: Target, path: "/targets" },
   { labelKey: "sidebar.notifications", icon: Bell, path: "/notifications" },
   {
     labelKey: "sidebar.holidayList",
@@ -160,6 +161,18 @@ const adminItems: SidebarItem[] = [
     adminOnly: true,
   },
   {
+    labelKey: "admin.ranks",
+    icon: Trophy,
+    path: "/admin/ranks",
+    adminOnly: true,
+  },
+  {
+    labelKey: "admin.targets",
+    icon: Target,
+    path: "/admin/targets",
+    adminOnly: true,
+  },
+  {
     labelKey: "admin.supportedWalletTypes",
     icon: Wallet,
     path: "/admin/supported-wallet-types",
@@ -169,6 +182,12 @@ const adminItems: SidebarItem[] = [
     labelKey: "admin.systemSettings",
     icon: Settings,
     path: "/admin/settings",
+    adminOnly: true,
+  },
+  {
+    labelKey: "admin.depositBonus",
+    icon: PlusIcon,
+    path: "/admin/deposit-bonus",
     adminOnly: true,
   },
   {
@@ -182,19 +201,7 @@ const adminItems: SidebarItem[] = [
     icon: Shield,
     path: "/admin/system/prune",
     adminOnly: true,
-  },
-  {
-    labelKey: "admin.ranks",
-    icon: Trophy,
-    path: "/admin/ranks",
-    adminOnly: true,
-  },
-  {
-    labelKey: "admin.targets",
-    icon: Target,
-    path: "/admin/targets",
-    adminOnly: true,
-  },
+  }
 ];
 
 interface DashboardSidebarProps {

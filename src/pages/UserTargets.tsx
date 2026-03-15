@@ -12,6 +12,8 @@ const UserTargets = () => {
     queryFn: getMyTargets,
   });
 
+  console.log(targets)
+
   const activeTarget = targets.find((t) => !t.completed) || targets[0];
 
   if (isLoading) {
@@ -103,7 +105,7 @@ const UserTargets = () => {
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Target Remaining</p>
-                  <p className="text-lg font-semibold">${activeTarget.remaining.toLocaleString()}</p>
+                  <p className="text-lg font-semibold">${((activeTarget.targetAmount) - (activeTarget.achieved)).toLocaleString()}</p>
                 </div>
               </div>
             </CardContent>

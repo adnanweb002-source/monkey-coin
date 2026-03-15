@@ -57,7 +57,8 @@
     "supportQueries": "Support Queries",
     "systemPrune": "System Prune",
     "ranks": "Ranks",
-    "targets": "Targets"
+    "targets": "Targets",
+    "depositBonus": "Deposit Bonus"
   },
   "auth": {
     "logout": "Logout",

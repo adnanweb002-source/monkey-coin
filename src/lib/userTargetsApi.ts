@@ -2,9 +2,8 @@ import api from "@/lib/api";
 
 export interface UserTarget {
   id: number;
-  memberId: string;
   packageAmount: number;
-  targetMultiplier: string;
+  multiplier: string;
   targetAmount: number;
   achieved: number;
   remaining: number;

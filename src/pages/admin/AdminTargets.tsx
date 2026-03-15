@@ -80,6 +80,7 @@ const AdminTargets = () => {
     targetMultiplier: "X1",
     targetType: "DIRECT",
     targetNeededToUnlockDailyRoi: "",
+    targetAmount: "",
   });
   const [walletAmounts, setWalletAmounts] = useState<Record<string, string>>({});
 
@@ -236,7 +237,7 @@ const AdminTargets = () => {
   const closeModal = () => {
     setModalOpen(false);
     setEditingTarget(null);
-    setForm({ memberId: "", packageAmount: "", targetMultiplier: "X1", targetType: "DIRECT", targetNeededToUnlockDailyRoi: "" });
+    setForm({ memberId: "", packageAmount: "", targetMultiplier: "X1", targetType: "DIRECT", targetNeededToUnlockDailyRoi: "", targetAmount: "" });
     const initial: Record<string, string> = {};
     availableWallets.forEach((w) => { initial[w.type] = ""; });
     setWalletAmounts(initial);
@@ -244,7 +245,7 @@ const AdminTargets = () => {
 
   const openCreate = () => {
     setEditingTarget(null);
-    setForm({ memberId: "", packageAmount: "", targetMultiplier: "X1", targetType: "DIRECT", targetNeededToUnlockDailyRoi: "" });
+    setForm({ memberId: "", packageAmount: "", targetMultiplier: "X1", targetType: "DIRECT", targetNeededToUnlockDailyRoi: "", targetAmount:"" });
     const initial: Record<string, string> = {};
     availableWallets.forEach((w) => { initial[w.type] = ""; });
     setWalletAmounts(initial);
@@ -252,13 +253,15 @@ const AdminTargets = () => {
   };
 
   const openEdit = (target: Target) => {
+    console.log(target)
     setEditingTarget(target);
     setForm({
-      memberId: target.memberId,
+      memberId: target.user.memberId,
       packageAmount: String(target.packageAmount),
-      targetMultiplier: target.targetMultiplier,
+      targetMultiplier: target.multiplier,
       targetType: target.salesType,
       targetNeededToUnlockDailyRoi: "",
+      targetAmount: String(target.targetAmount),
     });
     setModalOpen(true);
   };
@@ -268,10 +271,10 @@ const AdminTargets = () => {
       updateMutation.mutate({
         id: editingTarget.id,
         data: {
-          memberId: form.memberId,
-          packageAmount: parseFloat(form.packageAmount),
-          targetMultiplier: form.targetMultiplier,
-          targetType: form.targetType,
+          // packageAmount: parseFloat(form.packageAmount),
+          multiplier: form.targetMultiplier,
+          salesType: form.targetType,
+          targetAmount: form.targetAmount
         },
       });
     } else {
@@ -304,7 +307,6 @@ const AdminTargets = () => {
 
   const isMutating = assignMutation.isPending || updateMutation.isPending;
   const meta = targetsData?.meta;
-
   const statsCards = [
     { label: "Total Targets Given", value: stats?.totalTargetsGiven ?? 0, icon: TargetIcon, color: "text-primary" },
     { label: "Total Targets Reached", value: stats?.totalTargetsReached ?? 0, icon: TrendingUp, color: "text-green-500" },
@@ -313,10 +315,10 @@ const AdminTargets = () => {
   ];
 
   const bvCards = [
-    { label: "Total Target Volume", value: `$${(bvStats?.totalTargetVolume ?? 0).toLocaleString()}` },
-    { label: "Achieved Volume", value: `$${(bvStats?.totalAchievedVolume ?? 0).toLocaleString()}` },
-    { label: "Remaining Volume", value: `$${(bvStats?.remainingVolume ?? 0).toLocaleString()}` },
-    { label: "Avg Completion %", value: `${(bvStats?.averageCompletionPercent ?? 0).toFixed(1)}%` },
+    { label: "Total Target Volume", value: `$${Number(bvStats?.totalTargetVolume ?? 0).toLocaleString()}` },
+    { label: "Achieved Volume", value: `$${Number(bvStats?.totalAchievedVolume ?? 0).toLocaleString()}` },
+    { label: "Remaining Volume", value: `$${Number(bvStats?.remainingVolume ?? 0).toLocaleString()}` },
+    { label: "Avg Completion %", value: `${Number(bvStats?.averageCompletionPercent ?? 0).toFixed(1)}%` },
     { label: "Users Under Lock", value: bvStats?.usersUnderTargetLock ?? 0 },
   ];
 
@@ -440,12 +442,12 @@ const AdminTargets = () => {
               targetsData.data.map((target, idx) => (
                 <TableRow key={target.id}>
                   <TableCell>{(page - 1) * limit + idx + 1}</TableCell>
-                  <TableCell className="font-medium">{target.memberId}</TableCell>
+                  <TableCell className="font-medium">{target.user.memberId}</TableCell>
                   <TableCell>${target.packageAmount.toLocaleString()}</TableCell>
-                  <TableCell>{target.targetMultiplier}</TableCell>
+                  <TableCell>{target.multiplier}</TableCell>
                   <TableCell>${target.targetAmount.toLocaleString()}</TableCell>
                   <TableCell>${target.achieved.toLocaleString()}</TableCell>
-                  <TableCell>${target.remaining.toLocaleString()}</TableCell>
+                  <TableCell>${(Number(target?.targetAmount) - Number(target?.achieved)).toLocaleString()}</TableCell>
                   <TableCell>
                     <Badge variant="outline">{target.salesType}</Badge>
                   </TableCell>
@@ -511,6 +513,17 @@ const AdminTargets = () => {
                 type="number"
                 value={form.packageAmount}
                 onChange={(e) => setForm({ ...form, packageAmount: e.target.value })}
+                onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                placeholder="0.00"
+              />
+            </div>
+             <div className="space-y-2">
+              <Label>Target Amount</Label>
+              <Input
+                type="number"
+                value={form.targetAmount}
+                onChange={(e) => setForm({ ...form, targetAmount: e.target.value })}
                 onWheel={(e) => (e.target as HTMLInputElement).blur()}
                 className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                 placeholder="0.00"

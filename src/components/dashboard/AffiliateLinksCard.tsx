@@ -20,7 +20,7 @@ const AffiliateLinksCard = ({ user }: { user: UserProfile | null }) => {
   const memberId = user?.memberId || "";
 
   const { data: treeStats, isLoading } = useQuery<TreeStats>({
-    queryKey: ["affiliate-tree-stats", user?.id],
+    queryKey: ["affiliate-tree-stats", user?.id, 200],
     queryFn: async () => {
       try {
         const res = await api.get(`/tree/user/${user?.id}?depth=200`);

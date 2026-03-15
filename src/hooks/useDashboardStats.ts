@@ -50,7 +50,7 @@ const useDashboardStats = () => {
       let totalWithdrawal = 0;
       // We'll use a simple approach - check if there's a withdrawal endpoint
       try {
-        const withdrawRes = await api.get("/wallet/withdrawals", { params: { skip: 0, take: 1 } });
+        const withdrawRes = await api.get("/wallet/withdraw-requests", { params: { skip: 0, take: 1, status: "APPROVED" } });
         totalWithdrawal = parseFloat(withdrawRes.data?.total || "0");
       } catch {
         // If no withdrawal summary endpoint, default to 0

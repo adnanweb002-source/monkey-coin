@@ -11,7 +11,6 @@ import { toast } from "sonner";
 import WalletCards from "@/components/dashboard/WalletCards";
 import { useGetWallets } from "../api";
 
-// Add Thomas node to rightChild
 const useGetTree = (userId: number, depth: number) => {
   return useQuery<TreeNode>({
     queryKey: ["tree", userId, depth],

@@ -307,6 +307,7 @@ const Withdraw = () => {
                 type="submit"
                 disabled={
                   isLoading ||
+                  isTargetLocked ||
                   !selectedWalletType ||
                   !amount ||
                   parseFloat(amount) <= 0 ||
@@ -316,7 +317,7 @@ const Withdraw = () => {
                 className="w-full"
                 size="lg"
               >
-                {isLoading ? "Submitting..." : "Submit Withdrawal"}
+                {isTargetLocked ? "Withdrawals Locked" : isLoading ? "Submitting..." : "Submit Withdrawal"}
               </Button>
             </form>
           )}

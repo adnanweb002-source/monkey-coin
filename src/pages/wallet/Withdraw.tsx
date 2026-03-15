@@ -85,6 +85,17 @@ const Withdraw = () => {
     fetchWallets();
   }, []);
 
+  // Check target lock status
+  useEffect(() => {
+    const stored = localStorage.getItem("userProfile");
+    if (stored) {
+      const profile = JSON.parse(stored);
+      if (profile?.lockWithdrawalsTillTarget) {
+        setIsTargetLocked(true);
+      }
+    }
+  }, []);
+
   const selectedWallet = wallets.find((w) => w.type === selectedWalletType);
   const selectedBalance = selectedWallet
     ? parseFloat(selectedWallet.balance)

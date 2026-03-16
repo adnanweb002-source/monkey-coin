@@ -295,8 +295,8 @@ const AdminSettings = () => {
                   onValueChange={(e) => setFormValue(e)}
                 >
                   <SelectTrigger>
-                <SelectValue placeholder="Select transfer type" />
-              </SelectTrigger>
+                    <SelectValue placeholder="Select transfer type" />
+                  </SelectTrigger>
                   <SelectContent>
                     {["DOWNLINE", "CROSSLINE"].map((opt) => (
                       <SelectItem key={opt} value={opt}>
@@ -305,6 +305,15 @@ const AdminSettings = () => {
                     ))}
                   </SelectContent>
                 </Select>
+              ) : editingSetting?.key == "BACK_OFFICE_CLOSING_TIME" ||
+                editingSetting?.key == "BACK_OFFICE_OPENING_TIME" ? (
+                <Input
+                  type="time"
+                  id="value"
+                  value={formValue}
+                  onChange={(e) => setFormValue(e.target.value)}
+                  placeholder="Enter value"
+                />
               ) : (
                 <Input
                   id="value"

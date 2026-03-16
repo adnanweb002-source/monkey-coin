@@ -6,7 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -25,6 +31,13 @@ import {
 } from "@/components/ui/dialog";
 import { Loader2, Settings, Pencil } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // All setting types that must always be displayed
 const SETTING_TYPES = [
@@ -35,7 +48,7 @@ const SETTING_TYPES = [
   "REFERRAL_INCOME_RATE",
 ] as const;
 
-type SettingType = typeof SETTING_TYPES[number];
+type SettingType = (typeof SETTING_TYPES)[number];
 
 interface Setting {
   id?: number;
@@ -54,7 +67,9 @@ const AdminSettings = () => {
   const queryClient = useQueryClient();
   const isMobile = useIsMobile();
 
-  const [editingSetting, setEditingSetting] = useState<SettingDisplay | null>(null);
+  const [editingSetting, setEditingSetting] = useState<SettingDisplay | null>(
+    null,
+  );
   const [formValue, setFormValue] = useState("");
 
   const { data: settingsFromApi = [], isLoading } = useQuery<Setting[]>({
@@ -102,7 +117,7 @@ const AdminSettings = () => {
 
   const handleSave = () => {
     if (!editingSetting) return;
-    
+
     if (!formValue.trim()) {
       toast({
         title: "Validation Error",
@@ -137,7 +152,9 @@ const AdminSettings = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-foreground">System Settings</h1>
-        <p className="text-muted-foreground">Manage system-wide configuration settings</p>
+        <p className="text-muted-foreground">
+          Manage system-wide configuration settings
+        </p>
       </div>
 
       <Card>
@@ -147,7 +164,8 @@ const AdminSettings = () => {
             Settings
           </CardTitle>
           <CardDescription>
-            {settings.filter((s) => s.isConfigured).length} of {settings.length} settings configured
+            {settings.filter((s) => s.isConfigured).length} of {settings.length}{" "}
+            settings configured
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -163,13 +181,17 @@ const AdminSettings = () => {
                     <h4 className="font-semibold text-foreground text-sm">
                       {formatSettingKey(setting.key)}
                     </h4>
-                    <Badge variant={setting.isConfigured ? "default" : "secondary"}>
+                    <Badge
+                      variant={setting.isConfigured ? "default" : "secondary"}
+                    >
                       {setting.isConfigured ? "Configured" : "Not Set"}
                     </Badge>
                   </div>
                   <div className="text-sm">
                     <span className="text-muted-foreground">Value: </span>
-                    <span className={`font-mono ${setting.isConfigured ? "text-foreground" : "text-muted-foreground italic"}`}>
+                    <span
+                      className={`font-mono ${setting.isConfigured ? "text-foreground" : "text-muted-foreground italic"}`}
+                    >
                       {setting.isConfigured ? setting.value : "NA"}
                     </span>
                   </div>
@@ -205,12 +227,16 @@ const AdminSettings = () => {
                       {formatSettingKey(setting.key)}
                     </TableCell>
                     <TableCell>
-                      <span className={`font-mono ${setting.isConfigured ? "text-foreground" : "text-muted-foreground italic"}`}>
+                      <span
+                        className={`font-mono ${setting.isConfigured ? "text-foreground" : "text-muted-foreground italic"}`}
+                      >
                         {setting.isConfigured ? setting.value : "NA"}
                       </span>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={setting.isConfigured ? "default" : "secondary"}>
+                      <Badge
+                        variant={setting.isConfigured ? "default" : "secondary"}
+                      >
                         {setting.isConfigured ? "Configured" : "Not Set"}
                       </Badge>
                     </TableCell>
@@ -233,11 +259,16 @@ const AdminSettings = () => {
       </Card>
 
       {/* Edit/Create Dialog */}
-      <Dialog open={!!editingSetting} onOpenChange={(open) => !open && setEditingSetting(null)}>
+      <Dialog
+        open={!!editingSetting}
+        onOpenChange={(open) => !open && setEditingSetting(null)}
+      >
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>
-              {editingSetting?.isConfigured ? "Update Setting" : "Set Setting Value"}
+              {editingSetting?.isConfigured
+                ? "Update Setting"
+                : "Set Setting Value"}
             </DialogTitle>
             <DialogDescription>
               {editingSetting?.isConfigured
@@ -249,19 +280,39 @@ const AdminSettings = () => {
             <div className="space-y-2">
               <Label>Setting Key</Label>
               <Input
-                value={editingSetting ? formatSettingKey(editingSetting.key) : ""}
+                value={
+                  editingSetting ? formatSettingKey(editingSetting.key) : ""
+                }
                 disabled
                 className="bg-muted"
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="value">Value *</Label>
-              <Input
-                id="value"
-                value={formValue}
-                onChange={(e) => setFormValue(e.target.value)}
-                placeholder="Enter value"
-              />
+              {editingSetting?.key == "TRANSFER_TYPE" ? (
+                <Select
+                  value={formValue}
+                  onValueChange={(e) => setFormValue(e)}
+                >
+                  <SelectTrigger>
+                <SelectValue placeholder="Select transfer type" />
+              </SelectTrigger>
+                  <SelectContent>
+                    {["DOWNLINE", "CROSSLINE"].map((opt) => (
+                      <SelectItem key={opt} value={opt}>
+                        {opt}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <Input
+                  id="value"
+                  value={formValue}
+                  onChange={(e) => setFormValue(e.target.value)}
+                  placeholder="Enter value"
+                />
+              )}
             </div>
           </div>
           <DialogFooter className="flex-col sm:flex-row gap-2">

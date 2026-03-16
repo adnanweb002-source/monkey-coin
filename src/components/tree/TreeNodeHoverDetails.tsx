@@ -36,6 +36,7 @@ const TreeNodeHoverDetails = ({ node, position, nodeHeight, isMobile, onClose }:
     rightBv?: number | string;
     sponsorMemberId?: string;
     activePackageCount?: number;
+    currentRank?; string;
   };
 
   const details = [
@@ -49,7 +50,7 @@ const TreeNodeHoverDetails = ({ node, position, nodeHeight, isMobile, onClose }:
           variant={node.isActive ? "default" : "secondary"}
           className={cn(
             "text-xs",
-            node.isActive
+            node.activePackageCount > 0
               ? "bg-green-500/10 text-green-600 border-green-500/30"
               : "bg-red-500/10 text-red-600 border-red-500/30"
           )}
@@ -72,7 +73,7 @@ const TreeNodeHoverDetails = ({ node, position, nodeHeight, isMobile, onClose }:
         ? format(new Date(extendedNode.joinDate || extendedNode.createdAt!), "dd MMM yyyy")
         : "—",
     },
-    { label: "Rank", value: extendedNode.rank || "—" },
+    { label: "Rank", value: extendedNode.currentRank || "—" },
     { label: "BV Left", value: formatBV(extendedNode.leftBv) },
     { label: "BV Right", value: formatBV(extendedNode.rightBv) },
     { label: "Active Packages", value: extendedNode.activePackageCount },

@@ -75,8 +75,9 @@ const TreeNodeContextMenu = ({ node, children, isAdmin }: TreeNodeContextMenuPro
   });
 
   const getName = (email: string) => {
-    const name = email.split("@")[0];
-    return name.charAt(0).toUpperCase() + name.slice(1);
+    console.log("email", email)
+    const name = email?.split("@")[0];
+    return name?.charAt(0).toUpperCase() + name?.slice(1);
   };
 
   const suspendMutation = useMutation({
@@ -183,11 +184,11 @@ const TreeNodeContextMenu = ({ node, children, isAdmin }: TreeNodeContextMenuPro
   const getConfirmMessage = () => {
     switch (confirmAction) {
       case "suspend":
-        return `Are you sure you want to suspend ${getName(node.email)}? They will not be able to access their account.`;
+        return `Are you sure you want to suspend ${node.fullName}? They will not be able to access their account.`;
       case "activate":
-        return `Are you sure you want to activate ${getName(node.email)}?`;
+        return `Are you sure you want to activate ${node.fullName}?`;
       case "disable2fa":
-        return `Are you sure you want to disable 2FA for ${getName(node.email)}? This will remove their two-factor authentication.`;
+        return `Are you sure you want to disable 2FA for ${node.fullName}? This will remove their two-factor authentication.`;
       default:
         return "";
     }

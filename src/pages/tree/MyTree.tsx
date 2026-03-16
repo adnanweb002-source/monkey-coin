@@ -93,6 +93,8 @@ const MyTree = () => {
 
   const { data: treeData, isLoading, error } = useGetTree(currentRootId, depth);
 
+  console.log(treeData)
+
   const matchingNodeIds = treeData
     ? findMatchingNodeIds(treeData, searchQuery)
     : new Set<number>();

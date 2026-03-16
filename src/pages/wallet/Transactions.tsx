@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import React from "react";
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -107,6 +108,34 @@ const Transactions = () => {
     fetchWallets();
   }, []);
 
+  type MetaViewerProps = {
+    data: any;
+  };
+
+  function MetaViewer({ data }: MetaViewerProps) {
+    if (!data) return null;
+
+    return (
+      <div className="space-y-1 text-xs">
+        {Object.entries(data).map(([key, value]) => (
+          <div key={key} className="pl-2">
+            <div className="flex gap-2">
+              <span className="text-muted-foreground font-medium">{key.toLocaleUpperCase()}:</span>
+
+              {typeof value === "object" && value !== null ? (
+                <div className="border-l pl-3 ml-1">
+                  <MetaViewer data={value} />
+                </div>
+              ) : (
+                <span className="break-all">{String(value)}</span>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   // Fetch transactions when wallet changes or pagination changes
   useEffect(() => {
     if (!selectedWalletType) return;
@@ -171,7 +200,9 @@ const Transactions = () => {
     const walletTypeFromParams = searchParams.get("walletType") as WalletType;
     console.log("Wallet type from URL params:", walletTypeFromParams);
     if (walletTypeFromParams) {
-      setSelectedWalletType(reverseWalletLabels[walletTypeFromParams] || walletTypeFromParams);
+      setSelectedWalletType(
+        reverseWalletLabels[walletTypeFromParams] || walletTypeFromParams,
+      );
     }
   }, [searchParams]);
 
@@ -206,8 +237,6 @@ const Transactions = () => {
   };
 
   const selectedWallet = wallets.find((w) => w.type === selectedWalletType);
-
-  console.log("Selected Wallet Type:", selectedWalletType);
 
   return (
     <div className="space-y-6">
@@ -347,11 +376,12 @@ const Transactions = () => {
                             <TableCell colSpan={8} className="bg-muted/30">
                               <div className="p-3">
                                 <p className="text-sm font-medium mb-2">
-                                  Meta Information:
+                                  More Information:
                                 </p>
-                                <pre className="text-xs bg-background rounded p-2 overflow-x-auto">
-                                  {JSON.stringify(tx.meta, null, 2)}
-                                </pre>
+
+                                <div className="bg-background rounded p-2">
+                                  <MetaViewer data={tx.meta} />
+                                </div>
                               </div>
                             </TableCell>
                           </TableRow>

@@ -1,12 +1,14 @@
 {
   "header": {
     "dashboard": "Панель управления",
+    "panel": "Панель",
     "language": "Язык",
     "deposit": "Пополнение",
     "notifications": "Уведомления"
   },
   "sidebar": {
     "dashboard": "Панель управления",
+    "panel": "Панель",
     "myProfile": "Мой профиль",
     "makeInvestment": "Инвестировать",
     "myTree": "Моя структура",
@@ -37,7 +39,15 @@
     "logout": "Выйти",
     "loggingOut": "Выход...",
     "privacyPolicy": "Политика конфиденциальности",
-    "termsOfUse": "Условия использования"
+    "termsOfUse": "Условия использования",
+    "dailyEarningsReport": "Отчёт о ежедневных доходах",
+    "referralEarningsReport": "Отчёт о реферальных доходах",
+    "binaryEarningsReport": "Отчёт о бинарных доходах",
+    "packagePurchaseReport": "Отчёт о покупке пакетов",
+    "awardsAndRanks": "Награды и ранги",
+    "targets": "Цели",
+    "notifications": "Уведомления",
+    "dailyIncome": "Ежедневный доход"
   },
   "admin": {
     "userManagement": "Управление пользователями",

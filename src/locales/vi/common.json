@@ -1,12 +1,14 @@
 {
   "header": {
     "dashboard": "Bảng điều khiển",
+    "panel": "Bảng điều khiển",
     "language": "Ngôn ngữ",
     "deposit": "Nạp tiền",
     "notifications": "Thông báo"
   },
   "sidebar": {
     "dashboard": "Bảng điều khiển",
+    "panel": "Bảng điều khiển",
     "myProfile": "Hồ sơ của tôi",
     "makeInvestment": "Đầu tư",
     "myTree": "Cây hệ thống",
@@ -37,7 +39,15 @@
     "logout": "Đăng xuất",
     "loggingOut": "Đang đăng xuất...",
     "privacyPolicy": "Chính sách bảo mật",
-    "termsOfUse": "Điều khoản sử dụng"
+    "termsOfUse": "Điều khoản sử dụng",
+     "dailyEarningsReport": "Báo cáo thu nhập hàng ngày",
+    "referralEarningsReport": "Báo cáo thu nhập giới thiệu",
+    "binaryEarningsReport": "Báo cáo thu nhập nhị phân",
+    "packagePurchaseReport": "Báo cáo mua gói",
+    "awardsAndRanks": "Giải thưởng & Cấp bậc",
+    "targets": "Mục tiêu",
+    "notifications": "Thông báo",
+    "dailyIncome": "Thu nhập hàng ngày"
   },
   "admin": {
     "userManagement": "Quản lý người dùng",

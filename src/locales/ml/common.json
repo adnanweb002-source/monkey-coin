@@ -1,12 +1,14 @@
 {
   "header": {
     "dashboard": "ഡാഷ്ബോർഡ്",
+     "panel": "ഡാഷ്ബോർഡ്",
     "language": "ഭാഷ",
     "deposit": "ഡെപ്പോസിറ്റ്",
     "notifications": "അറിയിപ്പുകൾ"
   },
   "sidebar": {
     "dashboard": "ഡാഷ്ബോർഡ്",
+    "panel": "ഡാഷ്ബോർഡ്",
     "myProfile": "എന്റെ പ്രൊഫൈൽ",
     "makeInvestment": "നിക്ഷേപിക്കുക",
     "myTree": "എന്റെ നെറ്റ്‌വർക്ക്",
@@ -37,7 +39,15 @@
     "logout": "ലോഗ് ഔട്ട്",
     "loggingOut": "ലോഗ് ഔട്ട് ചെയ്യുന്നു...",
     "privacyPolicy": "സ്വകാര്യതാ നയം",
-    "termsOfUse": "ഉപയോഗ നിബന്ധനകൾ"
+    "termsOfUse": "ഉപയോഗ നിബന്ധനകൾ",
+     "dailyEarningsReport": "ദൈനംദിന വരുമാന റിപ്പോർട്ട്",
+    "referralEarningsReport": "റഫറൽ വരുമാന റിപ്പോർട്ട്",
+    "binaryEarningsReport": "ബൈനറി വരുമാന റിപ്പോർട്ട്",
+    "packagePurchaseReport": "പാക്കേജ് വാങ്ങൽ റിപ്പോർട്ട്",
+    "awardsAndRanks": "പുരസ്കാരങ്ങളും റാങ്കുകളും",
+    "targets": "ലക്ഷ്യങ്ങൾ",
+    "notifications": "അറിയിപ്പുകൾ",
+    "dailyIncome": "ദൈനംദിന വരുമാനം"
   },
   "admin": {
     "userManagement": "ഉപയോക്തൃ മാനേജ്മെന്റ്",

@@ -1,12 +1,14 @@
 {
   "header": {
     "dashboard": "डैशबोर्ड",
+    "panel": "पैनल",
     "language": "भाषा",
     "deposit": "जमा करें",
     "notifications": "सूचनाएँ"
   },
   "sidebar": {
     "dashboard": "डैशबोर्ड",
+    "panel": "पैनल",
     "myProfile": "मेरी प्रोफ़ाइल",
     "makeInvestment": "निवेश करें",
     "myTree": "मेरा नेटवर्क",
@@ -37,7 +39,15 @@
     "logout": "लॉगआउट",
     "loggingOut": "लॉगआउट हो रहा है...",
     "privacyPolicy": "गोपनीयता नीति",
-    "termsOfUse": "उपयोग की शर्तें"
+    "termsOfUse": "उपयोग की शर्तें",
+     "dailyEarningsReport": "दैनिक आय रिपोर्ट",
+    "referralEarningsReport": "रेफरल आय रिपोर्ट",
+    "binaryEarningsReport": "बाइनरी आय रिपोर्ट",
+    "packagePurchaseReport": "पैकेज खरीद रिपोर्ट",
+    "awardsAndRanks": "पुरस्कार और रैंक",
+    "targets": "लक्ष्य",
+    "notifications": "सूचनाएं",
+    "dailyIncome": "दैनिक आय"
   },
   "admin": {
     "userManagement": "उपयोगकर्ता प्रबंधन",

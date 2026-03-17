@@ -1,12 +1,14 @@
 {
   "header": {
     "dashboard": "ڈیش بورڈ",
+    "panel": "پینل",
     "language": "زبان",
     "deposit": "جمع کروائیں",
     "notifications": "اطلاعات"
   },
   "sidebar": {
     "dashboard": "ڈیش بورڈ",
+    "panel": "پینل",
     "myProfile": "میری پروفائل",
     "makeInvestment": "سرمایہ کاری کریں",
     "myTree": "میرا نیٹ ورک",
@@ -37,7 +39,15 @@
     "logout": "لاگ آؤٹ",
     "loggingOut": "لاگ آؤٹ ہو رہا ہے...",
     "privacyPolicy": "رازداری کی پالیسی",
-    "termsOfUse": "استعمال کی شرائط"
+    "termsOfUse": "استعمال کی شرائط",
+     "dailyEarningsReport": "روزانہ آمدنی کی رپورٹ",
+    "referralEarningsReport": "ریفرل آمدنی کی رپورٹ",
+    "binaryEarningsReport": "بائنری آمدنی کی رپورٹ",
+    "packagePurchaseReport": "پیکیج خریداری رپورٹ",
+    "awardsAndRanks": "انعامات اور رینکس",
+    "targets": "اہداف",
+    "notifications": "اطلاعات",
+    "dailyIncome": "روزانہ آمدنی"
   },
   "admin": {
     "userManagement": "صارفین کا انتظام",

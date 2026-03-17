@@ -1,14 +1,17 @@
 {
   "header": {
     "dashboard": "لوحة التحكم",
+    "panel": "لوحة التحكم",
     "language": "اللغة",
     "deposit": "إيداع",
     "notifications": "الإشعارات"
   },
   "sidebar": {
     "dashboard": "لوحة التحكم",
+    "panel": "لوحة التحكم",
     "myProfile": "ملفي الشخصي",
     "makeInvestment": "استثمار",
+    "funds": "الأموال",
     "myTree": "شجرتي",
     "deposit": "إيداع",
     "depositHistory": "سجل الإيداعات",
@@ -37,7 +40,15 @@
     "logout": "تسجيل الخروج",
     "loggingOut": "جاري الخروج...",
     "privacyPolicy": "سياسة الخصوصية",
-    "termsOfUse": "شروط الاستخدام"
+    "termsOfUse": "شروط الاستخدام",
+     "dailyEarningsReport": "تقرير الأرباح اليومية",
+    "referralEarningsReport": "تقرير أرباح الإحالة",
+    "binaryEarningsReport": "تقرير الأرباح الثنائية",
+    "packagePurchaseReport": "تقرير شراء الباقات",
+    "awardsAndRanks": "الجوائز والرتب",
+    "targets": "الأهداف",
+    "notifications": "الإشعارات",
+    "dailyIncome": "الدخل اليومي"
   },
   "admin": {
     "userManagement": "إدارة المستخدمين",

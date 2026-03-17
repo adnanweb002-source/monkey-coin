@@ -1,12 +1,14 @@
 {
   "header": {
     "dashboard": "Tableau de bord",
+    "panel": "Panneau",
     "language": "Langue",
     "deposit": "Dépôt",
     "notifications": "Notifications"
   },
   "sidebar": {
     "dashboard": "Tableau de bord",
+    "panel": "Panneau",
     "myProfile": "Mon profil",
     "makeInvestment": "Investir",
     "myTree": "Mon arbre",
@@ -37,7 +39,15 @@
     "logout": "Déconnexion",
     "loggingOut": "Déconnexion en cours...",
     "privacyPolicy": "Politique de confidentialité",
-    "termsOfUse": "Conditions d'utilisation"
+    "termsOfUse": "Conditions d'utilisation",
+     "dailyEarningsReport": "Rapport des gains quotidiens",
+    "referralEarningsReport": "Rapport des gains de parrainage",
+    "binaryEarningsReport": "Rapport des gains binaires",
+    "packagePurchaseReport": "Rapport d'achat de forfaits",
+    "awardsAndRanks": "Récompenses et rangs",
+    "targets": "Objectifs",
+    "notifications": "Notifications",
+    "dailyIncome": "Revenu quotidien"
   },
   "admin": {
     "userManagement": "Gestion des utilisateurs",

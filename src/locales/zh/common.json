@@ -1,12 +1,14 @@
 {
   "header": {
     "dashboard": "仪表板",
+    "panel": "面板",
     "language": "语言",
     "deposit": "存款",
     "notifications": "通知"
   },
   "sidebar": {
     "dashboard": "仪表板",
+    "panel": "面板",
     "myProfile": "我的资料",
     "makeInvestment": "进行投资",
     "myTree": "我的网络",
@@ -37,7 +39,15 @@
     "logout": "退出登录",
     "loggingOut": "正在退出...",
     "privacyPolicy": "隐私政策",
-    "termsOfUse": "使用条款"
+    "termsOfUse": "使用条款",
+     "dailyEarningsReport": "每日收益报告",
+    "referralEarningsReport": "推荐收益报告",
+    "binaryEarningsReport": "二元收益报告",
+    "packagePurchaseReport": "套餐购买报告",
+    "awardsAndRanks": "奖励与等级",
+    "targets": "目标",
+    "notifications": "通知",
+    "dailyIncome": "每日收入"
   },
   "admin": {
     "userManagement": "用户管理",

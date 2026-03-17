@@ -68,6 +68,8 @@ const PackagePurchaseModal = ({
   const [walletAmounts, setWalletAmounts] = useState<Record<string, string>>(
     {},
   );
+  const [successData, setSuccessData] = useState<any>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [isAdmin, setIsAdmin] = useState<Boolean>(false);
   useEffect(() => {
     const stored = localStorage.getItem("userProfile");
@@ -279,12 +281,11 @@ const PackagePurchaseModal = ({
       const response = await api.post("/packages/purchase", data);
       return response.data;
     },
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Package purchased successfully!",
-      });
-      onOpenChange(false);
+    onSuccess: (res) => {
+      setSuccessData(res.data);
+      setShowSuccess(true);
+      onOpenChange(false); // close purchase modal
+
       queryClient.invalidateQueries({ queryKey: ["wallets"] });
       queryClient.invalidateQueries({ queryKey: ["packages"] });
       queryClient.invalidateQueries({ queryKey: ["package-history"] });
@@ -357,312 +358,368 @@ const PackagePurchaseModal = ({
   }, [totalAmount, packages, selectedPackage]);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Package className="h-5 w-5 text-primary" />
-            Purchase Package
-          </DialogTitle>
-          <DialogDescription>
-            {selectedPackage
-              ? `Invest in ${selectedPackage.name}`
-              : "Select a package to purchase"}
-          </DialogDescription>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Package className="h-5 w-5 text-primary" />
+              Purchase Package
+            </DialogTitle>
+            <DialogDescription>
+              {selectedPackage
+                ? `Invest in ${selectedPackage.name}`
+                : "Select a package to purchase"}
+            </DialogDescription>
+          </DialogHeader>
 
-        <div className="space-y-5 py-4">
-          {/* Package Selection */}
-          {!initialPackage && (
-            <div className="space-y-2">
-              <Label>Select Package</Label>
-              <div className="grid gap-2">
-                {activePackages.map((pkg) => (
-                  <div
-                    key={pkg.id}
-                    className={cn(
-                      "p-3 rounded-lg border cursor-pointer transition-all",
-                      selectedPackage?.id === pkg.id
-                        ? "border-primary bg-primary/5"
-                        : "border-border hover:border-primary/50",
-                    )}
-                    onClick={() => setSelectedPackage(pkg)}
-                  >
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium">{pkg.name}</span>
-                      <span className="text-sm text-muted-foreground">
-                        {formatCurrency(pkg.investmentMin)} -{" "}
-                        {formatCurrency(pkg.investmentMax)}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Amount Input */}
-          <div className="space-y-2">
-            <Label htmlFor="purchase-amount">Amount</Label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                $
-              </span>
-              <Input
-                id="purchase-amount"
-                type="number"
-                placeholder="0.00"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                onWheel={(e) => (e.target as HTMLInputElement).blur()}
-                className="pl-7 appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                min="0"
-          
-              />
-            </div>
-            {selectedPackage && (
-              <p className="text-xs text-muted-foreground">
-                Range: {formatCurrency(selectedPackage.investmentMin)} -{" "}
-                {formatCurrency(selectedPackage.investmentMax)}
-              </p>
-            )}
-          </div>
-
-          {/* Purchase Mode Selection */}
-          <div className="space-y-3">
-            <Label>Purchase For</Label>
-            <RadioGroup
-              value={purchaseMode}
-              onValueChange={(v) => setPurchaseMode(v as "self" | "downline")}
-              className="flex flex-col sm:flex-row gap-3"
-            >
-              <div
-                className={cn(
-                  "flex items-center gap-2 p-3 rounded-lg border cursor-pointer flex-1",
-                  purchaseMode === "self"
-                    ? "border-primary bg-primary/5"
-                    : "border-border",
-                )}
-                onClick={() => setPurchaseMode("self")}
-              >
-                <RadioGroupItem value="self" id="self" />
-                <Label
-                  htmlFor="self"
-                  className="flex items-center gap-2 cursor-pointer"
-                >
-                  <User className="h-4 w-4" />
-                  Myself
-                </Label>
-              </div>
-              <div
-                className={cn(
-                  "flex items-center gap-2 p-3 rounded-lg border cursor-pointer flex-1",
-                  purchaseMode === "downline"
-                    ? "border-primary bg-primary/5"
-                    : "border-border",
-                )}
-                onClick={() => setPurchaseMode("downline")}
-              >
-                <RadioGroupItem value="downline" id="downline" />
-                <Label
-                  htmlFor="downline"
-                  className="flex items-center gap-2 cursor-pointer"
-                >
-                  <Users className="h-4 w-4" />
-                  {isAdmin ? "Any User" : "Downline User"}
-                </Label>
-              </div>
-            </RadioGroup>
-          </div>
-
-          {/* Member ID Input (for downline purchase) */}
-          {purchaseMode === "downline" && (
-            <div className="space-y-2">
-              <Label htmlFor="member-id">Member ID</Label>
-              <Input
-                id="member-id"
-                placeholder="Enter Member ID"
-                value={targetMemberId}
-                onChange={(e) => setTargetMemberId(e.target.value)}
-              />
-              {prefilledMemberId && (
-                <p className="text-xs text-muted-foreground">
-                  Pre-filled from selected user
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* Wallet Split Allocation */}
-          {availableWallets.length > 0 && totalAmount > 0 && (
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <Label>Wallet Split Allocation</Label>
-                {!isAdminPurchasingForOther && (
-                  <span className="text-xs text-muted-foreground">
-                    Total must equal ${totalAmount.toFixed(2)}
-                  </span>
-                )}
-              </div>
-
-              {isAdminPurchasingForOther && (
-                <p className="text-xs text-muted-foreground bg-primary/10 p-2 rounded-md">
-                  Admin purchases for other users use Bonus Wallet only.
-                </p>
-              )}
-
-              <div className="space-y-3">
-                {availableWallets.map((walletData) => {
-                  const wallet = walletData.type;
-                  const minPct = walletRules[wallet] || 0;
-                  const balance = walletBalanceMap[wallet] || 0;
-                  const pct = walletPercentages[wallet] || 0;
-                  const walletAmt = parseFloat(walletAmounts[wallet]) || 0;
-                  const exceedsBalance = walletAmt > balance;
-
-                  return (
+          <div className="space-y-5 py-4">
+            {/* Package Selection */}
+            {!initialPackage && (
+              <div className="space-y-2">
+                <Label>Select Package</Label>
+                <div className="grid gap-2">
+                  {activePackages.map((pkg) => (
                     <div
-                      key={wallet}
-                      className="p-3 rounded-lg border border-border bg-secondary/20"
+                      key={pkg.id}
+                      className={cn(
+                        "p-3 rounded-lg border cursor-pointer transition-all",
+                        selectedPackage?.id === pkg.id
+                          ? "border-primary bg-primary/5"
+                          : "border-border hover:border-primary/50",
+                      )}
+                      onClick={() => setSelectedPackage(pkg)}
                     >
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="font-medium text-sm">
-                          {WALLET_LABELS[wallet] || wallet}
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium">{pkg.name}</span>
+                        <span className="text-sm text-muted-foreground">
+                          {formatCurrency(pkg.investmentMin)} -{" "}
+                          {formatCurrency(pkg.investmentMax)}
                         </span>
-                        {!isAdminPurchasingForOther && minPct > 0 && (
-                          <span className="text-xs text-muted-foreground">
-                            Min: {minPct}%
-                          </span>
-                        )}
                       </div>
-
-                      <div className="flex items-center gap-2">
-                        <div className="relative flex-1">
-                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
-                            $
-                          </span>
-                          <Input
-                            type="number"
-                            placeholder="0.00"
-                            value={walletAmounts[wallet] || ""}
-                            onChange={(e) =>
-                              handleWalletAmountChange(wallet, e.target.value)
-                            }
-                            onWheel={(e) => (e.target as HTMLInputElement).blur()}
-                            className={cn(
-                              "pl-7 h-9 appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
-                              exceedsBalance &&
-                                "border-destructive focus-visible:ring-destructive",
-                            )}
-                            min="0"
-                          />
-                        </div>
-                        {!isAdminPurchasingForOther && (
-                          <div className="w-16 text-right">
-                            <span
-                              className={cn(
-                                "text-sm font-medium",
-                                pct > 0 && pct < minPct
-                                  ? "text-destructive"
-                                  : "text-foreground",
-                              )}
-                            >
-                              {pct.toFixed(1)}%
-                            </span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Balance hint below input */}
-                      <p
-                        className={cn(
-                          "text-xs mt-1.5",
-                          exceedsBalance
-                            ? "text-destructive"
-                            : "text-muted-foreground",
-                        )}
-                      >
-                        Available Balance: ${balance.toFixed(2)}
-                      </p>
                     </div>
-                  );
-                })}
-              </div>
-
-              {/* Total Summary */}
-              {!isAdminPurchasingForOther && (
-                <div className="flex justify-between items-center pt-2 border-t border-border">
-                  <span className="text-sm font-medium">Total Split</span>
-                  <span
-                    className={cn(
-                      "text-sm font-semibold",
-                      Math.abs(
-                        Object.entries(walletAmounts)
-                          .filter(([w]) => w in availableWallets)
-                          .reduce(
-                            (sum, [, amt]) => sum + (parseFloat(amt) || 0),
-                            0,
-                          ) - totalAmount,
-                      ) <= 0.01
-                        ? "text-green-600"
-                        : "text-destructive",
-                    )}
-                  >
-                    $
-                    {Object.entries(walletAmounts)
-                      .filter(([w]) => w in availableWallets)
-                      .reduce((sum, [, amt]) => sum + (parseFloat(amt) || 0), 0)
-                      .toFixed(2)}{" "}
-                    / ${totalAmount.toFixed(2)}
-                  </span>
+                  ))}
                 </div>
+              </div>
+            )}
+
+            {/* Amount Input */}
+            <div className="space-y-2">
+              <Label htmlFor="purchase-amount">Amount</Label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                  $
+                </span>
+                <Input
+                  id="purchase-amount"
+                  type="number"
+                  placeholder="0.00"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                  className="pl-7 appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  min="0"
+                />
+              </div>
+              {selectedPackage && (
+                <p className="text-xs text-muted-foreground">
+                  Range: {formatCurrency(selectedPackage.investmentMin)} -{" "}
+                  {formatCurrency(selectedPackage.investmentMax)}
+                </p>
               )}
             </div>
-          )}
 
-          {/* Validation Errors */}
-          {validationErrors.length > 0 && (
-            <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
-              <div className="flex items-start gap-2">
-                <AlertCircle className="h-4 w-4 text-destructive mt-0.5" />
-                <ul className="text-sm text-destructive space-y-1">
-                  {validationErrors.slice(0, 3).map((error, i) => (
-                    <li key={i}>{error}</li>
-                  ))}
-                  {validationErrors.length > 3 && (
-                    <li>...and {validationErrors.length - 3} more</li>
+            {/* Purchase Mode Selection */}
+            <div className="space-y-3">
+              <Label>Purchase For</Label>
+              <RadioGroup
+                value={purchaseMode}
+                onValueChange={(v) => setPurchaseMode(v as "self" | "downline")}
+                className="flex flex-col sm:flex-row gap-3"
+              >
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-3 rounded-lg border cursor-pointer flex-1",
+                    purchaseMode === "self"
+                      ? "border-primary bg-primary/5"
+                      : "border-border",
                   )}
-                </ul>
+                  onClick={() => setPurchaseMode("self")}
+                >
+                  <RadioGroupItem value="self" id="self" />
+                  <Label
+                    htmlFor="self"
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <User className="h-4 w-4" />
+                    Myself
+                  </Label>
+                </div>
+                <div
+                  className={cn(
+                    "flex items-center gap-2 p-3 rounded-lg border cursor-pointer flex-1",
+                    purchaseMode === "downline"
+                      ? "border-primary bg-primary/5"
+                      : "border-border",
+                  )}
+                  onClick={() => setPurchaseMode("downline")}
+                >
+                  <RadioGroupItem value="downline" id="downline" />
+                  <Label
+                    htmlFor="downline"
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <Users className="h-4 w-4" />
+                    {isAdmin ? "Any User" : "Downline User"}
+                  </Label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            {/* Member ID Input (for downline purchase) */}
+            {purchaseMode === "downline" && (
+              <div className="space-y-2">
+                <Label htmlFor="member-id">Member ID</Label>
+                <Input
+                  id="member-id"
+                  placeholder="Enter Member ID"
+                  value={targetMemberId}
+                  onChange={(e) => setTargetMemberId(e.target.value)}
+                />
+                {prefilledMemberId && (
+                  <p className="text-xs text-muted-foreground">
+                    Pre-filled from selected user
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Wallet Split Allocation */}
+            {availableWallets.length > 0 && totalAmount > 0 && (
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <Label>Wallet Split Allocation</Label>
+                  {!isAdminPurchasingForOther && (
+                    <span className="text-xs text-muted-foreground">
+                      Total must equal ${totalAmount.toFixed(2)}
+                    </span>
+                  )}
+                </div>
+
+                {isAdminPurchasingForOther && (
+                  <p className="text-xs text-muted-foreground bg-primary/10 p-2 rounded-md">
+                    Admin purchases for other users use Bonus Wallet only.
+                  </p>
+                )}
+
+                <div className="space-y-3">
+                  {availableWallets.map((walletData) => {
+                    const wallet = walletData.type;
+                    const minPct = walletRules[wallet] || 0;
+                    const balance = walletBalanceMap[wallet] || 0;
+                    const pct = walletPercentages[wallet] || 0;
+                    const walletAmt = parseFloat(walletAmounts[wallet]) || 0;
+                    const exceedsBalance = walletAmt > balance;
+
+                    return (
+                      <div
+                        key={wallet}
+                        className="p-3 rounded-lg border border-border bg-secondary/20"
+                      >
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="font-medium text-sm">
+                            {WALLET_LABELS[wallet] || wallet}
+                          </span>
+                          {!isAdminPurchasingForOther && minPct > 0 && (
+                            <span className="text-xs text-muted-foreground">
+                              Min: {minPct}%
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <div className="relative flex-1">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
+                              $
+                            </span>
+                            <Input
+                              type="number"
+                              placeholder="0.00"
+                              value={walletAmounts[wallet] || ""}
+                              onChange={(e) =>
+                                handleWalletAmountChange(wallet, e.target.value)
+                              }
+                              onWheel={(e) =>
+                                (e.target as HTMLInputElement).blur()
+                              }
+                              className={cn(
+                                "pl-7 h-9 appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
+                                exceedsBalance &&
+                                  "border-destructive focus-visible:ring-destructive",
+                              )}
+                              min="0"
+                            />
+                          </div>
+                          {!isAdminPurchasingForOther && (
+                            <div className="w-16 text-right">
+                              <span
+                                className={cn(
+                                  "text-sm font-medium",
+                                  pct > 0 && pct < minPct
+                                    ? "text-destructive"
+                                    : "text-foreground",
+                                )}
+                              >
+                                {pct.toFixed(1)}%
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Balance hint below input */}
+                        <p
+                          className={cn(
+                            "text-xs mt-1.5",
+                            exceedsBalance
+                              ? "text-destructive"
+                              : "text-muted-foreground",
+                          )}
+                        >
+                          Available Balance: ${balance.toFixed(2)}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Total Summary */}
+                {!isAdminPurchasingForOther && (
+                  <div className="flex justify-between items-center pt-2 border-t border-border">
+                    <span className="text-sm font-medium">Total Split</span>
+                    <span
+                      className={cn(
+                        "text-sm font-semibold",
+                        Math.abs(
+                          Object.entries(walletAmounts)
+                            .filter(([w]) => w in availableWallets)
+                            .reduce(
+                              (sum, [, amt]) => sum + (parseFloat(amt) || 0),
+                              0,
+                            ) - totalAmount,
+                        ) <= 0.01
+                          ? "text-green-600"
+                          : "text-destructive",
+                      )}
+                    >
+                      $
+                      {Object.entries(walletAmounts)
+                        .filter(([w]) => w in availableWallets)
+                        .reduce(
+                          (sum, [, amt]) => sum + (parseFloat(amt) || 0),
+                          0,
+                        )
+                        .toFixed(2)}{" "}
+                      / ${totalAmount.toFixed(2)}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Validation Errors */}
+            {validationErrors.length > 0 && (
+              <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+                <div className="flex items-start gap-2">
+                  <AlertCircle className="h-4 w-4 text-destructive mt-0.5" />
+                  <ul className="text-sm text-destructive space-y-1">
+                    {validationErrors.slice(0, 3).map((error, i) => (
+                      <li key={i}>{error}</li>
+                    ))}
+                    {validationErrors.length > 3 && (
+                      <li>...and {validationErrors.length - 3} more</li>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              className="w-full sm:w-auto"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSubmit}
+              disabled={!isValid || purchaseMutation.isPending}
+              className="w-full sm:w-auto"
+            >
+              {purchaseMutation.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                "Confirm Package Purchase"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-green-600">
+              🎉 Purchase Successful
+            </DialogTitle>
+            <DialogDescription>
+              Your package has been successfully activated.
+            </DialogDescription>
+          </DialogHeader>
+
+          {successData && (
+            <div className="space-y-3 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Purchased By</span>
+                <span className="font-medium">{successData.purchasedBy}</span>
+              </div>
+
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Purchased For</span>
+                <span className="font-medium">{successData.purchasedFor}</span>
+              </div>
+
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Daily ROI</span>
+                <span className="font-medium">{successData.dailyRoI}%</span>
+              </div>
+
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Total Days</span>
+                <span className="font-medium">{successData.totalDays}</span>
+              </div>
+
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Total ROI</span>
+                <span className="font-semibold text-green-600">
+                  ${Number(successData.totalRoI).toFixed(2)}
+                </span>
               </div>
             </div>
           )}
-        </div>
 
-        <DialogFooter className="flex-col sm:flex-row gap-2">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            className="w-full sm:w-auto"
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            disabled={!isValid || purchaseMutation.isPending}
-            className="w-full sm:w-auto"
-          >
-            {purchaseMutation.isPending ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Processing...
-              </>
-            ) : (
-              "Confirm Package Purchase"
-            )}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <DialogFooter>
+            <Button onClick={() => setShowSuccess(false)} className="w-full">
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

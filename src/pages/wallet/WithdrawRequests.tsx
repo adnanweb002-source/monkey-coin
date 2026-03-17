@@ -153,7 +153,6 @@ const WithdrawRequests = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>ID</TableHead>
                       <TableHead>Wallet</TableHead>
                       <TableHead>Amount</TableHead>
                       <TableHead>Method</TableHead>
@@ -167,9 +166,6 @@ const WithdrawRequests = () => {
                   <TableBody>
                     {requests.map((request) => (
                       <TableRow key={request.id}>
-                        <TableCell className="font-mono text-xs">
-                          {request.id.toString()}
-                        </TableCell>
                         <TableCell>
                           {walletLabels[request.wallet.type] || request.walletType}
                         </TableCell>

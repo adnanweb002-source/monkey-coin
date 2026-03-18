@@ -9,14 +9,37 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, User, Mail, Lock, Package, Calendar, Phone, Globe, Shield, Hash, AlertTriangle, Wallet, Image } from "lucide-react";
+import {
+  Loader2,
+  User,
+  Mail,
+  Lock,
+  Package,
+  Calendar,
+  Phone,
+  Globe,
+  Shield,
+  Hash,
+  AlertTriangle,
+  Wallet,
+  Image,
+  ChevronDown,
+  Search,
+} from "lucide-react";
 import type { UserProfile } from "@/types/user";
 import ExternalWalletsTab from "@/components/profile/ExternalWalletsTab";
 import AvatarSelector from "@/components/profile/AvatarSelector";
 import UserAvatar from "@/components/common/UserAvatar";
+import { countries } from "@/lib/countries";
 
 interface PackagePurchase {
   id: number;
@@ -45,6 +68,16 @@ const changeEmailSchema = z.object({
   twoFactorCode: z.string().optional(),
 });
 
+const updateProfileSchema = z.object({
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  country: z.string().optional(),
+  phoneNumber: z.string().optional(),
+  email: z.string().optional(),
+});
+
+type UpdateProfileData = z.infer<typeof updateProfileSchema>;
+
 type ChangePasswordData = z.infer<typeof changePasswordSchema>;
 type ChangeEmailData = z.infer<typeof changeEmailSchema>;
 
@@ -54,6 +87,8 @@ const Profile = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("profile");
+  const [countryOpen, setCountryOpen] = useState(false);
+  const [countrySearch, setCountrySearch] = useState("");
 
   // Handle navigation state for opening specific tabs
   useEffect(() => {
@@ -64,7 +99,11 @@ const Profile = () => {
     }
   }, [location.state]);
 
-  const { data: profile, isLoading: profileLoading, error: profileError } = useQuery<UserProfile>({
+  const {
+    data: profile,
+    isLoading: profileLoading,
+    error: profileError,
+  } = useQuery<UserProfile>({
     queryKey: ["userProfile"],
     queryFn: async () => {
       const response = await api.get("/auth/get-profile");
@@ -73,7 +112,9 @@ const Profile = () => {
     },
   });
 
-  const { data: packages = [], isLoading: packagesLoading } = useQuery<PackagePurchase[]>({
+  const { data: packages = [], isLoading: packagesLoading } = useQuery<
+    PackagePurchase[]
+  >({
     queryKey: ["myPackages"],
     queryFn: async () => {
       const response = await api.get("/packages/my");
@@ -89,6 +130,58 @@ const Profile = () => {
   const emailForm = useForm<ChangeEmailData>({
     resolver: zodResolver(changeEmailSchema),
     defaultValues: { email: "", twoFactorCode: "" },
+  });
+
+  const { register, handleSubmit, setValue, watch, formState } =
+    useForm<UpdateProfileData>({
+      resolver: zodResolver(updateProfileSchema),
+      values: {
+        firstName: profile?.firstName || "",
+        lastName: profile?.lastName || "",
+        country: profile?.country || "",
+        phoneNumber: profile?.phoneNumber || "",
+        email: profile?.email || "",
+      },
+    });
+
+  const updateProfileMutation = useMutation({
+    mutationFn: async (data: UpdateProfileData) => {
+      const payload: Record<string, string> = {};
+
+      if (data.firstName && data.firstName !== profile?.firstName) {
+        payload.firstName = data.firstName;
+      }
+      if (data.lastName && data.lastName !== profile?.lastName) {
+        payload.lastName = data.lastName;
+      }
+      if (data.country && data.country !== profile?.country) {
+        payload.country = data.country;
+      }
+      if (data.phoneNumber && data.phoneNumber !== profile?.phoneNumber) {
+        payload.phoneNumber = data.phoneNumber;
+      }
+      if (data.email && data.email !== profile?.email) {
+        payload.email = data.email;
+      }
+
+      if (Object.keys(payload).length === 0) {
+        throw new Error("No changes made");
+      }
+
+      const res = await api.post("/auth/update-user-profile", payload);
+      return res.data;
+    },
+    onSuccess: () => {
+      toast({ title: "Success", description: "Profile updated successfully" });
+      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Error",
+        description: err.message || err.response?.data?.message,
+        variant: "destructive",
+      });
+    },
   });
 
   const changePasswordMutation = useMutation({
@@ -110,7 +203,8 @@ const Profile = () => {
     onError: (error: any) => {
       toast({
         title: "Error",
-        description: error.response?.data?.message || "Failed to change password",
+        description:
+          error.response?.data?.message || "Failed to change password",
         variant: "destructive",
       });
     },
@@ -139,6 +233,20 @@ const Profile = () => {
     },
   });
 
+  const selectedCountry = watch("country");
+
+  const filteredCountries = countries.filter((c) =>
+    c.name.toLowerCase().includes(countrySearch.toLowerCase()),
+  );
+
+  useEffect(() => {
+    const close = () => setCountryOpen(false);
+    if (countryOpen) {
+      window.addEventListener("click", close);
+    }
+    return () => window.removeEventListener("click", close);
+  }, [countryOpen]);
+
   if (profileLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -164,7 +272,9 @@ const Profile = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-foreground">My Profile</h1>
-        <p className="text-muted-foreground">Manage your account settings and packages</p>
+        <p className="text-muted-foreground">
+          Manage your account settings and packages
+        </p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -195,50 +305,169 @@ const Profile = () => {
                   <p className="font-semibold text-lg text-foreground">
                     {profile?.firstName} {profile?.lastName}
                   </p>
-                  <p className="text-sm text-muted-foreground">{profile?.email}</p>
-                  <Badge variant={profile?.status === "ACTIVE" ? "default" : "destructive"} className="mt-1">
+                  <p className="text-sm text-muted-foreground">
+                    {profile?.email}
+                  </p>
+                  <Badge
+                    variant={
+                      profile?.status === "ACTIVE" ? "default" : "destructive"
+                    }
+                    className="mt-1"
+                  >
                     {profile?.status || "N/A"}
                   </Badge>
                 </div>
               </div>
-              
+              <form onSubmit={handleSubmit((data) => updateProfileMutation.mutate(data))}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-1">
-                  <Label className="text-muted-foreground text-sm">First Name</Label>
-                  <p className="font-medium">{profile?.firstName || "N/A"}</p>
+                  <Label className="text-muted-foreground text-sm">
+                    First Name
+                  </Label>
+                  <Input
+                    placeholder={profile?.firstName || "N/A"}
+                    {...register("firstName")}
+                  />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-muted-foreground text-sm">Last Name</Label>
-                  <p className="font-medium">{profile?.lastName || "N/A"}</p>
+                  <Label className="text-muted-foreground text-sm">
+                    Last Name
+                  </Label>
+                  <Input
+                    placeholder={profile?.lastName || "N/A"}
+                    {...register("lastName")}
+                  />
                 </div>
                 <div className="space-y-1">
                   <Label className="text-muted-foreground text-sm flex items-center gap-1">
-                    <Mail size={14} /> Email
+                    <Phone size={14} /> Email
                   </Label>
-                  <p className="font-medium">{profile?.email || "N/A"}</p>
+                  <Input
+                    type="email"
+                    placeholder={profile?.email || "N/A"}
+                    {...register("email")}
+                  />
                 </div>
                 <div className="space-y-1">
                   <Label className="text-muted-foreground text-sm flex items-center gap-1">
                     <Phone size={14} /> Phone
                   </Label>
-                  <p className="font-medium">{profile?.phoneNumber || "N/A"}</p>
+                  <Input
+                    placeholder={profile?.phoneNumber || "N/A"}
+                    {...register("phoneNumber")}
+                  />
                 </div>
                 <div className="space-y-1">
                   <Label className="text-muted-foreground text-sm flex items-center gap-1">
                     <Hash size={14} /> Member ID
                   </Label>
-                  <p className="font-medium font-mono">{profile?.memberId || "N/A"}</p>
+                  <p className="font-medium font-mono">
+                    {profile?.memberId || "N/A"}
+                  </p>
                 </div>
-                <div className="space-y-1">
+
+                <div className="space-y-1 relative">
                   <Label className="text-muted-foreground text-sm flex items-center gap-1">
                     <Globe size={14} /> Country
                   </Label>
-                  <p className="font-medium">{profile?.country || "N/A"}</p>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCountryOpen((prev) => !prev);
+                    }}
+                    className="crypto-input w-full text-left flex items-center justify-between"
+                  >
+                    <span
+                      className={
+                        selectedCountry
+                          ? "text-foreground"
+                          : "text-muted-foreground"
+                      }
+                    >
+                      {selectedCountry || profile?.country || "Select country"}
+                    </span>
+                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                  </button>
+
+                  {countryOpen && (
+                    <div
+                      className="absolute z-50 mt-1 w-full rounded-lg border border-border bg-popover shadow-lg max-h-60 overflow-hidden"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {/* Search */}
+                      <div className="flex items-center gap-2 px-3 py-2 border-b border-border">
+                        <Search className="w-4 h-4 text-muted-foreground" />
+                        <input
+                          type="text"
+                          placeholder="Search country..."
+                          className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+                          value={countrySearch}
+                          onChange={(e) => setCountrySearch(e.target.value)}
+                          autoFocus
+                        />
+                      </div>
+
+                      {/* List */}
+                      <div className="max-h-48 overflow-y-auto">
+                        {filteredCountries.map((c) => (
+                          <button
+                            key={c.code}
+                            type="button"
+                            className={`w-full text-left px-3 py-2 text-sm flex justify-between items-center ${
+                              selectedCountry === c.name
+                                ? "bg-accent"
+                                : "hover:bg-accent/50"
+                            }`}
+                            onClick={() => {
+                              setValue("country", c.name, {
+                                shouldValidate: true,
+                              });
+
+                              // update phone with dial code
+                              const currentPhone = watch("phoneNumber") || "";
+                              const phoneWithoutCode = currentPhone.replace(
+                                /^\+[\d-]+\s?/,
+                                "",
+                              );
+
+                              setValue(
+                                "phoneNumber",
+                                `${c.dialCode} ${phoneWithoutCode}`.trim(),
+                                { shouldValidate: true },
+                              );
+
+                              setCountryOpen(false);
+                              setCountrySearch("");
+                            }}
+                          >
+                            <span>{c.name}</span>
+                            <span className="text-muted-foreground text-xs">
+                              {c.dialCode}
+                            </span>
+                          </button>
+                        ))}
+
+                        {filteredCountries.length === 0 && (
+                          <p className="px-3 py-2 text-sm text-muted-foreground">
+                            No countries found
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-muted-foreground text-sm">Status</Label>
+                  <Label className="text-muted-foreground text-sm">
+                    Status
+                  </Label>
                   <div>
-                    <Badge variant={profile?.status === "ACTIVE" ? "default" : "destructive"}>
+                    <Badge
+                      variant={
+                        profile?.status === "ACTIVE" ? "default" : "destructive"
+                      }
+                    >
                       {profile?.status || "N/A"}
                     </Badge>
                   </div>
@@ -248,20 +477,46 @@ const Profile = () => {
                     <Shield size={14} /> Role
                   </Label>
                   <div>
-                    <Badge variant={profile?.role === "ADMIN" ? "secondary" : "outline"}>
+                    <Badge
+                      variant={
+                        profile?.role === "ADMIN" ? "secondary" : "outline"
+                      }
+                    >
                       {profile?.role || "USER"}
                     </Badge>
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-muted-foreground text-sm">2FA Enabled</Label>
+                  <Label className="text-muted-foreground text-sm">
+                    2FA Enabled
+                  </Label>
                   <div>
-                    <Badge variant={profile?.isG2faEnabled ? "default" : "outline"}>
+                    <Badge
+                      variant={profile?.isG2faEnabled ? "default" : "outline"}
+                    >
                       {profile?.isG2faEnabled ? "Enabled" : "Disabled"}
                     </Badge>
                   </div>
                 </div>
+                <div className="flex justify-end md:col-span-2">
+                  <Button
+                    type="submit"
+                    disabled={
+                      updateProfileMutation.isPending || !formState.isDirty
+                    }
+                  >
+                    {updateProfileMutation.isPending ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Updating...
+                      </>
+                    ) : (
+                      "Update Profile"
+                    )}
+                  </Button>
+                </div>
               </div>
+              </form>
             </CardContent>
           </Card>
         </TabsContent>
@@ -293,7 +548,8 @@ const Profile = () => {
                         2FA is Enabled
                       </p>
                       <p className="text-sm text-green-600 dark:text-green-500">
-                        Your account is protected with two-factor authentication.
+                        Your account is protected with two-factor
+                        authentication.
                       </p>
                     </div>
                   </div>
@@ -307,8 +563,9 @@ const Profile = () => {
                         2FA is Not Enabled
                       </p>
                       <p className="text-sm text-yellow-600 dark:text-yellow-500">
-                        Your account is not protected with two-factor authentication. 
-                        We strongly recommend enabling 2FA to secure your account.
+                        Your account is not protected with two-factor
+                        authentication. We strongly recommend enabling 2FA to
+                        secure your account.
                       </p>
                     </div>
                   </div>
@@ -337,28 +594,51 @@ const Profile = () => {
               <CardDescription>Update your account password</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={passwordForm.handleSubmit((data) => changePasswordMutation.mutate(data))} className="space-y-4 max-w-md">
+              <form
+                onSubmit={passwordForm.handleSubmit((data) =>
+                  changePasswordMutation.mutate(data),
+                )}
+                className="space-y-4 max-w-md"
+              >
                 <div className="space-y-2">
                   <Label>Current Password</Label>
-                  <Input type="password" placeholder="Enter current password" {...passwordForm.register("oldPassword")} />
+                  <Input
+                    type="password"
+                    placeholder="Enter current password"
+                    {...passwordForm.register("oldPassword")}
+                  />
                   {passwordForm.formState.errors.oldPassword && (
-                    <p className="text-destructive text-sm">{passwordForm.formState.errors.oldPassword.message}</p>
+                    <p className="text-destructive text-sm">
+                      {passwordForm.formState.errors.oldPassword.message}
+                    </p>
                   )}
                 </div>
                 <div className="space-y-2">
                   <Label>New Password</Label>
-                  <Input type="password" placeholder="Enter new password" {...passwordForm.register("newPassword")} />
+                  <Input
+                    type="password"
+                    placeholder="Enter new password"
+                    {...passwordForm.register("newPassword")}
+                  />
                   {passwordForm.formState.errors.newPassword && (
-                    <p className="text-destructive text-sm">{passwordForm.formState.errors.newPassword.message}</p>
+                    <p className="text-destructive text-sm">
+                      {passwordForm.formState.errors.newPassword.message}
+                    </p>
                   )}
                 </div>
                 {profile?.isG2faEnabled && (
                   <div className="space-y-2">
                     <Label>2FA Code (if enabled)</Label>
-                    <Input placeholder="Enter 2FA code" {...passwordForm.register("twoFactorCode")} />
+                    <Input
+                      placeholder="Enter 2FA code"
+                      {...passwordForm.register("twoFactorCode")}
+                    />
                   </div>
                 )}
-                <Button type="submit" disabled={changePasswordMutation.isPending}>
+                <Button
+                  type="submit"
+                  disabled={changePasswordMutation.isPending}
+                >
                   {changePasswordMutation.isPending ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -382,18 +662,32 @@ const Profile = () => {
               <CardDescription>Update your email address</CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={emailForm.handleSubmit((data) => changeEmailMutation.mutate(data))} className="space-y-4 max-w-md">
+              <form
+                onSubmit={emailForm.handleSubmit((data) =>
+                  changeEmailMutation.mutate(data),
+                )}
+                className="space-y-4 max-w-md"
+              >
                 <div className="space-y-2">
                   <Label>New Email</Label>
-                  <Input type="email" placeholder="Enter new email" {...emailForm.register("email")} />
+                  <Input
+                    type="email"
+                    placeholder="Enter new email"
+                    {...emailForm.register("email")}
+                  />
                   {emailForm.formState.errors.email && (
-                    <p className="text-destructive text-sm">{emailForm.formState.errors.email.message}</p>
+                    <p className="text-destructive text-sm">
+                      {emailForm.formState.errors.email.message}
+                    </p>
                   )}
                 </div>
                 {profile?.isG2faEnabled && (
                   <div className="space-y-2">
                     <Label>2FA Code (if enabled)</Label>
-                    <Input placeholder="Enter 2FA code" {...emailForm.register("twoFactorCode")} />
+                    <Input
+                      placeholder="Enter 2FA code"
+                      {...emailForm.register("twoFactorCode")}
+                    />
                   </div>
                 )}
                 <Button type="submit" disabled={changeEmailMutation.isPending}>
@@ -424,7 +718,9 @@ const Profile = () => {
                 <Package size={20} />
                 My Packages
               </CardTitle>
-              <CardDescription>Your purchased investment packages</CardDescription>
+              <CardDescription>
+                Your purchased investment packages
+              </CardDescription>
             </CardHeader>
             <CardContent>
               {packagesLoading ? (
@@ -444,27 +740,47 @@ const Profile = () => {
                       className="border border-border rounded-lg p-4 space-y-3"
                     >
                       <div className="flex items-center justify-between flex-wrap gap-2">
-                        <h4 className="font-semibold text-foreground">{purchase.package.name}</h4>
-                        <Badge variant={purchase.status === "ACTIVE" ? "default" : "secondary"}>
+                        <h4 className="font-semibold text-foreground">
+                          {purchase.package.name}
+                        </h4>
+                        <Badge
+                          variant={
+                            purchase.status === "ACTIVE"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
                           {purchase.status}
                         </Badge>
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                         <div>
-                          <p className="text-muted-foreground">Purchase Amount</p>
-                          <p className="font-medium">${parseFloat(purchase.amount).toLocaleString()}</p>
+                          <p className="text-muted-foreground">
+                            Purchase Amount
+                          </p>
+                          <p className="font-medium">
+                            ${parseFloat(purchase.amount).toLocaleString()}
+                          </p>
                         </div>
                         <div>
                           <p className="text-muted-foreground">Daily Return</p>
-                          <p className="font-medium text-primary">{purchase.package.dailyReturnPct}%</p>
+                          <p className="font-medium text-primary">
+                            {purchase.package.dailyReturnPct}%
+                          </p>
                         </div>
                         <div>
                           <p className="text-muted-foreground">Duration</p>
-                          <p className="font-medium">{purchase.package.durationDays} days</p>
+                          <p className="font-medium">
+                            {purchase.package.durationDays} days
+                          </p>
                         </div>
                         <div>
-                          <p className="text-muted-foreground">Capital Return</p>
-                          <p className="font-medium">{purchase.package.capitalReturn ? "Yes" : "No"}</p>
+                          <p className="text-muted-foreground">
+                            Capital Return
+                          </p>
+                          <p className="font-medium">
+                            {purchase.package.capitalReturn ? "Yes" : "No"}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground pt-2 border-t border-border">

@@ -143,7 +143,7 @@ const DashboardHeader = ({
             <div className="text-right">
               <p className="text-sm font-medium text-foreground">
                 {userProfile
-                  ? `${userProfile.firstName} ${userProfile.lastName}`
+                  ? `${userProfile.firstName}`
                   : "User"}
               </p>
               <p className="text-xs text-primary">

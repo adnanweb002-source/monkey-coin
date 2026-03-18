@@ -373,7 +373,7 @@ const Transactions = () => {
                         </TableRow>
                         {expandedRow === tx.id && tx.meta && (
                           <TableRow key={`${tx.id}-meta`}>
-                            <TableCell colSpan={8} className="bg-muted/30">
+                            <TableCell colSpan={role == "ADMIN"? 10 : 8} className="bg-muted/30">
                               <div className="p-3">
                                 <p className="text-sm font-medium mb-2">
                                   More Information:

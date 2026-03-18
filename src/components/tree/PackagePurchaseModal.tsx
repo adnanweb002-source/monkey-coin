@@ -684,13 +684,22 @@ const PackagePurchaseModal = ({
           {successData && (
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
+                <span className="text-muted-foreground">Package Name</span>
+                <span className="font-medium">{successData.packageName}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Purchased By</span>
+                <span className="font-medium">{successData.amount}</span>
+              </div>
+
+              <div className="flex justify-between">
                 <span className="text-muted-foreground">Purchased By</span>
                 <span className="font-medium">{successData.purchasedBy}</span>
               </div>
 
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Purchased For</span>
-                <span className="font-medium">{successData.purchasedFor}</span>
+                <span className="font-medium">{successData.purchasedFor == successData.purchasedBy ? "Self" : successData.purchasedFor}</span>
               </div>
 
               <div className="flex justify-between">

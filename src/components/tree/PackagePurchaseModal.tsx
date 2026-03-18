@@ -688,7 +688,7 @@ const PackagePurchaseModal = ({
                 <span className="font-medium">{successData.packageName}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Purchased By</span>
+                <span className="text-muted-foreground">Amount</span>
                 <span className="font-medium">{successData.amount}</span>
               </div>
 

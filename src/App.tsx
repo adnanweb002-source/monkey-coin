@@ -10,6 +10,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Request2FAReset from "./pages/Request2FAReset";
 import Reset2FA from "./pages/Reset2FA";
+import Request2FAResetAdmin from "./pages/Request2FAResetAdmin";
 import TwoFactorAuth from "./pages/TwoFactorAuth";
 import TwoFactorSetup from "./pages/security/TwoFactorSetup";
 import Success from "./pages/Success";

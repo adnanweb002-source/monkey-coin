@@ -1,14 +1,14 @@
 {
   "header": {
     "dashboard": "ഡാഷ്ബോർഡ്",
-     "panel": "ഡാഷ്ബോർഡ്",
+     "panel": "പാനൽ",
     "language": "ഭാഷ",
     "deposit": "ഡെപ്പോസിറ്റ്",
     "notifications": "അറിയിപ്പുകൾ"
   },
   "sidebar": {
     "dashboard": "ഡാഷ്ബോർഡ്",
-    "panel": "ഡാഷ്ബോർഡ്",
+    "panel": "പാനൽ",
     "myProfile": "എന്റെ പ്രൊഫൈൽ",
     "makeInvestment": "നിക്ഷേപിക്കുക",
     "myTree": "എന്റെ നെറ്റ്‌വർക്ക്",

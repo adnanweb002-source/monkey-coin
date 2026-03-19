@@ -40,6 +40,7 @@ import ExternalWalletsTab from "@/components/profile/ExternalWalletsTab";
 import AvatarSelector from "@/components/profile/AvatarSelector";
 import UserAvatar from "@/components/common/UserAvatar";
 import { countries } from "@/lib/countries";
+import Change2FAModal from "@/components/profile/Change2FAModal";
 
 interface PackagePurchase {
   id: number;

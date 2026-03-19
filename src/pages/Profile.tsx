@@ -542,7 +542,7 @@ const Profile = () => {
             </CardHeader>
             <CardContent>
               {profile?.isG2faEnabled ? (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <div className="flex items-center gap-3 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
                     <Shield className="h-6 w-6 text-green-600 dark:text-green-500" />
                     <div>
@@ -550,10 +550,42 @@ const Profile = () => {
                         2FA is Enabled
                       </p>
                       <p className="text-sm text-green-600 dark:text-green-500">
-                        Your account is protected with two-factor
-                        authentication.
+                        Your account is protected with two-factor authentication.
                       </p>
                     </div>
+                  </div>
+
+                  {/* Change 2FA */}
+                  <div className="space-y-2">
+                    <Button onClick={() => setChange2FAOpen(true)} className="w-full sm:w-auto">
+                      <Shield className="h-4 w-4 mr-2" />
+                      Change 2FA
+                    </Button>
+                  </div>
+
+                  {/* Reset 2FA */}
+                  <div className="border-t border-border pt-4 space-y-2">
+                    <h4 className="text-sm font-medium text-foreground">Reset 2FA</h4>
+                    <p className="text-sm text-muted-foreground">
+                      If you still have access, you can reset your 2FA directly.
+                    </p>
+                    <Button
+                      variant="outline"
+                      onClick={() => navigate("/request-2fa-reset")}
+                      className="w-full sm:w-auto"
+                    >
+                      Reset 2FA
+                    </Button>
+                  </div>
+
+                  {/* Admin Fallback */}
+                  <div className="pt-2">
+                    <button
+                      onClick={() => navigate("/2fa-reset-request-for-admin")}
+                      className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
+                    >
+                      Lost access to both authenticator and email?
+                    </button>
                   </div>
                 </div>
               ) : (
@@ -565,9 +597,7 @@ const Profile = () => {
                         2FA is Not Enabled
                       </p>
                       <p className="text-sm text-yellow-600 dark:text-yellow-500">
-                        Your account is not protected with two-factor
-                        authentication. We strongly recommend enabling 2FA to
-                        secure your account.
+                        Your account is not protected with two-factor authentication. We strongly recommend enabling 2FA to secure your account.
                       </p>
                     </div>
                   </div>
@@ -582,6 +612,8 @@ const Profile = () => {
               )}
             </CardContent>
           </Card>
+
+          <Change2FAModal open={change2FAOpen} onOpenChange={setChange2FAOpen} />
         </TabsContent>
 
         {/* Settings Tab */}

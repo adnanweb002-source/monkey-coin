@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useTheme } from "next-themes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Mail, Shield } from "lucide-react";
+import { Loader2, Mail, Shield, Info, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import api, { getErrorMessage } from "@/lib/api";
@@ -14,12 +14,12 @@ import logoLight from "@/assets/logo-light.png";
 
 const schema = z.object({
   email: z.string().trim().email("Please enter a valid email address"),
-  memberId: z.string({ required_error: "This field is required" }).trim(),
+  memberId: z.string().trim().min(1, "Member ID is required"),
 });
 
 type FormData = z.infer<typeof schema>;
 
-const Request2FAReset = () => {
+const Request2FAResetAdmin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const { toast } = useToast();
@@ -34,7 +34,7 @@ const Request2FAReset = () => {
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
     try {
-      await api.post("/auth/request-2fa-reset", {
+      await api.post("/auth/request-2fa-reset-by-admin", {
         email: data.email,
         memberId: data.memberId,
       });
@@ -68,62 +68,77 @@ const Request2FAReset = () => {
               <Shield className="text-primary" size={24} />
             </div>
             <h1 className="text-3xl font-bold text-foreground mb-2">
-              Reset 2FA
+              Request 2FA Reset
             </h1>
             <p className="text-muted-foreground text-sm">
-              Enter your email and member ID to receive a 2FA reset link
+              If you've lost access to your authenticator or email, submit a request for manual review.
             </p>
           </div>
 
           {submitted ? (
             <div className="text-center space-y-4">
               <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto">
-                <Mail className="text-primary" size={28} />
+                <CheckCircle className="text-primary" size={28} />
               </div>
-              <p className="text-foreground font-medium">Check your email</p>
+              <p className="text-foreground font-medium">Request Submitted</p>
               <p className="text-muted-foreground text-sm">
-                If the email exists, a reset link has been sent.
+                Your request has been submitted. Our team will review and contact you if needed.
               </p>
+              <div className="flex items-start gap-2 p-3 rounded-lg bg-muted/50 border border-border text-left">
+                <Info className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+                <p className="text-xs text-muted-foreground">
+                  Manual verification may take 24–48 hours.
+                </p>
+              </div>
               <Link to="/signin" className="crypto-link text-sm">
                 Back to Sign In
               </Link>
             </div>
           ) : (
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-              <div>
-                <label htmlFor="email" className="crypto-label">
-                  Email Address
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  {...register("email")}
-                  className="crypto-input"
-                  placeholder="Enter your email address"
-                  required
-                />
-                {errors.email && (
-                  <p className="text-destructive text-xs mt-1">
-                    {errors.email.message}
-                  </p>
-                )}
+              <div className="flex items-start gap-2 p-3 rounded-lg bg-muted/50 border border-border">
+                <Info className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+                <p className="text-xs text-muted-foreground">
+                  Manual verification may take 24–48 hours.
+                </p>
+              </div>
 
-                <label htmlFor="memberId" className="crypto-label">
-                  Member ID
-                </label>
-                <input
-                  id="memberId"
-                  type="text"
-                  {...register("memberId")}
-                  className="crypto-input"
-                  placeholder="Enter your Member ID"
-                  required
-                />
-                {errors.memberId && (
-                  <p className="text-destructive text-xs mt-1">
-                    {errors.memberId.message}
-                  </p>
-                )}
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="email" className="crypto-label">
+                    Email Address
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    {...register("email")}
+                    className="crypto-input"
+                    placeholder="Enter your email address"
+                  />
+                  {errors.email && (
+                    <p className="text-destructive text-xs mt-1">
+                      {errors.email.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="memberId" className="crypto-label">
+                    Member ID
+                  </label>
+                  <input
+                    id="memberId"
+                    type="text"
+                    {...register("memberId")}
+                    className="crypto-input"
+                    placeholder="Enter your Member ID"
+                  />
+                  {errors.memberId && (
+                    <p className="text-destructive text-xs mt-1">
+                      {errors.memberId.message}
+                    </p>
+                  )}
+                </div>
               </div>
 
               <button
@@ -134,28 +149,19 @@ const Request2FAReset = () => {
                 {isLoading ? (
                   <div className="flex items-center justify-center">
                     <Loader2 className="animate-spin mr-2" size={18} />
-                    <span>Sending...</span>
+                    <span>Submitting...</span>
                   </div>
                 ) : (
-                  "Send 2FA Reset Link"
+                  "Submit Request"
                 )}
               </button>
 
               <p className="text-center text-muted-foreground text-sm">
-                Remember your 2FA code?{" "}
-                <Link to="/signin" className="crypto-link">
-                  Sign In
+                Still have email access?{" "}
+                <Link to="/request-2fa-reset" className="crypto-link">
+                  Reset via Email
                 </Link>
               </p>
-
-              <div className="pt-2 text-center">
-                <Link
-                  to="/2fa-reset-request-for-admin"
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
-                >
-                  No longer have access to your email?
-                </Link>
-              </div>
             </form>
           )}
         </div>
@@ -167,4 +173,4 @@ const Request2FAReset = () => {
   );
 };
 
-export default Request2FAReset;
+export default Request2FAResetAdmin;

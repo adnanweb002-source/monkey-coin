@@ -90,6 +90,7 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState("profile");
   const [countryOpen, setCountryOpen] = useState(false);
   const [countrySearch, setCountrySearch] = useState("");
+  const [change2FAOpen, setChange2FAOpen] = useState(false);
 
   // Handle navigation state for opening specific tabs
   useEffect(() => {

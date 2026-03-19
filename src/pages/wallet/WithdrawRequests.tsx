@@ -24,6 +24,16 @@ import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
 import AdminWithdrawActions from "@/components/admin/AdminWithdrawActions";
 import { walletConfig } from "@/lib/config";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface WithdrawRequest {
   id: number;
@@ -31,11 +41,11 @@ interface WithdrawRequest {
   amount: string;
   method: string;
   address: string | null;
-  status: "PENDING" | "APPROVED" | "REJECTED" | "FAILED";
+  status: "PENDING" | "APPROVED" | "REJECTED" | "FAILED" | "COMPLETED" | "CANCELLED";
   adminNote: string | null;
   createdAt: string;
   updatedAt: string;
-  wallet: any
+  wallet: any;
 }
 
 const PAGE_SIZE = 20;
@@ -43,8 +53,10 @@ const PAGE_SIZE = 20;
 const statusColors: Record<string, string> = {
   PENDING: "bg-yellow-500/20 text-yellow-500 border-yellow-500/30",
   APPROVED: "bg-green-500/20 text-green-500 border-green-500/30",
+  COMPLETED: "bg-green-500/20 text-green-500 border-green-500/30",
   REJECTED: "bg-red-500/20 text-red-500 border-red-500/30",
   FAILED: "bg-red-500/20 text-red-500 border-red-500/30",
+  CANCELLED: "bg-muted text-muted-foreground border-border",
 };
 
 const walletLabels: Record<string, string> = {
@@ -61,6 +73,8 @@ const WithdrawRequests = () => {
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [cancellingId, setCancellingId] = useState<number | null>(null);
+  const [isCancelling, setIsCancelling] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -100,6 +114,29 @@ const WithdrawRequests = () => {
     fetchRequests();
   }, [page, statusFilter]);
 
+  const handleCancelWithdrawal = async () => {
+    if (!cancellingId) return;
+    setIsCancelling(true);
+    try {
+      await api.post(`/wallet/withdrawal/${cancellingId}/cancel`);
+      toast({ title: "Success", description: "Withdrawal cancelled successfully" });
+      fetchRequests();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error?.response?.data?.message || "Failed to cancel withdrawal",
+        variant: "destructive",
+      });
+    } finally {
+      setIsCancelling(false);
+      setCancellingId(null);
+    }
+  };
+
+  const canCancel = (status: string) => {
+    return !["COMPLETED", "CANCELLED", "APPROVED"].includes(status);
+  };
+
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
   return (
@@ -120,7 +157,9 @@ const WithdrawRequests = () => {
             <SelectItem value="ALL">All</SelectItem>
             <SelectItem value="PENDING">Pending</SelectItem>
             <SelectItem value="APPROVED">Approved</SelectItem>
+            <SelectItem value="COMPLETED">Completed</SelectItem>
             <SelectItem value="REJECTED">Rejected</SelectItem>
+            <SelectItem value="CANCELLED">Cancelled</SelectItem>
             <SelectItem value="FAILED">Failed</SelectItem>
           </SelectContent>
         </Select>
@@ -160,14 +199,14 @@ const WithdrawRequests = () => {
                       <TableHead>Status</TableHead>
                       <TableHead>Created At</TableHead>
                       <TableHead>Updated At</TableHead>
-                      {isAdmin && <TableHead>Actions</TableHead>}
+                      <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {requests.map((request) => (
                       <TableRow key={request.id}>
                         <TableCell>
-                          {walletLabels[request.wallet.type] || request.walletType}
+                          {walletLabels[request.wallet?.type] || request.walletType}
                         </TableCell>
                         <TableCell>${parseFloat(request.amount).toLocaleString()}</TableCell>
                         <TableCell>{request.method}</TableCell>
@@ -188,15 +227,25 @@ const WithdrawRequests = () => {
                         <TableCell>
                           {format(new Date(request.updatedAt), "MMM dd, yyyy")}
                         </TableCell>
-                        {isAdmin && (
-                          <TableCell>
+                        <TableCell>
+                          {isAdmin ? (
                             <AdminWithdrawActions
                               withdrawId={request.id}
                               status={request.status}
                               onSuccess={fetchRequests}
                             />
-                          </TableCell>
-                        )}
+                          ) : canCancel(request.status) ? (
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => setCancellingId(request.id)}
+                            >
+                              Cancel
+                            </Button>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">—</span>
+                          )}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -232,6 +281,28 @@ const WithdrawRequests = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Cancel Confirmation Dialog */}
+      <AlertDialog open={!!cancellingId} onOpenChange={(open) => !open && setCancellingId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancel Withdrawal?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to cancel this withdrawal request? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isCancelling}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleCancelWithdrawal}
+              disabled={isCancelling}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isCancelling ? "Cancelling..." : "Confirm Cancel"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

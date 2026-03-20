@@ -54,6 +54,7 @@ import AdminTargets from "./pages/admin/AdminTargets";
 import AwardsAndRanks from "./pages/reports/AwardsAndRanks";
 import UserTargets from "./pages/UserTargets";
 import DepositBonusSettings from "./pages/admin/AdminDepositBonus";
+import TwoFactorResetRequests from "./pages/admin/TwoFactorResetRequests";
 import NotFound from "./pages/NotFound";
 
 
@@ -172,6 +173,7 @@ const App = () => (
               <Route path="ranks" element={<AdminRanks />} />
               <Route path="targets" element={<AdminTargets />} />
               <Route path="deposit-bonus" element={<DepositBonusSettings />} />
+              <Route path="two-factor-reset-requests" element={<TwoFactorResetRequests />} />
             </Route>
 
             {/* User Targets Route */}

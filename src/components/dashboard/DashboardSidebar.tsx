@@ -24,7 +24,8 @@ import {
   LogOut,
   File,
   Target,
-  PlusIcon
+  PlusIcon,
+  User2Icon
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -47,6 +48,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { useNotifications } from "@/contexts/NotificationContext";
 import { useTheme } from "next-themes";
+import { FaUserShield } from "react-icons/fa";
+import { RiUserShared2Fill } from "react-icons/ri";
 
 interface SidebarItem {
   labelKey: string;
@@ -147,6 +150,12 @@ const adminItems: SidebarItem[] = [
     icon: Package,
     path: "/admin/packages",
     adminOnly: true,
+  },
+  {
+    labelKey: "admin.twoFactorResetRequests",
+    icon: User2Icon,
+    path: "/admin/two-factor-reset-requests",
+    adminOnly: true
   },
   {
     labelKey: "admin.deposits",

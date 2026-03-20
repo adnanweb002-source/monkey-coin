@@ -66,7 +66,7 @@ const DashboardHome = () => {
         <UserProfileCard user={user} />
 
         {/* Center: Rank Progress */}
-        <RankProgressCard />
+        <RankProgressCard/>
 
         {/* Right: Stats 2 per row */}
         <div className="grid grid-cols-2 gap-4">

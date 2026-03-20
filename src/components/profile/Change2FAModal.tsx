@@ -38,7 +38,7 @@ const Change2FAModal = ({ open, onOpenChange }: Change2FAModalProps) => {
 
   const initiateMutation = useMutation({
     mutationFn: async (code: string) => {
-      const response = await api.post("/auth/2fa/change/initiate", { code });
+      const response = await api.post("/auth/2fa/change/initiate", { oldCode: code });
       return response.data;
     },
     onSuccess: (data) => {
@@ -57,7 +57,7 @@ const Change2FAModal = ({ open, onOpenChange }: Change2FAModalProps) => {
 
   const confirmMutation = useMutation({
     mutationFn: async (code: string) => {
-      const response = await api.post("/auth/2fa/change/confirm", { code });
+      const response = await api.post("/auth/2fa/change/confirm", { newCode: code });
       return response.data;
     },
     onSuccess: () => {

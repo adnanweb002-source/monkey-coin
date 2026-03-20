@@ -46,6 +46,7 @@ const SETTING_TYPES = [
   "BACK_OFFICE_OPENING_TIME",
   "BINARY_INCOME_RATE",
   "REFERRAL_INCOME_RATE",
+  "PACKAGE_PURCHASE_TYPE"
 ] as const;
 
 type SettingType = (typeof SETTING_TYPES)[number];
@@ -289,13 +290,13 @@ const AdminSettings = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="value">Value *</Label>
-              {editingSetting?.key == "TRANSFER_TYPE" ? (
+              {editingSetting?.key == "TRANSFER_TYPE" || editingSetting?.key == "PACKAGE_PURCHASE_TYPE" ? (
                 <Select
                   value={formValue}
                   onValueChange={(e) => setFormValue(e)}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select transfer type" />
+                    <SelectValue placeholder={`Select ${editingSetting?.key == "TRANSFER_TYPE" ? 'transfer' : 'package purchase'} type`} />
                   </SelectTrigger>
                   <SelectContent>
                     {["DOWNLINE", "CROSSLINE"].map((opt) => (

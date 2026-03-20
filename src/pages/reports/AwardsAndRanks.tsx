@@ -266,7 +266,7 @@ const AwardsAndRanks = () => {
 
             return (
               <div key={rank.id} className="group perspective">
-               <div className="relative h-[240px] w-full card-flip preserve-3d">
+                <div className="relative h-[240px] w-full card-flip preserve-3d">
                   {/* FRONT SIDE */}
                   <div
                     className="
@@ -342,32 +342,80 @@ const AwardsAndRanks = () => {
                     </CardContent>
                   </div>
 
-                  {/* BACK SIDE */}
                   <div
                     className="
-      absolute inset-0 rotate-y-180 backface-hidden
-      rounded-xl
-      border
-      flex items-center justify-center
-      text-center
-      bg-gradient-to-br from-indigo-600/30 via-purple-600/30 to-cyan-500/30
-      shadow-[0_0_30px_rgba(99,102,241,0.6)]
-      overflow-hidden
-    "
+    absolute inset-0 rotate-y-180 backface-hidden
+    rounded-xl
+    border
+    flex flex-col items-center justify-between
+    text-center
+    bg-gradient-to-br from-indigo-600/30 via-purple-600/30 to-cyan-500/30
+    shadow-[0_0_30px_rgba(99,102,241,0.6)]
+    overflow-hidden
+    p-5
+  "
                   >
-                    {awardImg ? (
-                      <img
-                        src={awardImg}
-                        className="w-full h-full object-contain p-6 opacity-90"
-                      />
-                    ) : (
-                      <div className="text-center">
-                        <p className="text-sm text-muted-foreground">Reward</p>
-                        <p className="text-2xl font-bold text-primary">
-                          ${rank.reward.toLocaleString()}
-                        </p>
-                      </div>
-                    )}
+                    {/* Top Content (Image / Reward) */}
+                    <div className="flex-1 flex items-center justify-center w-full">
+                      {awardImg ? (
+                        <div className="flex-1 flex items-center justify-center w-full overflow-hidden">
+                          {awardImg ? (
+                            <img
+                              src={awardImg}
+                              className="max-h-[140px] object-contain opacity-90"
+                            />
+                          ) : (
+                            <div className="text-center">
+                              <p className="text-sm text-muted-foreground">
+                                Reward
+                              </p>
+                              <p className="text-2xl font-bold text-primary">
+                                ${rank.reward.toLocaleString()}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-center">
+                          <p className="text-sm text-muted-foreground">
+                            Reward
+                          </p>
+                          <p className="text-2xl font-bold text-primary">
+                            ${rank.reward.toLocaleString()}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 🔥 Action Section (FIX) */}
+                    <div className="w-full mt-4">
+                      {rank.claimable ? (
+                        <Button
+                          size="sm"
+                          className="w-full"
+                          onClick={() => handleClaim(rank.id)}
+                          disabled={claimingId === rank.id}
+                        >
+                          {claimingId === rank.id && (
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          )}
+                          Claim
+                        </Button>
+                      ) : rank.unlocked ? (
+                        <Badge className="w-full justify-center py-2">
+                          <CheckCircle className="h-4 w-4 mr-1" />
+                          Unlocked
+                        </Badge>
+                      ) : (
+                        <Badge
+                          variant="outline"
+                          className="w-full justify-center py-2 opacity-60"
+                        >
+                          <Lock className="h-4 w-4 mr-1" />
+                          Locked
+                        </Badge>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

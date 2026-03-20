@@ -58,7 +58,8 @@
     "systemPrune": "System Prune",
     "ranks": "Ranks",
     "targets": "Targets",
-    "depositBonus": "Deposit Bonus"
+    "depositBonus": "Deposit Bonus",
+    "twoFactorResetRequests": "2FA Reset Requests"
   },
   "auth": {
     "logout": "Logout",

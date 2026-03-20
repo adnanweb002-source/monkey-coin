@@ -40,6 +40,7 @@ const resources = {
   ru: { translation: ruTranslations },
   ur: { translation: urTranslations },
   vi: { translation: viTranslations },
+  ml: { translation: mlTranslations },
 };
 
 i18n

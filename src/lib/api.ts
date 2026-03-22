@@ -31,16 +31,20 @@ api.interceptors.response.use(
     }
 
     // 🚫 NEVER retry refresh endpoint itself
-    if (originalRequest.url?.includes("/auth/refresh") || originalRequest.url?.includes("/auth/login")) {
+    if (originalRequest.url?.includes("/auth/refresh")) {
       window.location.href = "/signin";
       return Promise.reject(error);
     }
 
-    // 🔁 Access token expired → try refresh ONCE
     if (
-      error.response?.status === 401 &&
-      !originalRequest._retry
+      originalRequest.url?.includes("/auth/login") &&
+      (error.response?.status === 401 || error.response?.status === 403)
     ) {
+      return Promise.reject(error);
+    }
+
+    // 🔁 Access token expired → try refresh ONCE
+    if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
@@ -57,7 +61,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 // Helper to extract error message

@@ -154,6 +154,8 @@ const Withdraw = () => {
         ...(address && { address }),
       });
 
+      queryClient.invalidateQueries({ queryKey: ["wallets"] })
+
       toast({
         title: "Withdrawal Request Submitted",
         description: "Your withdrawal request has been submitted successfully.",
@@ -180,11 +182,31 @@ const Withdraw = () => {
     BONUS_WALLET: "A Wallet",
   };
 
-  console.log(wallets);
+  const userProfile = localStorage.getItem("userProfile");
+  const user = userProfile ? JSON.parse(userProfile) : null;
+
 
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-foreground">Withdraw Funds</h1>
+
+      {isTargetLocked && (
+        <div className="flex items-start gap-3 p-4 rounded-lg border border-destructive/30 bg-destructive/10">
+          <CloudCog className="h-5 w-5 text-destructive mt-0.5 shrink-0" />
+          <p className="text-sm text-foreground">
+            <strong>Withdrawals Locked:</strong> Please reach your assigned target before placing a withdrawal request.
+          </p>
+        </div>
+      )}
+
+      {user.isWithdrawalRestricted && (
+        <div className="flex items-start gap-3 p-4 rounded-lg border border-destructive/30 bg-destructive/10">
+          <CloudCog className="h-5 w-5 text-destructive mt-0.5 shrink-0" />
+          <p className="text-sm text-foreground">
+            <strong>Withdrawals restricted. Contact support</strong>
+          </p>
+        </div>
+      )}
 
       {isTargetLocked && (
         <div className="flex items-start gap-3 p-4 rounded-lg border border-destructive/30 bg-destructive/10">
@@ -309,6 +331,7 @@ const Withdraw = () => {
                   isLoading ||
                   isTargetLocked ||
                   !selectedWalletType ||
+                  user.isWithdrawalRestricted ||
                   !amount ||
                   parseFloat(amount) <= 0 ||
                   parseFloat(amount) > selectedBalance ||
@@ -317,7 +340,7 @@ const Withdraw = () => {
                 className="w-full"
                 size="lg"
               >
-                {isTargetLocked ? "Withdrawals Locked" : isLoading ? "Submitting..." : "Submit Withdrawal"}
+                {isTargetLocked ? "Withdrawals Locked" : isLoading ? "Submitting..." : user.isWithdrawalRestricted ? "Withdrawal Restricted" : "Submit Withdrawal"}
               </Button>
             </form>
           )}

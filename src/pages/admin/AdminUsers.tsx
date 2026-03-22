@@ -102,6 +102,7 @@ interface User {
   totalWithdrawals: number;
   externalWallets?: UserWallet[];
   isWithdrawalRestricted?: boolean;
+  isCrossLineTransferRestricted?: boolean;
 }
 
 interface UsersResponse {
@@ -393,6 +394,44 @@ const AdminUsers = () => {
     },
   });
 
+
+   const restrictCrossLineTransfer = useMutation({
+    mutationFn: async ({
+      userId,
+      restrict,
+    }: {
+      userId: number;
+      restrict: boolean;
+    }) => {
+      const response = await api.patch(
+        `/admin/users/${userId}/restrict-cross-line-transfer`,
+        { restrict: restrict },
+      );
+      console.log("Restrict withdrawal response:", response.data);
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      toast({
+        title: "Success",
+        description: variables.restrict
+          ? "Cross Line Transfers disabled for user"
+          : "Cross Line Transfers enabled for user",
+      });
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+      setTogglingRestriction(null);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description:
+          error.response?.data?.message ||
+          "Failed to update cross line transfer restriction",
+        variant: "destructive",
+      });
+      setTogglingRestriction(null);
+    },
+  });
+
   const closeDialogs = () => {
     setSelectedUser(null);
     setActionType(null);
@@ -466,6 +505,11 @@ const AdminUsers = () => {
   const handleWithdrawalToggle = (user: User, checked: boolean) => {
     setTogglingRestriction(user.id);
     restrictWithdrawalMutation.mutate({ userId: user.id, restrict: checked });
+  };
+
+  const handleCrossLineTransferToggle = (user: User, checked: boolean) => {
+    setTogglingRestriction(user.id);
+    restrictCrossLineTransfer.mutate({ userId: user.id, restrict: checked });
   };
 
   const isProcessing =
@@ -648,7 +692,10 @@ const AdminUsers = () => {
                 <TableHead className="whitespace-nowrap">Withdrawals</TableHead>
                 <TableHead className="whitespace-nowrap">Role</TableHead>
                 <TableHead className="whitespace-nowrap">
-                  Withdrawal Restrictions
+                  Withdrawal
+                </TableHead>
+                <TableHead className="whitespace-nowrap">
+                  Cross Line Transfer
                 </TableHead>
                 <TableHead className="whitespace-nowrap">Created</TableHead>
                 <TableHead className="whitespace-nowrap text-center">
@@ -740,6 +787,32 @@ const AdminUsers = () => {
                             {togglingRestriction === user.id ? (
                               <Loader2 className="h-3 w-3 animate-spin" />
                             ) : user.isWithdrawalRestricted ? (
+                              "Disabled"
+                            ) : (
+                              "Allowed"
+                            )}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Switch
+                            checked={user.isCrossLineTransferRestricted ?? false}
+                            onCheckedChange={(checked) =>
+                              handleCrossLineTransferToggle(user, checked)
+                            }
+                            disabled={togglingRestriction === user.id}
+                          />
+                          <span
+                            className={`text-xs ${
+                              user.isCrossLineTransferRestricted
+                                ? "text-destructive"
+                                : "text-green-600"
+                            }`}
+                          >
+                            {togglingRestriction === user.id ? (
+                              <Loader2 className="h-3 w-3 animate-spin" />
+                            ) : user.isCrossLineTransferRestricted ? (
                               "Disabled"
                             ) : (
                               "Allowed"

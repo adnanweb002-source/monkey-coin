@@ -12,6 +12,17 @@ export const useGetWallets = () => {
   });
 };
 
+// ---------------------------- WALLETS ----------------------
+export const useGetSettings = () => {
+  return useQuery({
+    queryKey: ["settings"],
+    queryFn: async () => {
+      let response = await api?.get("/admin/settings/get");
+      return response?.data;
+    },
+  });
+};
+
 // ---------------------------- PACKAGES ----------------------
 export const  useGetPackages=()=>{
     return useQuery({

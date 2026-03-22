@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 import WalletCards from "@/components/dashboard/WalletCards";
@@ -18,6 +19,8 @@ import { useToast } from "@/hooks/use-toast";
 import { walletConfig } from "@/lib/config";
 import { Loader2, AlertTriangle } from "lucide-react";
 import type { WalletCard as WalletCardType } from "@/types/wallet";
+import { useGetWallets } from "../api";
+import { useGetSettings } from "../api";
 
 type WalletType = "F_WALLET" | "I_WALLET" | "M_WALLET" | "BONUS_WALLET";
 
@@ -36,13 +39,10 @@ const Transfer = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: wallets = [], isLoading: walletsLoading } = useQuery({
-    queryKey: ["wallets"],
-    queryFn: async () => {
-      const response = await api.get("/wallets");
-      return response.data;
-    },
-  });
+  const { data: wallets = [], isLoading: walletsLoading } = useGetWallets();
+  const { data: settings = [], isLoading: settingsLoading } = useGetSettings();
+
+  console.log(settings);
 
   const externalForm = useForm<ExternalFormData>({
     resolver: zodResolver(externalSchema),
@@ -78,14 +78,12 @@ const Transfer = () => {
     "BONUS_WALLET",
   ];
 
-  
   const walletLabels: Record<string, string> = {
     F_WALLET: "D Wallet",
     I_WALLET: "P Wallet",
     M_WALLET: "E Wallet",
     BONUS_WALLET: "A Wallet",
   };
-
 
   const getWalletBalance = (type: string) => {
     const wallet = wallets.find((w: WalletCardType) => w.type === type);
@@ -94,13 +92,19 @@ const Transfer = () => {
 
   const selectedFromExternal = externalForm.watch("fromWalletType");
 
+  const transferType = settings
+    ? settings?.find((s: any) => s.key === "TRANSFER_TYPE")?.value
+    : "CROSSLINE";
+
+  const isDownlineOnly = transferType === "DOWNLINE";
+
+  const userProfile = JSON.parse(localStorage.getItem("userProfile"));
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-foreground">Transfer Funds</h1>
-        <p className="text-muted-foreground">
-          Transfer funds to another user in your downline
-        </p>
+        <p className="text-muted-foreground">Transfer funds to another user</p>
       </div>
 
       {walletsLoading ? (
@@ -117,10 +121,18 @@ const Transfer = () => {
         )}
         className="bg-card rounded-lg p-6 space-y-4 max-w-md mx-auto"
       >
-        <div className="flex items-center gap-2 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-yellow-600 text-sm">
-          <AlertTriangle size={16} />
-          <span>Transfers are only allowed to users in your downline</span>
-        </div>
+        {userProfile?.isWithdrawalRestricted && (
+          <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-yellow-500/20 rounded-lg text-yellow-600 text-sm">
+            <AlertTriangle size={16} />
+            <span>Withdrawals for this account have been disabled</span>
+          </div>
+        )}
+        {isDownlineOnly && (
+          <div className="flex items-center gap-2 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-yellow-600 text-sm">
+            <AlertTriangle size={16} />
+            <span>The Admin has disabled Cross Fund Transfers</span>
+          </div>
+        )}
 
         <div className="space-y-2">
           <Label>From Wallet</Label>
@@ -179,7 +191,9 @@ const Transfer = () => {
 
         <Button
           type="submit"
-          disabled={externalMutation.isPending}
+          disabled={
+            externalMutation.isPending || userProfile?.isWithdrawalRestricted
+          }
           className="w-full"
         >
           {externalMutation.isPending ? (
@@ -187,6 +201,8 @@ const Transfer = () => {
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Processing...
             </>
+          ) : userProfile?.isWithdrawalRestricted ? (
+            "Withdrawal restricted"
           ) : (
             "Transfer to User"
           )}

@@ -41,7 +41,13 @@ interface WithdrawRequest {
   amount: string;
   method: string;
   address: string | null;
-  status: "PENDING" | "APPROVED" | "REJECTED" | "FAILED" | "COMPLETED" | "CANCELLED";
+  status:
+    | "PENDING"
+    | "APPROVED"
+    | "REJECTED"
+    | "FAILED"
+    | "COMPLETED"
+    | "CANCELLED";
   adminNote: string | null;
   createdAt: string;
   updatedAt: string;
@@ -92,7 +98,9 @@ const WithdrawRequests = () => {
         params: {
           skip: page * PAGE_SIZE,
           take: PAGE_SIZE,
-          ...(statusFilter && statusFilter !== "ALL" ? { status: statusFilter } : {}),
+          ...(statusFilter && statusFilter !== "ALL"
+            ? { status: statusFilter }
+            : {}),
         },
       });
 
@@ -102,7 +110,8 @@ const WithdrawRequests = () => {
       toast({
         title: "Error",
         description:
-          error?.response?.data?.message || "Failed to fetch withdrawal requests",
+          error?.response?.data?.message ||
+          "Failed to fetch withdrawal requests",
         variant: "destructive",
       });
     } finally {
@@ -119,12 +128,16 @@ const WithdrawRequests = () => {
     setIsCancelling(true);
     try {
       await api.post(`/wallet/withdrawal/${cancellingId}/cancel`);
-      toast({ title: "Success", description: "Withdrawal cancelled successfully" });
+      toast({
+        title: "Success",
+        description: "Withdrawal cancelled successfully",
+      });
       fetchRequests();
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error?.response?.data?.message || "Failed to cancel withdrawal",
+        description:
+          error?.response?.data?.message || "Failed to cancel withdrawal",
         variant: "destructive",
       });
     } finally {
@@ -142,7 +155,9 @@ const WithdrawRequests = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-foreground">Withdrawal Requests</h1>
+        <h1 className="text-2xl font-bold text-foreground">
+          Withdrawal Requests
+        </h1>
         <Select
           value={statusFilter}
           onValueChange={(value) => {
@@ -167,7 +182,9 @@ const WithdrawRequests = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>{isAdmin ? "All Withdrawal Requests" : "Your Withdrawal Requests"}</CardTitle>
+          <CardTitle>
+            {isAdmin ? "All Withdrawal Requests" : "Your Withdrawal Requests"}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -194,6 +211,8 @@ const WithdrawRequests = () => {
                     <TableRow>
                       <TableHead>Wallet</TableHead>
                       <TableHead>Amount</TableHead>
+                      <TableHead>Platform Commission (12%)</TableHead>
+                      <TableHead>Final Amount</TableHead>
                       <TableHead>Method</TableHead>
                       <TableHead>Address</TableHead>
                       <TableHead>Status</TableHead>
@@ -206,9 +225,18 @@ const WithdrawRequests = () => {
                     {requests.map((request) => (
                       <TableRow key={request.id}>
                         <TableCell>
-                          {walletLabels[request.wallet?.type] || request.walletType}
+                          {walletLabels[request.wallet?.type] ||
+                            request.walletType}
                         </TableCell>
-                        <TableCell>${parseFloat(request.amount).toLocaleString()}</TableCell>
+                        <TableCell>
+                          ${parseFloat(request.amount).toLocaleString()}
+                        </TableCell>
+                        <TableCell>
+                          ${(parseFloat(request.amount) * 0.12).toLocaleString()}
+                        </TableCell>
+                        <TableCell className="font-bold">
+                          ${(parseFloat(request.amount) * 0.88).toLocaleString()}
+                        </TableCell>
                         <TableCell>{request.method}</TableCell>
                         <TableCell className="max-w-[150px] truncate">
                           {request.address || "-"}
@@ -243,7 +271,9 @@ const WithdrawRequests = () => {
                               Cancel
                             </Button>
                           ) : (
-                            <span className="text-xs text-muted-foreground">—</span>
+                            <span className="text-xs text-muted-foreground">
+                              —
+                            </span>
                           )}
                         </TableCell>
                       </TableRow>
@@ -269,7 +299,9 @@ const WithdrawRequests = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                      onClick={() =>
+                        setPage((p) => Math.min(totalPages - 1, p + 1))
+                      }
                       disabled={page >= totalPages - 1}
                     >
                       <ChevronRight className="h-4 w-4" />
@@ -283,16 +315,22 @@ const WithdrawRequests = () => {
       </Card>
 
       {/* Cancel Confirmation Dialog */}
-      <AlertDialog open={!!cancellingId} onOpenChange={(open) => !open && setCancellingId(null)}>
+      <AlertDialog
+        open={!!cancellingId}
+        onOpenChange={(open) => !open && setCancellingId(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Cancel Withdrawal?</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to cancel this withdrawal request? This action cannot be undone.
+              Are you sure you want to cancel this withdrawal request? This
+              action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isCancelling}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={isCancelling}>
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleCancelWithdrawal}
               disabled={isCancelling}

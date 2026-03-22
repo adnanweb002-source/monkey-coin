@@ -86,6 +86,7 @@ const GainReport = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const type = searchParams.get("type") || "DAILY";
+  const self = searchParams.get("self") || "no";
 
   const fetchGainReport = async () => {
     if (!fromDate || !toDate) {
@@ -131,7 +132,7 @@ const GainReport = () => {
 
     try {
       const response = await api.get(
-        `/wallet/income/gain-report?type=${gainType}&from=${fromDate}&to=${toDate}&skip=${skip}&take=${TAKE}`,
+        `/wallet/income/gain-report?type=${gainType}&from=${fromDate}&to=${toDate}&skip=${skip}&take=${TAKE}&self=${self}`,
       );
       setData(response.data);
       setTotal(response.data?.total || "0");
@@ -190,7 +191,7 @@ const GainReport = () => {
   useEffect(() => {
     setDatePreset("month");
     fetchGainReport();
-  }, [type]);
+  }, [type, self]);
 
   const currentPage = Math.floor(skip / TAKE) + 1;
   const totalPages = Math.ceil(count / TAKE);

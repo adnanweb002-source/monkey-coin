@@ -93,7 +93,7 @@ const MyTree = () => {
 
   const { data: treeData, isLoading, error } = useGetTree(currentRootId, depth);
 
-  console.log(treeData)
+  console.log(treeData);
 
   const matchingNodeIds = treeData
     ? findMatchingNodeIds(treeData, searchQuery)
@@ -139,6 +139,33 @@ const MyTree = () => {
     return current;
   };
 
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) {
+      toast.error("Enter Member ID");
+      return;
+    }
+
+    try {
+      const res = await api.get(
+        `/tree/search/member?memberId=${searchQuery}&rootUserId=${userId}`,
+      );
+
+      const foundUserId = res.data?.userId;
+
+      if (foundUserId) {
+        setCurrentRootId(foundUserId);
+
+        toast.success("User found", {
+          description: `Jumped to ${searchQuery}`,
+        });
+      } else {
+        toast.error("User not found in your tree");
+      }
+    } catch (err) {
+      console.log(err)
+      toast.error(err?.response?.data?.message || "User not found in your downline");
+    }
+  };
 
   return (
     <div className="space-y-4 min-h-screen p-4">
@@ -155,6 +182,7 @@ const MyTree = () => {
       <TreeControls
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
+        onSearchSubmit={handleSearch}
         extremeLeft={businessVolume.left}
         extremeRight={businessVolume.right}
         onExtremeLeftClick={() => {

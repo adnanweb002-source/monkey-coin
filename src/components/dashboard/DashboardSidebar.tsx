@@ -25,7 +25,7 @@ import {
   File,
   Target,
   PlusIcon,
-  User2Icon
+  User2Icon,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -88,16 +88,29 @@ const sidebarItems: SidebarItem[] = [
     icon: FileText,
     children: [
       { labelKey: "sidebar.wallets", path: "/reports/wallets" },
-      { labelKey: "sidebar.dailyEarningsReport", path: "/reports/gain-report?type=DAILY" },
-      { labelKey: "sidebar.referralEarningsReport", path: "/reports/gain-report?type=REFERRAL" },
-      { labelKey: "sidebar.binaryEarningsReport", path: "/reports/gain-report?type=BINARY" },
+      {
+        labelKey: "sidebar.dailyEarningsReport",
+        path: "/reports/gain-report?type=DAILY",
+      },
+      {
+        labelKey: "sidebar.referralEarningsReport",
+        path: "/reports/gain-report?type=REFERRAL",
+      },
+      {
+        labelKey: "sidebar.binaryEarningsReport",
+        path: "/reports/gain-report?type=BINARY",
+      },
       {
         labelKey: "sidebar.withdrawalStatus",
         path: "/wallet/withdraw-requests",
       },
-       {
+      {
         labelKey: "sidebar.packagePurchaseReport",
         path: "/reports/gain-report?type=PACKAGE_PURCHASE",
+      },
+      {
+        labelKey: "sidebar.packagePurchaseReportSelf",
+        path: "/reports/gain-report?type=PACKAGE_PURCHASE&self=yes",
       },
       {
         labelKey: "sidebar.depositHistory",
@@ -155,7 +168,7 @@ const adminItems: SidebarItem[] = [
     labelKey: "admin.twoFactorResetRequests",
     icon: User2Icon,
     path: "/admin/two-factor-reset-requests",
-    adminOnly: true
+    adminOnly: true,
   },
   {
     labelKey: "admin.deposits",
@@ -210,7 +223,7 @@ const adminItems: SidebarItem[] = [
     icon: Shield,
     path: "/admin/system/prune",
     adminOnly: true,
-  }
+  },
 ];
 
 interface DashboardSidebarProps {
@@ -308,14 +321,19 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
         {/* Logo */}
         <div className="p-4 border-b border-sidebar-border flex items-center justify-between">
           <Link to="/panel" className="flex items-center gap-2">
-            {
-              theme === "dark" ? (
-                <img src={logoDark} alt="Vaultire Infinite" className="h-[69px] w-auto" />
-              ) : (
-                <img src={logoLight} alt="Vaultire Infinite" className="h-[69px] w-auto" />
-              )
-            }
-
+            {theme === "dark" ? (
+              <img
+                src={logoDark}
+                alt="Vaultire Infinite"
+                className="h-[69px] w-auto"
+              />
+            ) : (
+              <img
+                src={logoLight}
+                alt="Vaultire Infinite"
+                className="h-[69px] w-auto"
+              />
+            )}
           </Link>
           {isMobile && (
             <button

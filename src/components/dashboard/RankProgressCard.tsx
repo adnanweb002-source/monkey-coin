@@ -55,7 +55,7 @@ const RankProgressCard = () => {
   // 🧠 Compute next rank
   const nextRanks = ranks?.filter((r) => r?.order > currentRank?.order);
 
-  const nextRankObj = nextRanks?.find((r)=> r?.order > currentRank?.order);
+  const nextRankObj = nextRanks?.find((r)=> r?.order > currentRank?.order) || ranks.find((rank)=> rank.order == 1)
 
   // 🧠 Progress %
   let progressPercent = 0;  

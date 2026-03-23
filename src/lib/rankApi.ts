@@ -20,6 +20,7 @@ export interface UserRank {
   requiredRight: number;
   claimable: boolean;
   unlocked: boolean;
+  claimed: boolean;
 }
 
 export interface RankProgress {

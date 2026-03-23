@@ -400,10 +400,10 @@ const AwardsAndRanks = () => {
                           )}
                           Claim
                         </Button>
-                      ) : rank.unlocked ? (
+                      ) : rank.claimed ? (
                         <Badge className="w-full justify-center py-2">
                           <CheckCircle className="h-4 w-4 mr-1" />
-                          Unlocked
+                          Claimed
                         </Badge>
                       ) : (
                         <Badge

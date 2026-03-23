@@ -94,6 +94,7 @@ interface User {
   email: string;
   phoneNumber: string;
   status: "ACTIVE" | "INACTIVE" | "SUSPENDED";
+  activePackageCount: number;
   role: "USER" | "ADMIN";
   createdAt: string;
   updatedAt: string;
@@ -394,8 +395,7 @@ const AdminUsers = () => {
     },
   });
 
-
-   const restrictCrossLineTransfer = useMutation({
+  const restrictCrossLineTransfer = useMutation({
     mutationFn: async ({
       userId,
       restrict,
@@ -691,9 +691,7 @@ const AdminUsers = () => {
                 <TableHead className="whitespace-nowrap">Deposits</TableHead>
                 <TableHead className="whitespace-nowrap">Withdrawals</TableHead>
                 <TableHead className="whitespace-nowrap">Role</TableHead>
-                <TableHead className="whitespace-nowrap">
-                  Withdrawal
-                </TableHead>
+                <TableHead className="whitespace-nowrap">Withdrawal</TableHead>
                 <TableHead className="whitespace-nowrap">
                   Cross Line Transfer
                 </TableHead>
@@ -755,7 +753,21 @@ const AdminUsers = () => {
                       </TableCell>
                       <TableCell>{user.email}</TableCell>
                       <TableCell>{user.phoneNumber || "-"}</TableCell>
-                      <TableCell>{getStatusBadge(user.status)}</TableCell>
+                      <TableCell>
+                        {user.status == "SUSPENDED" ? (
+                          <Badge className="bg-red-500/20 text-red-600 border-red-500/30">
+                            Suspended
+                          </Badge>
+                        ) : user.activePackageCount > 0 ? (
+                          <Badge className="bg-green-500/20 text-green-600 border-green-500/30">
+                            Active
+                          </Badge>
+                        ) : (
+                          <Badge className="bg-gray-500/20 text-gray-600 border-gray-500/30">
+                            Inactive
+                          </Badge>
+                        )}
+                      </TableCell>
                       <TableCell>
                         <span className="text-green-600 font-medium">
                           ${Number(user.totalDeposits).toFixed(2)}
@@ -797,7 +809,9 @@ const AdminUsers = () => {
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <Switch
-                            checked={user.isCrossLineTransferRestricted ?? false}
+                            checked={
+                              user.isCrossLineTransferRestricted ?? false
+                            }
                             onCheckedChange={(checked) =>
                               handleCrossLineTransferToggle(user, checked)
                             }

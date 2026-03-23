@@ -134,11 +134,6 @@ const sidebarItems: SidebarItem[] = [
     path: "/reports/holiday-list",
   },
   {
-    labelKey: "sidebar.transactions",
-    icon: ArrowRightLeft,
-    path: "/wallet/transactions",
-  },
-  {
     labelKey: "sidebar.marketingTools",
     icon: Wrench,
     path: "/growth-tools",

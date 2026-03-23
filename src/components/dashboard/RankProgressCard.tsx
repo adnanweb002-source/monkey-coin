@@ -50,13 +50,15 @@ const RankProgressCard = () => {
   const isLoading = ranksLoading || progressLoading;
 
   // 🧠 Compute current rank
-  const currentRank = ranks?.filter((r) => r.unlocked)?.slice(-1)[0];
+  const currentRank = ranks?.filter((r) => r.claimed)?.slice(-1)[0];
 
   // 🧠 Compute next rank
-  const nextRankObj = ranks?.find((r) => !r.unlocked);
+  const nextRanks = ranks?.filter((r) => r.claimable);
+
+  const nextRankObj = nextRanks?.find((r)=> r.order > currentRank.order);
 
   // 🧠 Progress %
-  let progressPercent = 0;
+  let progressPercent = 0;  
 
   if (progress && !progress.completed) {
     const left = (progress.leftProgress / progress.requiredLeft) * 100;

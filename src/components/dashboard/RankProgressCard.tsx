@@ -53,7 +53,7 @@ const RankProgressCard = () => {
   const currentRank = ranks?.filter((r) => r.claimed)?.slice(-1)[0];
 
   // 🧠 Compute next rank
-  const nextRanks = ranks?.filter((r) => r.claimable);
+  const nextRanks = ranks?.filter((r) => r.order > currentRank.order);
 
   const nextRankObj = nextRanks?.find((r)=> r.order > currentRank.order);
 

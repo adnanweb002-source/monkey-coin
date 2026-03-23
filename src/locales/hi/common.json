@@ -635,5 +635,10 @@
     "extremeRight": "EXTREME RIGHT",
     "myPosition": "MY POSITION",
     "searchByUserName": "Search by User Name"
+  },
+  "twoFactor": {
+    "securityWarning": "सुरक्षा चेतावनी",
+    "notProtected": "आपका खाता दो-स्तरीय प्रमाणीकरण से सुरक्षित नहीं है। कृपया अपने खाते की सुरक्षा के लिए 2FA सक्षम करें।",
+    "enable2FA": "2FA सक्षम करें"
   }
 }

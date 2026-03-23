@@ -635,5 +635,10 @@
     "extremeRight": "EXTREME RIGHT",
     "myPosition": "MY POSITION",
     "searchByUserName": "Search by User Name"
+  },
+  "twoFactor": {
+    "securityWarning": "സുരക്ഷാ മുന്നറിയിപ്പ്",
+    "notProtected": "നിങ്ങളുടെ അക്കൗണ്ട് രണ്ട് ഘട്ട സ്ഥിരീകരണത്തോടെ സംരക്ഷിക്കപ്പെട്ടിട്ടില്ല. ദയവായി നിങ്ങളുടെ അക്കൗണ്ട് സുരക്ഷിതമാക്കാൻ 2FA പ്രവർത്തനക്ഷമമാക്കുക.",
+    "enable2FA": "2FA സജീവമാക്കുക"
   }
 }

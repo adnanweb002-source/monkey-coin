@@ -635,5 +635,10 @@
     "extremeRight": "أقصى اليمين",
     "myPosition": "موقعي",
     "searchByUserName": "بحث باسم المستخدم"
-  }
+  },
+  "twoFactor": {
+      "securityWarning": "تحذير أمني",
+      "notProtected": "حسابك غير محمي بالمصادقة الثنائية. يرجى تفعيلها لتأمين حسابك.",
+      "enable2FA": "تفعيل المصادقة الثنائية"
+    }
 }

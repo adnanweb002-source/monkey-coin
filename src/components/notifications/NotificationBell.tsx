@@ -125,7 +125,7 @@ const NotificationBell = () => {
                       <p className="text-sm font-medium text-foreground truncate">
                         {n.title}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
+                      <p className="text-xs text-muted-foreground mt-0.5 wrap">
                         {n.description}
                       </p>
                       <p className="text-[10px] text-muted-foreground/70 mt-1">

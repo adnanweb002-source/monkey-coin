@@ -635,5 +635,10 @@
     "extremeRight": "EXTREME RIGHT",
     "myPosition": "MY POSITION",
     "searchByUserName": "Search by User Name"
-  }
+  },
+  "twoFactor": {
+      "securityWarning": "Cảnh báo bảo mật",
+      "notProtected": "Tài khoản của bạn chưa được bảo vệ bằng xác thực hai yếu tố. Vui lòng bật 2FA để bảo vệ tài khoản của bạn.",
+      "enable2FA": "Bật 2FA"
+    }
 }

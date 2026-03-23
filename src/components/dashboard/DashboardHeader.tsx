@@ -53,23 +53,23 @@ const DashboardHeader = ({
 
   const formatDateTime = (date: Date) => {
     return (
-      date.toLocaleDateString("en-GB", {
+      date.toLocaleDateString("en-US", {
         day: "numeric",
         month: "long",
         year: "numeric",
-        timeZone: "Europe/London",
+        timeZone: "America/Toronto",
       }) +
       ", " +
-      date.toLocaleTimeString("en-GB", {
+      date.toLocaleTimeString("en-US", {
         hour: "2-digit",
         minute: "2-digit",
         hour12: true,
-        timeZone: "Europe/London",
+        timeZone: "America/Toronto",
       }) +
       ", " +
-      date.toLocaleDateString("en-GB", {
+      date.toLocaleDateString("en-US", {
         weekday: "short",
-        timeZone: "Europe/London",
+        timeZone: "America/Toronto",
       })
     );
   };
@@ -94,9 +94,9 @@ const DashboardHeader = ({
         {!isMobile && (
           <>
             <LanguageSelector />
-
+          
             <span className="text-primary text-sm font-medium">
-              {formatDateTime(currentDateTime).toLocaleUpperCase()} -  London
+              {formatDateTime(currentDateTime).toLocaleUpperCase()} -  EDT
             </span>
           </>
         )}

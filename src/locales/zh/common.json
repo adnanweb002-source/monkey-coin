@@ -635,5 +635,10 @@
     "extremeRight": "EXTREME RIGHT",
     "myPosition": "MY POSITION",
     "searchByUserName": "Search by User Name"
+  },
+  "twoFactor": {
+    "securityWarning": "安全警告",
+    "notProtected": "您的账户未启用双重身份验证保护。请启用2FA以确保账户安全。",
+    "enable2FA": "启用2FA"
   }
 }

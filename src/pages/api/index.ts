@@ -12,6 +12,8 @@ export const useGetWallets = () => {
   });
 };
 
+
+
 // ---------------------------- WALLETS ----------------------
 export const useGetSettings = () => {
   return useQuery({

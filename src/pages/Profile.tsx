@@ -41,6 +41,7 @@ import AvatarSelector from "@/components/profile/AvatarSelector";
 import UserAvatar from "@/components/common/UserAvatar";
 import { countries } from "@/lib/countries";
 import Change2FAModal from "@/components/profile/Change2FAModal";
+import { useTranslation } from "react-i18next";
 
 interface PackagePurchase {
   id: number;
@@ -84,6 +85,7 @@ type ChangeEmailData = z.infer<typeof changeEmailSchema>;
 
 const Profile = () => {
   const { toast } = useToast();
+  const {t} = useTranslation()
   const queryClient = useQueryClient();
   const location = useLocation();
   const navigate = useNavigate();
@@ -273,20 +275,20 @@ const Profile = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-foreground">My Profile</h1>
+        <h1 className="text-2xl font-bold text-foreground">{t("profile.title")}</h1>
         <p className="text-muted-foreground">
-          Manage your account settings and packages
+          {t("profile.manageSettings")}
         </p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6 max-w-3xl">
-          <TabsTrigger value="profile">Profile</TabsTrigger>
-          <TabsTrigger value="avatar">Avatar</TabsTrigger>
-          <TabsTrigger value="security">Security</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
-          <TabsTrigger value="wallets">Wallets</TabsTrigger>
-          <TabsTrigger value="packages">Packages</TabsTrigger>
+          <TabsTrigger value="profile">{t("profile.profileTab")}</TabsTrigger>
+          <TabsTrigger value="avatar">{t("profile.avatarTab")}</TabsTrigger>
+          <TabsTrigger value="security">{t("profile.securityTab")}</TabsTrigger>
+          <TabsTrigger value="settings">{t("profile.settingsTab")}</TabsTrigger>
+          <TabsTrigger value="wallets">{t("profile.walletsTab")}</TabsTrigger>
+          <TabsTrigger value="packages">{t("profile.packagesTab")}</TabsTrigger>
         </TabsList>
 
         {/* Profile Tab */}
@@ -295,9 +297,9 @@ const Profile = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <User size={20} />
-                Personal Information
+                {t("profile.personalInfo")}
               </CardTitle>
-              <CardDescription>Your account details</CardDescription>
+              <CardDescription>{t("profile.accountDetails")}</CardDescription>
             </CardHeader>
             <CardContent>
               {/* Profile Avatar Display */}

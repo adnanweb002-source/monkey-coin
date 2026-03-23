@@ -635,5 +635,10 @@
     "extremeRight": "EXTREME RIGHT",
     "myPosition": "MY POSITION",
     "searchByUserName": "Search by User Name"
+  },
+  "twoFactor": {
+    "securityWarning": "Предупреждение безопасности",
+    "notProtected": "Ваш аккаунт не защищён двухфакторной аутентификацией. Пожалуйста, включите 2FA для защиты вашего аккаунта.",
+    "enable2FA": "Включить 2FA"
   }
 }

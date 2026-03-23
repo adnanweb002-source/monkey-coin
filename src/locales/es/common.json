@@ -635,5 +635,10 @@
     "extremeRight": "EXTREME RIGHT",
     "myPosition": "MY POSITION",
     "searchByUserName": "Search by User Name"
-  }
+  },
+  "twoFactor": {
+      "securityWarning": "Advertencia de seguridad",
+      "notProtected": "Tu cuenta no está protegida con la autenticación de dos factores. Por favor, actívala para asegurar tu cuenta.",
+      "enable2FA": "Activar 2FA"
+    }
 }

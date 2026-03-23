@@ -202,7 +202,7 @@ const Notifications = () => {
                         >
                           {n.title}
                         </TableCell>
-                        <TableCell className="text-sm text-muted-foreground max-w-[300px] truncate">
+                        <TableCell className="text-sm text-muted-foreground max-w-[300px] wrap">
                           {n.message || n.description || "-"}
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground whitespace-nowrap">

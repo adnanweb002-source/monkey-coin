@@ -11,35 +11,24 @@ import FloatingCoins from "@/components/FloatingCoins";
 import logoImg from "@/assets/logo-auth.png";
 import logoDark from "@/assets/logo-dark.png";
 import logoLight from "@/assets/logo-light.png";
+import { useTranslation } from "react-i18next";
 
-const schema = z.object({
-  email: z.string().trim().email("Please enter a valid email address"),
-});
-
+const schema = z.object({ email: z.string().trim().email("Please enter a valid email address") });
 type FormData = z.infer<typeof schema>;
 
 const ForgotPassword = () => {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const { toast } = useToast();
   const { theme } = useTheme();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({ resolver: zodResolver(schema) });
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema) });
 
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
-    try {
-      await api.post("/auth/forgot-password", { email: data.email });
-      setSubmitted(true);
-    } catch (error) {
-      toast({ title: "Error", description: getErrorMessage(error), variant: "destructive" });
-    } finally {
-      setIsLoading(false);
-    }
+    try { await api.post("/auth/forgot-password", { email: data.email }); setSubmitted(true); }
+    catch (error) { toast({ title: t("common.error"), description: getErrorMessage(error), variant: "destructive" }); }
+    finally { setIsLoading(false); }
   };
 
   const logo = theme === "dark" ? logoDark : theme === "light" ? logoLight : logoImg;
@@ -51,63 +40,32 @@ const ForgotPassword = () => {
         <div className="crypto-card w-full max-w-md mx-4 p-8 z-10">
           <div className="text-center mb-8">
             <img src={logo} alt="Vaultire Infinite" className="h-20 mx-auto mb-4" />
-            <h1 className="text-3xl font-bold text-foreground mb-2">Forgot Password</h1>
-            <p className="text-muted-foreground text-sm">
-              Enter your email to receive a password reset link
-            </p>
+            <h1 className="text-3xl font-bold text-foreground mb-2">{t("auth.forgotPasswordTitle")}</h1>
+            <p className="text-muted-foreground text-sm">{t("auth.enterEmailForReset")}</p>
           </div>
-
           {submitted ? (
             <div className="text-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto">
-                <Mail className="text-primary" size={28} />
-              </div>
-              <p className="text-foreground font-medium">Check your email</p>
-              <p className="text-muted-foreground text-sm">
-                If an account with that email exists, a reset link has been sent.
-              </p>
-              <Link to="/signin" className="crypto-link text-sm">
-                Back to Sign In
-              </Link>
+              <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto"><Mail className="text-primary" size={28} /></div>
+              <p className="text-foreground font-medium">{t("auth.checkYourEmail")}</p>
+              <p className="text-muted-foreground text-sm">{t("auth.resetLinkSent")}</p>
+              <Link to="/signin" className="crypto-link text-sm">{t("auth.backToSignIn")}</Link>
             </div>
           ) : (
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div>
-                <label htmlFor="email" className="crypto-label">Email Address</label>
-                <input
-                  id="email"
-                  type="email"
-                  {...register("email")}
-                  className="crypto-input"
-                  placeholder="Enter your email address"
-                />
-                {errors.email && (
-                  <p className="text-destructive text-xs mt-1">{errors.email.message}</p>
-                )}
+                <label htmlFor="email" className="crypto-label">{t("auth.emailAddress")}</label>
+                <input id="email" type="email" {...register("email")} className="crypto-input" placeholder={t("auth.enterEmailAddress")} />
+                {errors.email && <p className="text-destructive text-xs mt-1">{errors.email.message}</p>}
               </div>
-
               <button type="submit" disabled={isLoading} className="crypto-button w-full">
-                {isLoading ? (
-                  <div className="flex items-center justify-center">
-                    <Loader2 className="animate-spin mr-2" size={18} />
-                    <span>Sending...</span>
-                  </div>
-                ) : (
-                  "Send Reset Link"
-                )}
+                {isLoading ? <div className="flex items-center justify-center"><Loader2 className="animate-spin mr-2" size={18} /><span>{t("auth.sending")}</span></div> : t("auth.sendResetLink")}
               </button>
-
-              <p className="text-center text-muted-foreground text-sm">
-                Remember your password?{" "}
-                <Link to="/signin" className="crypto-link">Sign In</Link>
-              </p>
+              <p className="text-center text-muted-foreground text-sm">{t("auth.rememberPassword")} <Link to="/signin" className="crypto-link">{t("auth.signIn")}</Link></p>
             </form>
           )}
         </div>
       </div>
-      <footer className="relative z-10 py-4 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} Vaultire Infinite | All Rights Reserved
-      </footer>
+      <footer className="relative z-10 py-4 text-center text-xs text-muted-foreground">© {new Date().getFullYear()} Vaultire Infinite | {t("common.allRightsReserved")}</footer>
     </div>
   );
 };

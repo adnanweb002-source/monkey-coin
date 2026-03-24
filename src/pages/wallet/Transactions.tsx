@@ -30,6 +30,7 @@ import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
 import type { ApiWallet } from "@/types/wallet";
 import { useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 type WalletType = "F_WALLET" | "I_WALLET" | "M_WALLET" | "BONUS_WALLET";
 
@@ -69,10 +70,9 @@ const reverseWalletLabels: Record<string, WalletType> = {
 };
 
 const Transactions = () => {
+  const { t } = useTranslation();
   const [wallets, setWallets] = useState<ApiWallet[]>([]);
-  const [selectedWalletType, setSelectedWalletType] = useState<WalletType | "">(
-    "",
-  );
+  const [selectedWalletType, setSelectedWalletType] = useState<WalletType | "">("");
   const [transactions, setTransactions] = useState<any>([]);
   const [total, setTotal] = useState(0);
   const [skip, setSkip] = useState(0);
@@ -86,46 +86,35 @@ const Transactions = () => {
     ? JSON.parse(localStorage.getItem("userProfile") || "").role
     : "USER";
 
-  // Fetch wallets on mount
   useEffect(() => {
     const fetchWallets = async () => {
       try {
         const response = await api.get("/wallet/user-wallets");
-        const walletData = response.data || [];
-        setWallets(walletData);
+        setWallets(response.data || []);
       } catch (error: any) {
         toast({
-          title: "Error",
-          description:
-            error?.response?.data?.message || "Failed to fetch wallets",
+          title: t("common.error"),
+          description: error?.response?.data?.message || t("reports.wallets"),
           variant: "destructive",
         });
       } finally {
         setIsLoadingWallets(false);
       }
     };
-
     fetchWallets();
   }, []);
 
-  type MetaViewerProps = {
-    data: any;
-  };
-
+  type MetaViewerProps = { data: any };
   function MetaViewer({ data }: MetaViewerProps) {
     if (!data) return null;
-
     return (
       <div className="space-y-1 text-xs">
         {Object.entries(data).map(([key, value]) => (
           <div key={key} className="pl-2">
             <div className="flex gap-2">
               <span className="text-muted-foreground font-medium">{key.toLocaleUpperCase()}:</span>
-
               {typeof value === "object" && value !== null ? (
-                <div className="border-l pl-3 ml-1">
-                  <MetaViewer data={value} />
-                </div>
+                <div className="border-l pl-3 ml-1"><MetaViewer data={value} /></div>
               ) : (
                 <span className="break-all">{String(value)}</span>
               )}
@@ -136,30 +125,20 @@ const Transactions = () => {
     );
   }
 
-  // Fetch transactions when wallet changes or pagination changes
   useEffect(() => {
     if (!selectedWalletType) return;
-
     const fetchTransactions = async () => {
       setIsLoadingTransactions(true);
       try {
-        const response = await api.post<TransactionsResponse>(
-          "/wallet/transactions",
-          {
-            data: {
-              walletType: selectedWalletType,
-              skip,
-              take: TAKE,
-            },
-          },
-        );
+        const response = await api.post<TransactionsResponse>("/wallet/transactions", {
+          data: { walletType: selectedWalletType, skip, take: TAKE },
+        });
         setTransactions(response.data || []);
         setTotal(response.data?.total || 0);
       } catch (error: any) {
         toast({
-          title: "Error",
-          description:
-            error?.response?.data?.message || "Failed to fetch transactions",
+          title: t("common.error"),
+          description: error?.response?.data?.message || t("wallet.noTransactions"),
           variant: "destructive",
         });
         setTransactions([]);
@@ -168,41 +147,34 @@ const Transactions = () => {
         setIsLoadingTransactions(false);
       }
     };
-
     fetchTransactions();
   }, [selectedWalletType, skip]);
 
   const handleWalletChange = (value: string) => {
     const walletType = reverseWalletLabels[value];
     setSelectedWalletType(walletType as WalletType);
-    setSkip(0); // Reset pagination
+    setSkip(0);
     setExpandedRow(null);
   };
 
   const handleRefresh = () => {
     if (selectedWalletType) {
       setSkip(0);
-      // Trigger re-fetch by forcing effect
       const currentType = selectedWalletType;
       setSelectedWalletType("");
       setTimeout(() => setSelectedWalletType(currentType), 0);
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString();
-  };
+  const formatDate = (dateString: string) => new Date(dateString).toLocaleString();
 
   const currentPage = Math.floor(skip / TAKE) + 1;
   const totalPages = Math.ceil(total / TAKE);
 
   useEffect(() => {
     const walletTypeFromParams = searchParams.get("walletType") as WalletType;
-    console.log("Wallet type from URL params:", walletTypeFromParams);
     if (walletTypeFromParams) {
-      setSelectedWalletType(
-        reverseWalletLabels[walletTypeFromParams] || walletTypeFromParams,
-      );
+      setSelectedWalletType(reverseWalletLabels[walletTypeFromParams] || walletTypeFromParams);
     }
   }, [searchParams]);
 
@@ -211,14 +183,14 @@ const Transactions = () => {
       return (
         <Badge className="bg-green-500/20 text-green-500 hover:bg-green-500/30">
           <ArrowDownLeft className="h-3 w-3 mr-1" />
-          CREDIT
+          {t("income.credit")}
         </Badge>
       );
     }
     return (
       <Badge className="bg-red-500/20 text-red-500 hover:bg-red-500/30">
         <ArrowUpRight className="h-3 w-3 mr-1" />
-        DEBIT
+        {t("income.debit")}
       </Badge>
     );
   };
@@ -229,79 +201,57 @@ const Transactions = () => {
       WITHDRAW: "bg-orange-500/20 text-orange-500",
       TRANSFER: "bg-purple-500/20 text-purple-500",
     };
-    return (
-      <Badge className={colors[type] || "bg-secondary text-foreground"}>
-        {type}
-      </Badge>
-    );
+    return <Badge className={colors[type] || "bg-secondary text-foreground"}>{type}</Badge>;
   };
 
   const selectedWallet = wallets.find((w) => w.type === selectedWalletType);
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-foreground">
-        Wallet Transactions
-      </h1>
+      <h1 className="text-2xl font-bold text-foreground">{t("wallet.walletTransactions")}</h1>
 
       <Card>
         <CardHeader>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <CardTitle>Transaction History</CardTitle>
+            <CardTitle>{t("wallet.transactionHistory")}</CardTitle>
             <div className="flex items-center gap-2">
               {isLoadingWallets ? (
                 <Skeleton className="h-10 w-48" />
               ) : (
-                <Select
-                  value={selectedWalletType}
-                  onValueChange={handleWalletChange}
-                >
+                <Select value={selectedWalletType} onValueChange={handleWalletChange}>
                   <SelectTrigger className="w-48">
-                    <SelectValue placeholder="Select wallet" />
+                    <SelectValue placeholder={t("wallet.selectWallet")} />
                   </SelectTrigger>
                   <SelectContent>
                     {wallets.map((wallet) => (
                       <SelectItem key={wallet.id} value={wallet.type}>
-                        {walletLabels[wallet.type as WalletType] || wallet.type}{" "}
-                        - ${parseFloat(wallet.balance).toLocaleString()}
+                        {walletLabels[wallet.type as WalletType] || wallet.type} - ${parseFloat(wallet.balance).toLocaleString()}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               )}
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleRefresh}
-                disabled={isLoadingTransactions || !selectedWalletType}
-              >
-                <RefreshCw
-                  className={`h-4 w-4 ${isLoadingTransactions ? "animate-spin" : ""}`}
-                />
+              <Button variant="outline" size="icon" onClick={handleRefresh} disabled={isLoadingTransactions || !selectedWalletType}>
+                <RefreshCw className={`h-4 w-4 ${isLoadingTransactions ? "animate-spin" : ""}`} />
               </Button>
             </div>
           </div>
           {selectedWallet && (
             <p className="text-sm text-muted-foreground">
-              Current Balance: $
-              {parseFloat(selectedWallet.balance).toLocaleString()}
+              {t("wallet.currentBalance")}: ${parseFloat(selectedWallet.balance).toLocaleString()}
             </p>
           )}
         </CardHeader>
         <CardContent>
           {isLoadingTransactions ? (
             <div className="space-y-4">
-              {[...Array(5)].map((_, i) => (
-                <Skeleton key={i} className="h-12 w-full" />
-              ))}
+              {[...Array(5)].map((_, i) => (<Skeleton key={i} className="h-12 w-full" />))}
             </div>
           ) : transactions.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">No transactions found</p>
+              <p className="text-muted-foreground">{t("wallet.noTransactions")}</p>
               <p className="text-sm text-muted-foreground/70 mt-1">
-                {selectedWalletType
-                  ? "This wallet has no transaction history yet"
-                  : "Please select a wallet to view transactions"}
+                {selectedWalletType ? t("wallet.noTransactionHistory") : t("wallet.selectWalletToView")}
               </p>
             </div>
           ) : (
@@ -310,115 +260,67 @@ const Transactions = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>ID</TableHead>
-                      <TableHead>Tx Number</TableHead>
-                      {role === "ADMIN" && <TableHead>User ID</TableHead>}
-                      {role === "ADMIN" && <TableHead>Wallet ID</TableHead>}
-                      <TableHead>Type</TableHead>
-                      <TableHead>Direction</TableHead>
-                      <TableHead className="text-right">Amount</TableHead>
-                      <TableHead>Purpose</TableHead>
-                      <TableHead className="text-right">
-                        Balance After
-                      </TableHead>
-                      <TableHead>Created At</TableHead>
+                      <TableHead>{t("wallet.id")}</TableHead>
+                      <TableHead>{t("wallet.txNumber")}</TableHead>
+                      {role === "ADMIN" && <TableHead>{t("wallet.userId")}</TableHead>}
+                      {role === "ADMIN" && <TableHead>{t("wallet.walletId")}</TableHead>}
+                      <TableHead>{t("common.type")}</TableHead>
+                      <TableHead>{t("wallet.direction")}</TableHead>
+                      <TableHead className="text-right">{t("common.amount")}</TableHead>
+                      <TableHead>{t("wallet.purpose")}</TableHead>
+                      <TableHead className="text-right">{t("wallet.balanceAfter")}</TableHead>
+                      <TableHead>{t("wallet.createdAt")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {transactions.map((tx) => (
-                      <>
+                    {transactions.map((tx: any) => (
+                      <React.Fragment key={tx.id}>
                         <TableRow
-                          key={tx.id}
                           className={`cursor-pointer hover:bg-muted/50 ${tx.meta ? "cursor-pointer" : ""}`}
-                          onClick={() =>
-                            tx.meta &&
-                            setExpandedRow(expandedRow === tx.id ? null : tx.id)
-                          }
+                          onClick={() => tx.meta && setExpandedRow(expandedRow === tx.id ? null : tx.id)}
                         >
-                          <TableCell className="font-mono text-sm">
-                            {tx.id}
-                          </TableCell>
-                          <TableCell className="font-mono text-sm">
-                            {tx.txNumber}
-                          </TableCell>
-                          {role === "ADMIN" && (
-                            <TableCell className="font-mono text-sm">
-                              {tx.userId || "-"}
-                            </TableCell>
-                          )}
-                          {role === "ADMIN" && (
-                            <TableCell className="font-mono text-sm">
-                              {tx.walletId || "-"}
-                            </TableCell>
-                          )}
+                          <TableCell className="font-mono text-sm">{tx.id}</TableCell>
+                          <TableCell className="font-mono text-sm">{tx.txNumber}</TableCell>
+                          {role === "ADMIN" && <TableCell className="font-mono text-sm">{tx.userId || "-"}</TableCell>}
+                          {role === "ADMIN" && <TableCell className="font-mono text-sm">{tx.walletId || "-"}</TableCell>}
                           <TableCell>{getTypeBadge(tx.type)}</TableCell>
-                          <TableCell>
-                            {getDirectionBadge(tx.direction)}
-                          </TableCell>
-                          <TableCell className="text-right font-medium">
-                            ${parseFloat(tx.amount).toLocaleString()}
-                          </TableCell>
-                          <TableCell
-                            className="max-w-[200px] truncate"
-                            title={tx.purpose}
-                          >
-                            {tx.purpose || "-"}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            ${parseFloat(tx.balanceAfter).toLocaleString()}
-                          </TableCell>
-                          <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
-                            {formatDate(tx.createdAt)}
-                          </TableCell>
+                          <TableCell>{getDirectionBadge(tx.direction)}</TableCell>
+                          <TableCell className="text-right font-medium">${parseFloat(tx.amount).toLocaleString()}</TableCell>
+                          <TableCell className="max-w-[200px] truncate" title={tx.purpose}>{tx.purpose || "-"}</TableCell>
+                          <TableCell className="text-right">${parseFloat(tx.balanceAfter).toLocaleString()}</TableCell>
+                          <TableCell className="text-sm text-muted-foreground whitespace-nowrap">{formatDate(tx.createdAt)}</TableCell>
                         </TableRow>
                         {expandedRow === tx.id && tx.meta && (
                           <TableRow key={`${tx.id}-meta`}>
-                            <TableCell colSpan={role == "ADMIN"? 10 : 8} className="bg-muted/30">
+                            <TableCell colSpan={role === "ADMIN" ? 10 : 8} className="bg-muted/30">
                               <div className="p-3">
-                                <p className="text-sm font-medium mb-2">
-                                  More Information:
-                                </p>
-
-                                <div className="bg-background rounded p-2">
-                                  <MetaViewer data={tx.meta} />
-                                </div>
+                                <p className="text-sm font-medium mb-2">{t("wallet.moreInformation")}:</p>
+                                <div className="bg-background rounded p-2"><MetaViewer data={tx.meta} /></div>
                               </div>
                             </TableCell>
                           </TableRow>
                         )}
-                      </>
+                      </React.Fragment>
                     ))}
                   </TableBody>
                 </Table>
               </div>
 
-              {/* Pagination */}
               {totalPages > 1 && (
                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
                   <p className="text-sm text-muted-foreground">
-                    Showing {skip + 1}-{Math.min(skip + TAKE, total)} of {total}{" "}
-                    transactions
+                    {t("common.showing")} {skip + 1}-{Math.min(skip + TAKE, total)} {t("common.of")} {total} {t("common.transactions")}
                   </p>
                   <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setSkip(Math.max(0, skip - TAKE))}
-                      disabled={skip === 0}
-                    >
+                    <Button variant="outline" size="sm" onClick={() => setSkip(Math.max(0, skip - TAKE))} disabled={skip === 0}>
                       <ChevronLeft className="h-4 w-4 mr-1" />
-                      Previous
+                      {t("common.previous")}
                     </Button>
                     <span className="text-sm text-muted-foreground px-2">
-                      Page {currentPage} of {totalPages}
+                      {t("common.page")} {currentPage} {t("common.of")} {totalPages}
                     </span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setSkip(skip + TAKE)}
-                      disabled={skip + TAKE >= total}
-                    >
-                      Next
+                    <Button variant="outline" size="sm" onClick={() => setSkip(skip + TAKE)} disabled={skip + TAKE >= total}>
+                      {t("common.next")}
                       <ChevronRight className="h-4 w-4 ml-1" />
                     </Button>
                   </div>

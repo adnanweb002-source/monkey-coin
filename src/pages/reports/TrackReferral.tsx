@@ -4,39 +4,20 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
 import { Users, RefreshCw, Search, UserPlus, Package } from "lucide-react";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
-interface PackagePurchase{
-  amount: string;
-  packageId: number;
-}
-
+interface PackagePurchase { amount: string; packageId: number; }
 interface Referral {
-  id: number;
-  memberId: string;
-  firstName: string;
-  lastName: string; 
-  email?: string;
-  status: "ACTIVE" | "INACTIVE" | "SUSPENDED";
-  createdAt: string;
+  id: number; memberId: string; firstName: string; lastName: string;
+  email?: string; status: "ACTIVE" | "INACTIVE" | "SUSPENDED"; createdAt: string;
   packagePurchases?: PackagePurchase[];
 }
-
-interface ReferralData {
-  directCount: number;
-  directReferrals: Referral[];
-}
+interface ReferralData { directCount: number; directReferrals: Referral[]; }
 
 const statusColors: Record<string, string> = {
   ACTIVE: "bg-green-500/20 text-green-400 border-green-500/30",
@@ -45,6 +26,7 @@ const statusColors: Record<string, string> = {
 };
 
 const TrackReferral = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState<ReferralData | null>(null);
   const [filteredReferrals, setFilteredReferrals] = useState<Referral[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -58,198 +40,110 @@ const TrackReferral = () => {
       setData(response.data);
       setFilteredReferrals(response.data.directReferrals || []);
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.response?.data?.message || "Failed to fetch referrals",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+      toast({ title: t("common.error"), description: error.response?.data?.message || t("reports.noReferrals"), variant: "destructive" });
+    } finally { setIsLoading(false); }
   };
 
-  useEffect(() => {
-    fetchReferrals();
-  }, []);
+  useEffect(() => { fetchReferrals(); }, []);
 
   useEffect(() => {
     if (!data?.directReferrals) return;
-
     const filtered = data.directReferrals.filter((referral) => {
       const query = searchQuery.toLowerCase();
-      return (
-        referral.memberId.toLowerCase().includes(query) ||
-        referral.firstName.toLowerCase().includes(query) ||
-        (referral.email && referral.email.toLowerCase().includes(query))
-      );
+      return referral.memberId.toLowerCase().includes(query) || referral.firstName.toLowerCase().includes(query) || (referral.email && referral.email.toLowerCase().includes(query));
     });
-
-    // Sort by latest joined
-    filtered.sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
-
+    filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     setFilteredReferrals(filtered);
   }, [searchQuery, data]);
 
-  const formatDate = (dateString: string) => {
-    try {
-      return format(new Date(dateString), "dd MMM yyyy");
-    } catch {
-      return dateString;
-    }
-  };
-
-  const getPackageCount = (referral: Referral) => {
-    if (referral.packagePurchases) {
-      return  referral.packagePurchases.length;
-    }
- 
-    return 0;
-  };
-
-  console.log(filteredReferrals);
+  const formatDate = (dateString: string) => { try { return format(new Date(dateString), "dd MMM yyyy"); } catch { return dateString; } };
+  const getPackageCount = (referral: Referral) => referral.packagePurchases?.length || 0;
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-bold text-foreground">Track Referral</h1>
-        <p className="text-muted-foreground">
-          View and manage your direct referrals
-        </p>
+        <h1 className="text-2xl font-bold text-foreground">{t("reports.trackReferral")}</h1>
+        <p className="text-muted-foreground">{t("reports.viewManageReferrals")}</p>
       </div>
 
-      {/* Summary Card */}
       <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
         <CardContent className="pt-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Total Direct Referrals</p>
-              {isLoading ? (
-                <Skeleton className="h-9 w-24 mt-1" />
-              ) : (
-                <p className="text-3xl font-bold text-foreground">
-                  {data?.directCount || 0}
-                </p>
-              )}
+              <p className="text-sm text-muted-foreground">{t("reports.totalDirectReferrals")}</p>
+              {isLoading ? <Skeleton className="h-9 w-24 mt-1" /> : <p className="text-3xl font-bold text-foreground">{data?.directCount || 0}</p>}
             </div>
-            <div className="h-16 w-16 rounded-full bg-primary/20 flex items-center justify-center">
-              <Users className="h-8 w-8 text-primary" />
-            </div>
+            <div className="h-16 w-16 rounded-full bg-primary/20 flex items-center justify-center"><Users className="h-8 w-8 text-primary" /></div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Search & Refresh */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search by Member ID, Name or Email..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
+          <Input placeholder={t("reports.searchByMemberIdNameEmail")} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
         </div>
         <Button variant="outline" onClick={fetchReferrals} disabled={isLoading}>
-          <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
-          Refresh
+          <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />{t("common.refresh")}
         </Button>
       </div>
 
-      {/* Referrals List */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <UserPlus size={18} />
-            Direct Referrals
-          </CardTitle>
+          <CardTitle className="text-lg flex items-center gap-2"><UserPlus size={18} />{t("reports.directReferrals")}</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="space-y-3">
-              {[...Array(5)].map((_, i) => (
-                <Skeleton key={i} className="h-16 w-full" />
-              ))}
-            </div>
+            <div className="space-y-3">{[...Array(5)].map((_, i) => <Skeleton key={i} className="h-16 w-full" />)}</div>
           ) : filteredReferrals.length > 0 ? (
             <>
-              {/* Desktop Table */}
               <div className="hidden md:block overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Member ID</TableHead>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Joined On</TableHead>
-                      <TableHead className="text-center">Active Packages</TableHead>
+                      <TableHead>{t("reports.memberIdCol")}</TableHead>
+                      <TableHead>{t("reports.name")}</TableHead>
+                      <TableHead>{t("reports.emailCol")}</TableHead>
+                      <TableHead>{t("common.status")}</TableHead>
+                      <TableHead>{t("reports.joinedOn")}</TableHead>
+                      <TableHead className="text-center">{t("reports.activePackages")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filteredReferrals.map((referral) => (
                       <TableRow key={referral.id}>
-                        <TableCell className="font-mono text-sm">
-                          {referral.memberId}
-                        </TableCell>
-                        <TableCell className="font-medium">
-                          {referral.firstName} {referral.lastName}
-                        </TableCell>
-                        <TableCell className="text-sm text-muted-foreground truncate max-w-xs">
-                          {referral.email || "-"}
-                        </TableCell>
+                        <TableCell className="font-mono text-sm">{referral.memberId}</TableCell>
+                        <TableCell className="font-medium">{referral.firstName} {referral.lastName}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground truncate max-w-xs">{referral.email || "-"}</TableCell>
                         <TableCell>
-                          <Badge
-                            variant="outline"
-                            className={statusColors[getPackageCount(referral) > 0 ? "ACTIVE" : "INACTIVE"] || ""}
-                          >
-                            {getPackageCount(referral) > 0 ? "Active" : "Inactive"}
+                          <Badge variant="outline" className={statusColors[getPackageCount(referral) > 0 ? "ACTIVE" : "INACTIVE"] || ""}>
+                            {getPackageCount(referral) > 0 ? t("common.active") : t("common.inactive")}
                           </Badge>
                         </TableCell>
                         <TableCell>{formatDate(referral.createdAt)}</TableCell>
                         <TableCell className="text-center">
-                          <Badge variant="secondary">
-                            <Package className="h-3 w-3 mr-1" />
-                            {getPackageCount(referral)}
-                          </Badge>
+                          <Badge variant="secondary"><Package className="h-3 w-3 mr-1" />{getPackageCount(referral)}</Badge>
                         </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </div>
-
-              {/* Mobile Cards */}
               <div className="md:hidden space-y-3">
                 {filteredReferrals.map((referral) => (
-                  <div
-                    key={referral.id}
-                    className="p-4 rounded-lg border border-border bg-card/50"
-                  >
+                  <div key={referral.id} className="p-4 rounded-lg border border-border bg-card/50">
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <p className="font-medium text-foreground">{referral.firstName} {referral.lastName}</p>
-                        <p className="text-sm text-muted-foreground font-mono">
-                          {referral.memberId}
-                        </p>
+                        <p className="text-sm text-muted-foreground font-mono">{referral.memberId}</p>
                       </div>
-                      <Badge
-                        variant="outline"
-                        className={statusColors[referral.status] || ""}
-                      >
-                        {referral.status}
+                      <Badge variant="outline" className={statusColors[getPackageCount(referral) > 0 ? "ACTIVE" : "INACTIVE"] || ""}>
+                        {getPackageCount(referral) > 0 ? t("common.active") : t("common.inactive")}
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center text-sm">
-                      <span className="text-muted-foreground">
-                        Joined: {formatDate(referral.createdAt)}
-                      </span>
-                      <Badge variant="secondary">
-                        <Package className="h-3 w-3 mr-1" />
-                        {getPackageCount(referral)} packages
-                      </Badge>
+                      <span className="text-muted-foreground">{t("reports.joinedOn")}: {formatDate(referral.createdAt)}</span>
+                      <Badge variant="secondary"><Package className="h-3 w-3 mr-1" />{getPackageCount(referral)} {t("reports.packages")}</Badge>
                     </div>
                   </div>
                 ))}
@@ -258,12 +152,8 @@ const TrackReferral = () => {
           ) : (
             <div className="py-12 text-center text-muted-foreground">
               <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p className="text-lg font-medium">No referrals found</p>
-              <p className="text-sm">
-                {searchQuery
-                  ? "Try adjusting your search query"
-                  : "Start referring members to see them here"}
-              </p>
+              <p className="text-lg font-medium">{t("reports.noReferrals")}</p>
+              <p className="text-sm">{searchQuery ? t("reports.adjustSearch") : t("reports.startReferring")}</p>
             </div>
           )}
         </CardContent>

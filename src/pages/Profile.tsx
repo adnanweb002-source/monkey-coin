@@ -85,7 +85,7 @@ type ChangeEmailData = z.infer<typeof changeEmailSchema>;
 
 const Profile = () => {
   const { toast } = useToast();
-  const {t} = useTranslation()
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const location = useLocation();
   const navigate = useNavigate();
@@ -94,11 +94,9 @@ const Profile = () => {
   const [countrySearch, setCountrySearch] = useState("");
   const [change2FAOpen, setChange2FAOpen] = useState(false);
 
-  // Handle navigation state for opening specific tabs
   useEffect(() => {
     if (location.state?.openTab === "security") {
       setActiveTab("security");
-      // Clear the state so it doesn't persist
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
@@ -151,37 +149,22 @@ const Profile = () => {
   const updateProfileMutation = useMutation({
     mutationFn: async (data: UpdateProfileData) => {
       const payload: Record<string, string> = {};
-
-      if (data.firstName && data.firstName !== profile?.firstName) {
-        payload.firstName = data.firstName;
-      }
-      if (data.lastName && data.lastName !== profile?.lastName) {
-        payload.lastName = data.lastName;
-      }
-      if (data.country && data.country !== profile?.country) {
-        payload.country = data.country;
-      }
-      if (data.phoneNumber && data.phoneNumber !== profile?.phoneNumber) {
-        payload.phoneNumber = data.phoneNumber;
-      }
-      if (data.email && data.email !== profile?.email) {
-        payload.email = data.email;
-      }
-
-      if (Object.keys(payload).length === 0) {
-        throw new Error("No changes made");
-      }
-
+      if (data.firstName && data.firstName !== profile?.firstName) payload.firstName = data.firstName;
+      if (data.lastName && data.lastName !== profile?.lastName) payload.lastName = data.lastName;
+      if (data.country && data.country !== profile?.country) payload.country = data.country;
+      if (data.phoneNumber && data.phoneNumber !== profile?.phoneNumber) payload.phoneNumber = data.phoneNumber;
+      if (data.email && data.email !== profile?.email) payload.email = data.email;
+      if (Object.keys(payload).length === 0) throw new Error("No changes made");
       const res = await api.post("/auth/update-user-profile", payload);
       return res.data;
     },
     onSuccess: () => {
-      toast({ title: "Success", description: "Profile updated successfully" });
+      toast({ title: t("common.success"), description: t("profile.profileUpdated") });
       queryClient.invalidateQueries({ queryKey: ["userProfile"] });
     },
     onError: (err: any) => {
       toast({
-        title: "Error",
+        title: t("common.error"),
         description: err.message || err.response?.data?.message,
         variant: "destructive",
       });
@@ -194,21 +177,18 @@ const Profile = () => {
         oldPassword: data.oldPassword,
         newPassword: data.newPassword,
       };
-      if (data.twoFactorCode) {
-        payload.twoFactorCode = data.twoFactorCode;
-      }
+      if (data.twoFactorCode) payload.twoFactorCode = data.twoFactorCode;
       const response = await api.post("/auth/change-password", payload);
       return response.data;
     },
     onSuccess: () => {
-      toast({ title: "Success", description: "Password changed successfully" });
+      toast({ title: t("common.success"), description: t("profile.passwordChanged") });
       passwordForm.reset();
     },
     onError: (error: any) => {
       toast({
-        title: "Error",
-        description:
-          error.response?.data?.message || "Failed to change password",
+        title: t("common.error"),
+        description: error.response?.data?.message || t("profile.failedToChangePassword"),
         variant: "destructive",
       });
     },
@@ -217,21 +197,19 @@ const Profile = () => {
   const changeEmailMutation = useMutation({
     mutationFn: async (data: ChangeEmailData) => {
       const payload: Record<string, string> = { newEmail: data.email };
-      if (data.twoFactorCode) {
-        payload.twoFactorCode = data.twoFactorCode;
-      }
+      if (data.twoFactorCode) payload.twoFactorCode = data.twoFactorCode;
       const response = await api.post("/auth/change-email", payload);
       return response.data;
     },
     onSuccess: () => {
-      toast({ title: "Success", description: "Email changed successfully" });
+      toast({ title: t("common.success"), description: t("profile.emailChanged") });
       emailForm.reset();
       queryClient.invalidateQueries({ queryKey: ["userProfile"] });
     },
     onError: (error: any) => {
       toast({
-        title: "Error",
-        description: error.response?.data?.message || "Failed to change email",
+        title: t("common.error"),
+        description: error.response?.data?.message || t("profile.failedToChangeEmail"),
         variant: "destructive",
       });
     },
@@ -245,9 +223,7 @@ const Profile = () => {
 
   useEffect(() => {
     const close = () => setCountryOpen(false);
-    if (countryOpen) {
-      window.addEventListener("click", close);
-    }
+    if (countryOpen) window.addEventListener("click", close);
     return () => window.removeEventListener("click", close);
   }, [countryOpen]);
 
@@ -262,7 +238,7 @@ const Profile = () => {
   if (profileError) {
     return (
       <div className="text-center py-12">
-        <p className="text-destructive">Failed to load profile</p>
+        <p className="text-destructive">{t("profile.failedToLoadProfile")}</p>
       </div>
     );
   }
@@ -276,9 +252,7 @@ const Profile = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-foreground">{t("profile.title")}</h1>
-        <p className="text-muted-foreground">
-          {t("profile.manageSettings")}
-        </p>
+        <p className="text-muted-foreground">{t("profile.manageSettings")}</p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -302,20 +276,15 @@ const Profile = () => {
               <CardDescription>{t("profile.accountDetails")}</CardDescription>
             </CardHeader>
             <CardContent>
-              {/* Profile Avatar Display */}
               <div className="flex items-center gap-4 mb-6 pb-6 border-b border-border">
                 <UserAvatar avatarId={profile?.avatarId} size="xl" />
                 <div>
                   <p className="font-semibold text-lg text-foreground">
                     {profile?.firstName} {profile?.lastName}
                   </p>
-                  <p className="text-sm text-muted-foreground">
-                    {profile?.email}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{profile?.email}</p>
                   <Badge
-                    variant={
-                      profile?.status === "ACTIVE" ? "default" : "destructive"
-                    }
+                    variant={profile?.status === "ACTIVE" ? "default" : "destructive"}
                     className="mt-1"
                   >
                     {profile?.status || "N/A"}
@@ -325,72 +294,43 @@ const Profile = () => {
               <form onSubmit={handleSubmit((data) => updateProfileMutation.mutate(data))}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-1">
-                  <Label className="text-muted-foreground text-sm">
-                    First Name
-                  </Label>
-                  <Input
-                    placeholder={profile?.firstName || "N/A"}
-                    {...register("firstName")}
-                  />
+                  <Label className="text-muted-foreground text-sm">{t("profile.firstName")}</Label>
+                  <Input placeholder={profile?.firstName || "N/A"} {...register("firstName")} />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-muted-foreground text-sm">
-                    Last Name
-                  </Label>
-                  <Input
-                    placeholder={profile?.lastName || "N/A"}
-                    {...register("lastName")}
-                  />
+                  <Label className="text-muted-foreground text-sm">{t("profile.lastName")}</Label>
+                  <Input placeholder={profile?.lastName || "N/A"} {...register("lastName")} />
                 </div>
                 <div className="space-y-1">
                   <Label className="text-muted-foreground text-sm flex items-center gap-1">
-                    <Phone size={14} /> Email
+                    <Phone size={14} /> {t("profile.email")}
                   </Label>
-                  <Input
-                    type="email"
-                    placeholder={profile?.email || "N/A"}
-                    {...register("email")}
-                  />
+                  <Input type="email" placeholder={profile?.email || "N/A"} {...register("email")} />
                 </div>
                 <div className="space-y-1">
                   <Label className="text-muted-foreground text-sm flex items-center gap-1">
-                    <Phone size={14} /> Phone
+                    <Phone size={14} /> {t("profile.phone")}
                   </Label>
-                  <Input
-                    placeholder={profile?.phoneNumber || "N/A"}
-                    {...register("phoneNumber")}
-                  />
+                  <Input placeholder={profile?.phoneNumber || "N/A"} {...register("phoneNumber")} />
                 </div>
                 <div className="space-y-1">
                   <Label className="text-muted-foreground text-sm flex items-center gap-1">
-                    <Hash size={14} /> Member ID
+                    <Hash size={14} /> {t("profile.memberId")}
                   </Label>
-                  <p className="font-medium font-mono">
-                    {profile?.memberId || "N/A"}
-                  </p>
+                  <p className="font-medium font-mono">{profile?.memberId || "N/A"}</p>
                 </div>
 
                 <div className="space-y-1 relative">
                   <Label className="text-muted-foreground text-sm flex items-center gap-1">
-                    <Globe size={14} /> Country
+                    <Globe size={14} /> {t("profile.country")}
                   </Label>
-
                   <button
                     type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setCountryOpen((prev) => !prev);
-                    }}
+                    onClick={(e) => { e.stopPropagation(); setCountryOpen((prev) => !prev); }}
                     className="crypto-input w-full text-left flex items-center justify-between"
                   >
-                    <span
-                      className={
-                        selectedCountry
-                          ? "text-foreground"
-                          : "text-muted-foreground"
-                      }
-                    >
-                      {selectedCountry || profile?.country || "Select country"}
+                    <span className={selectedCountry ? "text-foreground" : "text-muted-foreground"}>
+                      {selectedCountry || profile?.country || t("profile.selectCountry")}
                     </span>
                     <ChevronDown className="w-4 h-4 text-muted-foreground" />
                   </button>
@@ -400,122 +340,80 @@ const Profile = () => {
                       className="absolute z-50 mt-1 w-full rounded-lg border border-border bg-popover shadow-lg max-h-60 overflow-hidden"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      {/* Search */}
                       <div className="flex items-center gap-2 px-3 py-2 border-b border-border">
                         <Search className="w-4 h-4 text-muted-foreground" />
                         <input
                           type="text"
-                          placeholder="Search country..."
+                          placeholder={t("profile.searchCountry")}
                           className="w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
                           value={countrySearch}
                           onChange={(e) => setCountrySearch(e.target.value)}
                           autoFocus
                         />
                       </div>
-
-                      {/* List */}
                       <div className="max-h-48 overflow-y-auto">
                         {filteredCountries.map((c) => (
                           <button
                             key={c.code}
                             type="button"
                             className={`w-full text-left px-3 py-2 text-sm flex justify-between items-center ${
-                              selectedCountry === c.name
-                                ? "bg-accent"
-                                : "hover:bg-accent/50"
+                              selectedCountry === c.name ? "bg-accent" : "hover:bg-accent/50"
                             }`}
                             onClick={() => {
-                              setValue("country", c.name, {
-                                shouldValidate: true,
-                              });
-
-                              // update phone with dial code
+                              setValue("country", c.name, { shouldValidate: true });
                               const currentPhone = watch("phoneNumber") || "";
-                              const phoneWithoutCode = currentPhone.replace(
-                                /^\+[\d-]+\s?/,
-                                "",
-                              );
-
-                              setValue(
-                                "phoneNumber",
-                                `${c.dialCode} ${phoneWithoutCode}`.trim(),
-                                { shouldValidate: true },
-                              );
-
+                              const phoneWithoutCode = currentPhone.replace(/^\+[\d-]+\s?/, "");
+                              setValue("phoneNumber", `${c.dialCode} ${phoneWithoutCode}`.trim(), { shouldValidate: true });
                               setCountryOpen(false);
                               setCountrySearch("");
                             }}
                           >
                             <span>{c.name}</span>
-                            <span className="text-muted-foreground text-xs">
-                              {c.dialCode}
-                            </span>
+                            <span className="text-muted-foreground text-xs">{c.dialCode}</span>
                           </button>
                         ))}
-
                         {filteredCountries.length === 0 && (
-                          <p className="px-3 py-2 text-sm text-muted-foreground">
-                            No countries found
-                          </p>
+                          <p className="px-3 py-2 text-sm text-muted-foreground">{t("profile.noCountriesFound")}</p>
                         )}
                       </div>
                     </div>
                   )}
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-muted-foreground text-sm">
-                    Status
-                  </Label>
+                  <Label className="text-muted-foreground text-sm">{t("profile.status")}</Label>
                   <div>
-                    <Badge
-                      variant={
-                        profile?.status === "ACTIVE" ? "default" : "destructive"
-                      }
-                    >
+                    <Badge variant={profile?.status === "ACTIVE" ? "default" : "destructive"}>
                       {profile?.status || "N/A"}
                     </Badge>
                   </div>
                 </div>
                 <div className="space-y-1">
                   <Label className="text-muted-foreground text-sm flex items-center gap-1">
-                    <Shield size={14} /> Role
+                    <Shield size={14} /> {t("profile.role")}
                   </Label>
                   <div>
-                    <Badge
-                      variant={
-                        profile?.role === "ADMIN" ? "secondary" : "outline"
-                      }
-                    >
+                    <Badge variant={profile?.role === "ADMIN" ? "secondary" : "outline"}>
                       {profile?.role || "USER"}
                     </Badge>
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-muted-foreground text-sm">
-                    2FA Enabled
-                  </Label>
+                  <Label className="text-muted-foreground text-sm">{t("profile.twoFAEnabled")}</Label>
                   <div>
-                    <Badge
-                      variant={profile?.isG2faEnabled ? "default" : "outline"}
-                    >
-                      {profile?.isG2faEnabled ? "Enabled" : "Disabled"}
+                    <Badge variant={profile?.isG2faEnabled ? "default" : "outline"}>
+                      {profile?.isG2faEnabled ? t("common.enabled") : t("common.disabled")}
                     </Badge>
                   </div>
                 </div>
                 <div className="flex justify-end md:col-span-2">
-                  <Button
-                    type="submit"
-                    disabled={
-                      updateProfileMutation.isPending || !formState.isDirty
-                    }
-                  >
+                  <Button type="submit" disabled={updateProfileMutation.isPending || !formState.isDirty}>
                     {updateProfileMutation.isPending ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Updating...
+                        {t("profile.updating")}
                       </>
                     ) : (
-                      "Update Profile"
+                      t("profile.updateProfile")
                     )}
                   </Button>
                 </div>
@@ -530,17 +428,15 @@ const Profile = () => {
           <AvatarSelector currentAvatarId={profile?.avatarId} />
         </TabsContent>
 
-        {/* Security Tab - 2FA Setup */}
+        {/* Security Tab */}
         <TabsContent value="security" className="space-y-4 mt-6">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Shield size={20} />
-                Two-Factor Authentication
+                {t("profile.twoFactorAuth")}
               </CardTitle>
-              <CardDescription>
-                Add an extra layer of security to your account
-              </CardDescription>
+              <CardDescription>{t("profile.addExtraLayer")}</CardDescription>
             </CardHeader>
             <CardContent>
               {profile?.isG2faEnabled ? (
@@ -548,45 +444,29 @@ const Profile = () => {
                   <div className="flex items-center gap-3 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
                     <Shield className="h-6 w-6 text-green-600 dark:text-green-500" />
                     <div>
-                      <p className="font-medium text-green-700 dark:text-green-400">
-                        2FA is Enabled
-                      </p>
-                      <p className="text-sm text-green-600 dark:text-green-500">
-                        Your account is protected with two-factor authentication.
-                      </p>
+                      <p className="font-medium text-green-700 dark:text-green-400">{t("profile.twoFAIsEnabled")}</p>
+                      <p className="text-sm text-green-600 dark:text-green-500">{t("profile.accountProtected")}</p>
                     </div>
                   </div>
-
-                  {/* Change 2FA */}
                   <div className="space-y-2">
                     <Button onClick={() => setChange2FAOpen(true)} className="w-full sm:w-auto">
                       <Shield className="h-4 w-4 mr-2" />
-                      Change 2FA
+                      {t("profile.change2FA")}
                     </Button>
                   </div>
-
-                  {/* Reset 2FA */}
                   <div className="border-t border-border pt-4 space-y-2">
-                    <h4 className="text-sm font-medium text-foreground">Reset 2FA</h4>
-                    <p className="text-sm text-muted-foreground">
-                      If you still have access, you can reset your 2FA directly.
-                    </p>
-                    <Button
-                      variant="outline"
-                      onClick={() => navigate("/request-2fa-reset")}
-                      className="w-full sm:w-auto"
-                    >
-                      Reset 2FA
+                    <h4 className="text-sm font-medium text-foreground">{t("profile.reset2FA")}</h4>
+                    <p className="text-sm text-muted-foreground">{t("profile.reset2FAHelper")}</p>
+                    <Button variant="outline" onClick={() => navigate("/request-2fa-reset")} className="w-full sm:w-auto">
+                      {t("profile.reset2FA")}
                     </Button>
                   </div>
-
-                  {/* Admin Fallback */}
                   <div className="pt-2">
                     <button
                       onClick={() => navigate("/2fa-reset-request-for-admin")}
                       className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
                     >
-                      Lost access to both authenticator and email?
+                      {t("profile.lostBothAccess")}
                     </button>
                   </div>
                 </div>
@@ -595,145 +475,104 @@ const Profile = () => {
                   <div className="flex items-start gap-3 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
                     <AlertTriangle className="h-6 w-6 text-yellow-600 dark:text-yellow-500 shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-medium text-yellow-700 dark:text-yellow-400">
-                        2FA is Not Enabled
-                      </p>
-                      <p className="text-sm text-yellow-600 dark:text-yellow-500">
-                        Your account is not protected with two-factor authentication. We strongly recommend enabling 2FA to secure your account.
-                      </p>
+                      <p className="font-medium text-yellow-700 dark:text-yellow-400">{t("profile.twoFANotEnabled")}</p>
+                      <p className="text-sm text-yellow-600 dark:text-yellow-500">{t("profile.twoFANotEnabledDesc")}</p>
                     </div>
                   </div>
-                  <Button
-                    onClick={() => navigate("/security/2fa/setup")}
-                    className="w-full sm:w-auto"
-                  >
+                  <Button onClick={() => navigate("/security/2fa/setup")} className="w-full sm:w-auto">
                     <Shield className="h-4 w-4 mr-2" />
-                    Setup Two-Factor Authentication
+                    {t("profile.setup2FA")}
                   </Button>
                 </div>
               )}
             </CardContent>
           </Card>
-
           <Change2FAModal open={change2FAOpen} onOpenChange={setChange2FAOpen} />
         </TabsContent>
 
         {/* Settings Tab */}
         <TabsContent value="settings" className="space-y-4 mt-6">
-          {/* Change Password */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Lock size={20} />
-                Change Password
+                {t("profile.changePassword")}
               </CardTitle>
-              <CardDescription>Update your account password</CardDescription>
+              <CardDescription>{t("profile.updatePassword")}</CardDescription>
             </CardHeader>
             <CardContent>
               <form
-                onSubmit={passwordForm.handleSubmit((data) =>
-                  changePasswordMutation.mutate(data),
-                )}
+                onSubmit={passwordForm.handleSubmit((data) => changePasswordMutation.mutate(data))}
                 className="space-y-4 max-w-md"
               >
                 <div className="space-y-2">
-                  <Label>Current Password</Label>
-                  <Input
-                    type="password"
-                    placeholder="Enter current password"
-                    {...passwordForm.register("oldPassword")}
-                  />
+                  <Label>{t("profile.currentPassword")}</Label>
+                  <Input type="password" placeholder={t("profile.enterCurrentPassword")} {...passwordForm.register("oldPassword")} />
                   {passwordForm.formState.errors.oldPassword && (
-                    <p className="text-destructive text-sm">
-                      {passwordForm.formState.errors.oldPassword.message}
-                    </p>
+                    <p className="text-destructive text-sm">{passwordForm.formState.errors.oldPassword.message}</p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label>New Password</Label>
-                  <Input
-                    type="password"
-                    placeholder="Enter new password"
-                    {...passwordForm.register("newPassword")}
-                  />
+                  <Label>{t("profile.newPassword")}</Label>
+                  <Input type="password" placeholder={t("profile.enterNewPassword")} {...passwordForm.register("newPassword")} />
                   {passwordForm.formState.errors.newPassword && (
-                    <p className="text-destructive text-sm">
-                      {passwordForm.formState.errors.newPassword.message}
-                    </p>
+                    <p className="text-destructive text-sm">{passwordForm.formState.errors.newPassword.message}</p>
                   )}
                 </div>
                 {profile?.isG2faEnabled && (
                   <div className="space-y-2">
-                    <Label>2FA Code (if enabled)</Label>
-                    <Input
-                      placeholder="Enter 2FA code"
-                      {...passwordForm.register("twoFactorCode")}
-                    />
+                    <Label>{t("profile.twoFACodeIfEnabled")}</Label>
+                    <Input placeholder={t("profile.enter2FACode")} {...passwordForm.register("twoFactorCode")} />
                   </div>
                 )}
-                <Button
-                  type="submit"
-                  disabled={changePasswordMutation.isPending}
-                >
+                <Button type="submit" disabled={changePasswordMutation.isPending}>
                   {changePasswordMutation.isPending ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Updating...
+                      {t("profile.updating")}
                     </>
                   ) : (
-                    "Change Password"
+                    t("profile.changePassword")
                   )}
                 </Button>
               </form>
             </CardContent>
           </Card>
 
-          {/* Change Email */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Mail size={20} />
-                Change Email
+                {t("profile.changeEmail")}
               </CardTitle>
-              <CardDescription>Update your email address</CardDescription>
+              <CardDescription>{t("profile.updateEmail")}</CardDescription>
             </CardHeader>
             <CardContent>
               <form
-                onSubmit={emailForm.handleSubmit((data) =>
-                  changeEmailMutation.mutate(data),
-                )}
+                onSubmit={emailForm.handleSubmit((data) => changeEmailMutation.mutate(data))}
                 className="space-y-4 max-w-md"
               >
                 <div className="space-y-2">
-                  <Label>New Email</Label>
-                  <Input
-                    type="email"
-                    placeholder="Enter new email"
-                    {...emailForm.register("email")}
-                  />
+                  <Label>{t("profile.newEmail")}</Label>
+                  <Input type="email" placeholder={t("profile.enterNewEmail")} {...emailForm.register("email")} />
                   {emailForm.formState.errors.email && (
-                    <p className="text-destructive text-sm">
-                      {emailForm.formState.errors.email.message}
-                    </p>
+                    <p className="text-destructive text-sm">{emailForm.formState.errors.email.message}</p>
                   )}
                 </div>
                 {profile?.isG2faEnabled && (
                   <div className="space-y-2">
-                    <Label>2FA Code (if enabled)</Label>
-                    <Input
-                      placeholder="Enter 2FA code"
-                      {...emailForm.register("twoFactorCode")}
-                    />
+                    <Label>{t("profile.twoFACodeIfEnabled")}</Label>
+                    <Input placeholder={t("profile.enter2FACode")} {...emailForm.register("twoFactorCode")} />
                   </div>
                 )}
                 <Button type="submit" disabled={changeEmailMutation.isPending}>
                   {changeEmailMutation.isPending ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Updating...
+                      {t("profile.updating")}
                     </>
                   ) : (
-                    "Change Email"
+                    t("profile.changeEmail")
                   )}
                 </Button>
               </form>
@@ -752,11 +591,9 @@ const Profile = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Package size={20} />
-                My Packages
+                {t("profile.myPackages")}
               </CardTitle>
-              <CardDescription>
-                Your purchased investment packages
-              </CardDescription>
+              <CardDescription>{t("profile.purchasedPackages")}</CardDescription>
             </CardHeader>
             <CardContent>
               {packagesLoading ? (
@@ -766,67 +603,44 @@ const Profile = () => {
               ) : packages.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
                   <Package size={48} className="mx-auto mb-4 opacity-50" />
-                  <p>No packages purchased yet</p>
+                  <p>{t("profile.noPackagesPurchased")}</p>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {packages.map((purchase) => (
-                    <div
-                      key={purchase.id}
-                      className="border border-border rounded-lg p-4 space-y-3"
-                    >
+                    <div key={purchase.id} className="border border-border rounded-lg p-4 space-y-3">
                       <div className="flex items-center justify-between flex-wrap gap-2">
-                        <h4 className="font-semibold text-foreground">
-                          {purchase.package.name}
-                        </h4>
-                        <Badge
-                          variant={
-                            purchase.status === "ACTIVE"
-                              ? "default"
-                              : "secondary"
-                          }
-                        >
+                        <h4 className="font-semibold text-foreground">{purchase.package.name}</h4>
+                        <Badge variant={purchase.status === "ACTIVE" ? "default" : "secondary"}>
                           {purchase.status}
                         </Badge>
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                         <div>
-                          <p className="text-muted-foreground">
-                            Purchase Amount
-                          </p>
-                          <p className="font-medium">
-                            ${parseFloat(purchase.amount).toLocaleString()}
-                          </p>
+                          <p className="text-muted-foreground">{t("profile.purchaseAmount")}</p>
+                          <p className="font-medium">${parseFloat(purchase.amount).toLocaleString()}</p>
                         </div>
                         <div>
-                          <p className="text-muted-foreground">Daily Return</p>
-                          <p className="font-medium text-primary">
-                            {purchase.package.dailyReturnPct}%
-                          </p>
+                          <p className="text-muted-foreground">{t("profile.dailyReturn")}</p>
+                          <p className="font-medium text-primary">{purchase.package.dailyReturnPct}%</p>
                         </div>
                         <div>
-                          <p className="text-muted-foreground">Duration</p>
-                          <p className="font-medium">
-                            {purchase.package.durationDays} days
-                          </p>
+                          <p className="text-muted-foreground">{t("profile.duration")}</p>
+                          <p className="font-medium">{purchase.package.durationDays} {t("profile.days")}</p>
                         </div>
                         <div>
-                          <p className="text-muted-foreground">
-                            Capital Return
-                          </p>
-                          <p className="font-medium">
-                            {purchase.package.capitalReturn ? "Yes" : "No"}
-                          </p>
+                          <p className="text-muted-foreground">{t("profile.capitalReturn")}</p>
+                          <p className="font-medium">{purchase.package.capitalReturn ? t("common.yes") : t("common.no")}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground pt-2 border-t border-border">
                         <div className="flex items-center gap-1">
                           <Calendar size={14} />
-                          <span>Start: {formatDate(purchase.startDate)}</span>
+                          <span>{t("profile.start")}: {formatDate(purchase.startDate)}</span>
                         </div>
                         <div className="flex items-center gap-1">
                           <Calendar size={14} />
-                          <span>End: {formatDate(purchase.endDate)}</span>
+                          <span>{t("profile.end")}: {formatDate(purchase.endDate)}</span>
                         </div>
                       </div>
                     </div>

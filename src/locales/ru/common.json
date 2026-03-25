@@ -261,6 +261,7 @@
     "selectWithdrawalAddress": "Выберите адрес для вывода",
     "submitWithdrawal": "Подтвердить вывод",
     "withdrawalsLocked": "Вывод заблокирован",
+    "transferLocked": "Вывод заблокирован",
     "withdrawalsLockedMessage": "Пожалуйста, достигните назначенной цели, прежде чем подавать запрос на вывод.",
     "insufficientBalance": "Недостаточно средств",
     "insufficientBalanceDesc": "На вашем кошельке {{wallet}} недостаточно средств",

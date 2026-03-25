@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/api";
 import { Button } from "@/components/ui/button";
@@ -117,6 +117,8 @@ interface StatsResponse {
 }
 
 const AdminUsers = () => {
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(0);
   const [take] = useState(10);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -139,6 +141,18 @@ const AdminUsers = () => {
   const [isExporting, setIsExporting] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search.trim());
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
+    useEffect(() => {
+      setPage(0);
+    }, [debouncedSearch]);
 
   const handleExportUsers = async () => {
     setIsExporting(true);
@@ -220,11 +234,19 @@ const AdminUsers = () => {
   });
 
   const { data, isLoading, error } = useQuery<UsersResponse>({
-    queryKey: ["admin-users", page, take],
+    queryKey: ["admin-users", page, take, debouncedSearch],
     queryFn: async () => {
-      const response = await api.get(
-        `/admin/users/list?take=${take}&skip=${page * take}`,
-      );
+      const params = new URLSearchParams({
+        take: String(take),
+        skip: String(page * take),
+      });
+
+      if (debouncedSearch) {
+        params.append("memberId", debouncedSearch);
+      }
+
+      const response = await api.get(`/admin/users/list?${params.toString()}`);
+
       return response.data;
     },
   });
@@ -583,6 +605,7 @@ const AdminUsers = () => {
     }
   };
 
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -676,6 +699,21 @@ const AdminUsers = () => {
         </div>
       </div>
 
+      {/* ✅ SEARCH BAR */}
+      <div className="flex gap-2">
+        <Input
+          placeholder="Search by Member ID..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="max-w-sm"
+        />
+        {search && (
+          <Button variant="outline" onClick={() => setSearch("")}>
+            Reset
+          </Button>
+        )}
+      </div>
+
       <div className="bg-card rounded-lg border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
@@ -718,7 +756,9 @@ const AdminUsers = () => {
                     colSpan={11}
                     className="text-center text-muted-foreground py-12"
                   >
-                    No users found
+                    {debouncedSearch
+                      ? `No users found for "${debouncedSearch}"`
+                      : "No users found"}
                   </TableCell>
                 </TableRow>
               ) : (

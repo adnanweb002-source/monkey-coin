@@ -17,6 +17,8 @@ export interface TreeNode {
   rightBv?: number | string;
   activePackageCount?: number;
   avatarId?: string;
+  totalLeft: number;
+  totalRight: number;
 }
 
 export interface TreeApiParams {

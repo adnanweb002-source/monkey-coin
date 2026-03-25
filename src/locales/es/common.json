@@ -261,6 +261,7 @@
     "selectWithdrawalAddress": "Seleccionar dirección de retiro",
     "submitWithdrawal": "Enviar retiro",
     "withdrawalsLocked": "Retiros bloqueados",
+    "transferLocked": "Retiros bloqueados",
     "withdrawalsLockedMessage": "Por favor, alcanza el objetivo asignado antes de realizar una solicitud de retiro.",
     "insufficientBalance": "Saldo insuficiente",
     "insufficientBalanceDesc": "El saldo de tu {{wallet}} es insuficiente",

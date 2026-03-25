@@ -167,6 +167,55 @@ const MyTree = () => {
     }
   };
 
+   const handleExtremeLeftClick = async () => {
+
+    try {
+      const res = await api.get(
+        `/tree/search/extreme-left?rootUserId=${userId}`,
+      );
+
+      const foundUserId = res.data?.userId;
+
+      if (foundUserId) {
+        setCurrentRootId(foundUserId);
+
+        toast.success("User found", {
+          description: `Jumped to extreme left`,
+        });
+      } else {
+        toast.error("User not found in your tree");
+      }
+    } catch (err) {
+      console.log(err)
+      toast.error(err?.response?.data?.message || "User not found in your downline");
+    }
+  };
+
+
+     const handleExtremeRightClick = async () => {
+
+    try {
+      const res = await api.get(
+        `/tree/search/extreme-right?rootUserId=${userId}`,
+      );
+
+      const foundUserId = res.data?.userId;
+
+      if (foundUserId) {
+        setCurrentRootId(foundUserId);
+
+        toast.success("User found", {
+          description: `Jumped to extreme right`,
+        });
+      } else {
+        toast.error("User not found in your tree");
+      }
+    } catch (err) {
+      console.log(err)
+      toast.error(err?.response?.data?.message || "User not found in your downline");
+    }
+  };
+
   return (
     <div className="space-y-4 min-h-screen p-4">
       {/* Wallet Cards */}
@@ -185,14 +234,8 @@ const MyTree = () => {
         onSearchSubmit={handleSearch}
         extremeLeft={businessVolume.left}
         extremeRight={businessVolume.right}
-        onExtremeLeftClick={() => {
-          const node = getExtremeLeftNode(treeData || null);
-          if (node) setCurrentRootId(node.id);
-        }}
-        onExtremeRightClick={() => {
-          const node = getExtremeRightNode(treeData || null);
-          if (node) setCurrentRootId(node.id);
-        }}
+        onExtremeLeftClick={handleExtremeLeftClick}
+        onExtremeRightClick={handleExtremeRightClick}
         setCurrentRootId={setCurrentRootId}
         currentRootId={currentRootId}
         userId={userId}

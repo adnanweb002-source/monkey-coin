@@ -1,4 +1,11 @@
-import { useState, useRef, useEffect, useCallback, type MouseEvent as ReactMouseEvent, type TouchEvent as ReactTouchEvent } from "react";
+import {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  type MouseEvent as ReactMouseEvent,
+  type TouchEvent as ReactTouchEvent,
+} from "react";
 import { TreeNode } from "@/types/tree";
 import TreeNodeCard from "./TreeNodeCard";
 import TreeNodeContextMenu from "./TreeNodeContextMenu";
@@ -26,12 +33,12 @@ interface HoverState {
   nodeHeight: number;
 }
 
-const BinaryTreeView = ({ 
-  rootNode, 
-  onNodeClick, 
-  onAddUser, 
-  highlightedNodeIds, 
-  searchQuery 
+const BinaryTreeView = ({
+  rootNode,
+  onNodeClick,
+  onAddUser,
+  highlightedNodeIds,
+  searchQuery,
 }: BinaryTreeViewProps) => {
   const [selectedNodeId, setSelectedNodeId] = useState<number | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -48,7 +55,9 @@ const BinaryTreeView = ({
   const containerRef = useRef<HTMLDivElement>(null);
 
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const longPressTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const longPressTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
   const longPressTriggeredRef = useRef(false);
 
   useEffect(() => {
@@ -65,7 +74,7 @@ const BinaryTreeView = ({
   const openContextMenuAtNode = useCallback(
     (nodeId: number, point?: { x: number; y: number }) => {
       const el = containerRef.current?.querySelector(
-        `[data-node-id="${nodeId}"]`
+        `[data-node-id="${nodeId}"]`,
       ) as HTMLElement | null;
       if (!el) return;
 
@@ -80,10 +89,10 @@ const BinaryTreeView = ({
           cancelable: true,
           clientX,
           clientY,
-        })
+        }),
       );
     },
-    []
+    [],
   );
 
   const handleNodeClick = useCallback(
@@ -98,15 +107,22 @@ const BinaryTreeView = ({
 
       // Desktop click opens context menu near the node
       if (!isMobile) {
-        openContextMenuAtNode(node.id, e ? { x: e.clientX, y: e.clientY } : undefined);
+        openContextMenuAtNode(
+          node.id,
+          e ? { x: e.clientX, y: e.clientY } : undefined,
+        );
       }
     },
-    [isMobile, onNodeClick, openContextMenuAtNode]
+    [isMobile, onNodeClick, openContextMenuAtNode],
   );
 
   // Get position relative to the inner tree container using data attributes
-  const getNodePosition = (nodeId: number): { x: number; y: number; height: number } | null => {
-    const nodeElement = containerRef.current?.querySelector(`[data-node-id="${nodeId}"]`);
+  const getNodePosition = (
+    nodeId: number,
+  ): { x: number; y: number; height: number } | null => {
+    const nodeElement = containerRef.current?.querySelector(
+      `[data-node-id="${nodeId}"]`,
+    );
     if (!nodeElement || !containerRef.current) return null;
 
     const nodeRect = nodeElement.getBoundingClientRect();
@@ -140,7 +156,7 @@ const BinaryTreeView = ({
         }
       }, 120);
     },
-    [isMobile]
+    [isMobile],
   );
 
   const handleHoverEnd = useCallback(() => {
@@ -196,7 +212,7 @@ const BinaryTreeView = ({
         setTappedNodeId(node.id);
       }
     },
-    [isMobile, openContextMenuAtNode, tappedNodeId]
+    [isMobile, openContextMenuAtNode, tappedNodeId],
   );
 
   const handleTouchStart = useCallback(
@@ -220,7 +236,7 @@ const BinaryTreeView = ({
         openContextMenuAtNode(node.id, point);
       }, 520);
     },
-    [isMobile, openContextMenuAtNode]
+    [isMobile, openContextMenuAtNode],
   );
 
   const handleTouchEnd = useCallback(
@@ -239,7 +255,7 @@ const BinaryTreeView = ({
 
       handleMobileTap(node);
     },
-    [handleMobileTap, isMobile]
+    [handleMobileTap, isMobile],
   );
 
   const handleTouchCancel = useCallback(() => {
@@ -255,14 +271,20 @@ const BinaryTreeView = ({
     setTappedNodeId(null);
   }, []);
 
-  const getMaxDepth = (node: TreeNode | null, currentDepth: number = 0): number => {
+  const getMaxDepth = (
+    node: TreeNode | null,
+    currentDepth: number = 0,
+  ): number => {
     if (!node) return currentDepth;
     const leftDepth = getMaxDepth(node.leftChild, currentDepth + 1);
     const rightDepth = getMaxDepth(node.rightChild, currentDepth + 1);
     return Math.max(leftDepth, rightDepth);
   };
 
-  const getSubtreeWidth = (node: TreeNode | null, showAddPlaceholder: boolean = true): number => {
+  const getSubtreeWidth = (
+    node: TreeNode | null,
+    showAddPlaceholder: boolean = true,
+  ): number => {
     if (!node) {
       return showAddPlaceholder ? NODE_WIDTH : 0;
     }
@@ -271,7 +293,7 @@ const BinaryTreeView = ({
     const hasRight = node.rightChild !== null;
 
     if (!hasLeft && !hasRight) {
-      return (NODE_WIDTH * 2) + HORIZONTAL_SPACING;
+      return NODE_WIDTH * 2 + HORIZONTAL_SPACING;
     }
 
     const leftWidth = getSubtreeWidth(node.leftChild, !hasLeft);
@@ -285,7 +307,7 @@ const BinaryTreeView = ({
     startX: number,
     startY: number,
     endX: number,
-    endY: number
+    endY: number,
   ) => {
     const midY = startY + (endY - startY) * 0.5;
     const radius = 6;
@@ -337,12 +359,20 @@ const BinaryTreeView = ({
     parentId?: number,
     parentMemberId?: string,
     position?: "LEFT" | "RIGHT",
-    isPlaceholder: boolean = false
+    isPlaceholder: boolean = false,
+    totalLeft?: number,
+    totalRight?: number,
   ): { elements: React.ReactNode[]; connectors: React.ReactNode[] } => {
     const elements: React.ReactNode[] = [];
     const connectors: React.ReactNode[] = [];
 
-    if (isPlaceholder && parentId !== undefined && position) {
+    if (
+      isPlaceholder &&
+      parentId !== undefined &&
+      position &&
+      ((position === "LEFT" && totalLeft === 0) ||
+        (position === "RIGHT" && totalRight === 0))
+    ) {
       elements.push(
         <div
           key={`add-${parentId}-${position}`}
@@ -358,7 +388,7 @@ const BinaryTreeView = ({
             parentMemberId={parentMemberId}
             onClick={() => onAddUser?.(parentMemberId, position)}
           />
-        </div>
+        </div>,
       );
       return { elements, connectors };
     }
@@ -368,7 +398,11 @@ const BinaryTreeView = ({
     }
 
     elements.push(
-      <TreeNodeContextMenu key={`menu-${node.id}`} node={node} isAdmin={isAdmin}>
+      <TreeNodeContextMenu
+        key={`menu-${node.id}`}
+        node={node}
+        isAdmin={isAdmin}
+      >
         <div
           className="absolute"
           data-node-id={node.id}
@@ -391,58 +425,101 @@ const BinaryTreeView = ({
             onClick={(e) => handleNodeClick(node, e)}
           />
         </div>
-      </TreeNodeContextMenu>
+      </TreeNodeContextMenu>,
     );
 
     const hasLeft = node.leftChild !== null;
     const hasRight = node.rightChild !== null;
 
     const childY = y + NODE_HEIGHT + VERTICAL_SPACING;
-    
+
     const leftSubtreeWidth = getSubtreeWidth(node.leftChild, !hasLeft);
     const rightSubtreeWidth = getSubtreeWidth(node.rightChild, !hasRight);
-    
-    const totalWidth = leftSubtreeWidth + HORIZONTAL_SPACING + rightSubtreeWidth;
+
+    const totalWidth =
+      leftSubtreeWidth + HORIZONTAL_SPACING + rightSubtreeWidth;
     const leftCenterX = x - totalWidth / 2 + leftSubtreeWidth / 2;
     const rightCenterX = x + totalWidth / 2 - rightSubtreeWidth / 2;
 
-    // Add connectors
-    const leftConnector = renderConnector(
-      x,
-      y + NODE_HEIGHT,
-      leftCenterX,
-      childY
-    );
-    connectors.push(
-      <g key={`connector-left-${node.id}`}>{leftConnector}</g>
-    );
+    const shouldRenderLeftPlaceholder = !hasLeft && (node.totalLeft ?? 0) === 0;
+    const shouldRenderRightPlaceholder =
+      !hasRight && (node.totalRight ?? 0) === 0;
 
-    const rightConnector = renderConnector(
-      x,
-      y + NODE_HEIGHT,
-      rightCenterX,
-      childY
-    );
-    connectors.push(
-      <g key={`connector-right-${node.id}`}>{rightConnector}</g>
-    );
+    const showLeftConnector = hasLeft || shouldRenderLeftPlaceholder;
+    const showRightConnector = hasRight || shouldRenderRightPlaceholder;
+
+    // Add connectors
+    if (showLeftConnector) {
+      const leftConnector = renderConnector(
+        x,
+        y + NODE_HEIGHT,
+        leftCenterX,
+        childY,
+      );
+      connectors.push(<g key={`connector-left-${node.id}`}>{leftConnector}</g>);
+    }
+    if (showRightConnector) {
+      const rightConnector = renderConnector(
+        x,
+        y + NODE_HEIGHT,
+        rightCenterX,
+        childY,
+      );
+      connectors.push(
+        <g key={`connector-right-${node.id}`}>{rightConnector}</g>,
+      );
+    }
 
     // Render children
     if (hasLeft) {
-      const leftResult = renderNode(node.leftChild, leftCenterX, childY, node.id, node.memberId, "LEFT");
+      const leftResult = renderNode(
+        node.leftChild,
+        leftCenterX,
+        childY,
+        node.id,
+        node.memberId,
+        "LEFT",
+      );
       elements.push(...leftResult.elements);
       connectors.push(...leftResult.connectors);
     } else {
-      const leftResult = renderNode(null, leftCenterX, childY, node.id, node.memberId, "LEFT", true);
+      const leftResult = renderNode(
+        null,
+        leftCenterX,
+        childY,
+        node.id,
+        node.memberId,
+        "LEFT",
+        true,
+        node.totalLeft,
+        node.totalRight,
+      );
       elements.push(...leftResult.elements);
     }
 
     if (hasRight) {
-      const rightResult = renderNode(node.rightChild, rightCenterX, childY, node.id, node.memberId, "RIGHT");
+      const rightResult = renderNode(
+        node.rightChild,
+        rightCenterX,
+        childY,
+        node.id,
+        node.memberId,
+        "RIGHT",
+      );
       elements.push(...rightResult.elements);
       connectors.push(...rightResult.connectors);
     } else {
-      const rightResult = renderNode(null, rightCenterX, childY, node.id, node.memberId, "RIGHT", true);
+      const rightResult = renderNode(
+        null,
+        rightCenterX,
+        childY,
+        node.id,
+        node.memberId,
+        "RIGHT",
+        true,
+        node.totalLeft,
+        node.totalRight,
+      );
       elements.push(...rightResult.elements);
     }
 
@@ -467,13 +544,11 @@ const BinaryTreeView = ({
   const { elements, connectors } = renderNode(rootNode, startX, startY);
 
   return (
-    <div 
-      className="w-full flex justify-center relative"
-    >
-      <div 
+    <div className="w-full flex justify-center relative">
+      <div
         ref={containerRef}
         className="relative"
-        style={{ 
+        style={{
           width: treeWidth + 80,
           height: treeHeight,
         }}
@@ -491,7 +566,7 @@ const BinaryTreeView = ({
 
         {/* Hover Details Popup */}
         {hoverState.node && (
-          <div 
+          <div
             onMouseEnter={handlePopupMouseEnter}
             onMouseLeave={handlePopupMouseLeave}
           >

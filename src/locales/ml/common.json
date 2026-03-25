@@ -261,6 +261,7 @@
     "selectWithdrawalAddress": "പിൻവലിക്കൽ വിലാസം തിരഞ്ഞെടുക്കുക",
     "submitWithdrawal": "പിൻവലിക്കൽ സമർപ്പിക്കുക",
     "withdrawalsLocked": "പിൻവലിക്കൽ ലോക്ക് ചെയ്തിരിക്കുന്നു",
+    "transferLocked":  "പിൻവലിക്കൽ ലോക്ക് ചെയ്തിരിക്കുന്നു",
     "withdrawalsLockedMessage": "പിൻവലിക്കൽ അഭ്യർത്ഥിക്കുന്നതിന് മുമ്പ് നിങ്ങളുടെ ടാർഗെറ്റ് പൂർത്തിയാക്കുക.",
     "insufficientBalance": "ബാലൻസ് തികയുന്നില്ല",
     "insufficientBalanceDesc": "നിങ്ങളുടെ {{wallet}} ബാലൻസ് അപര്യാപ്തമാണ്",

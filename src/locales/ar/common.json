@@ -261,6 +261,7 @@
     "selectWithdrawalAddress": "اختر عنوان السحب",
     "submitWithdrawal": "إرسال طلب السحب",
     "withdrawalsLocked": "السحب مغلق",
+    "transferLocked": "السحب مغلق",
     "withdrawalsLockedMessage": "يرجى الوصول إلى هدفك المحدد قبل تقديم طلب سحب.",
     "insufficientBalance": "رصيد غير كافٍ",
     "insufficientBalanceDesc": "رصيد {{wallet}} غير كافٍ",

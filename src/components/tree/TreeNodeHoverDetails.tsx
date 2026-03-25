@@ -38,12 +38,13 @@ const TreeNodeHoverDetails = ({ node, position, nodeHeight, isMobile, onClose }:
     activePackageCount?: number;
     currentRank?; string;
     totalPackageAmount?: number;
+    totalLeft?:number
+    totalRight?:number
   };
 
   const details = [
     { label: "Member ID", value: node.memberId },
     { label: "Full Name", value: `${extendedNode.firstName} ${extendedNode.lastName}` },
-    { label: "Email", value: node.email },
     {
       label: "Status",
       value: (
@@ -77,8 +78,10 @@ const TreeNodeHoverDetails = ({ node, position, nodeHeight, isMobile, onClose }:
     { label: "Rank", value: extendedNode.currentRank || "—" },
     { label: "BV Left", value: formatBV(extendedNode.leftBv) },
     { label: "BV Right", value: formatBV(extendedNode.rightBv) },
-    { label: "Active Packages", value: extendedNode.activePackageCount },
-     { label: "Total Package Amount", value: extendedNode.totalPackageAmount },
+    { label: "Total Members (Left)", value: extendedNode.totalLeft },
+     { label: "Total Members (Right)", value: extendedNode.totalRight },
+     {
+       label: "Total Package Amount", value: extendedNode.totalPackageAmount },
     {
       label: "Sponsor Member ID",
       value: extendedNode.sponsorMemberId || "—",

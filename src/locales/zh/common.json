@@ -261,6 +261,7 @@
     "selectWithdrawalAddress": "选择提现地址",
     "submitWithdrawal": "提交提现",
     "withdrawalsLocked": "提现已锁定",
+    "transferLocked": "提现已锁定",
     "withdrawalsLockedMessage": "请在提出提现请求前达到指定的目标。",
     "insufficientBalance": "余额不足",
     "insufficientBalanceDesc": "您的 {{wallet}} 钱包余额不足",

@@ -261,6 +261,7 @@
     "selectWithdrawalAddress": "निकासी पता चुनें",
     "submitWithdrawal": "निकासी सबमिट करें",
     "withdrawalsLocked": "निकासी लॉक है",
+    "transferLocked": "निकासी लॉक है",
     "withdrawalsLockedMessage": "निकासी अनुरोध करने से पहले कृपया अपना निर्धारित लक्ष्य पूरा करें।",
     "insufficientBalance": "अपर्याप्त शेष राशि",
     "insufficientBalanceDesc": "आपके {{wallet}} वॉलेट में शेष राशि अपर्याप्त है",

@@ -23,9 +23,9 @@ import {
 import { Loader2, Plus, Save, Settings, X } from "lucide-react";
 import { walletConfig } from "@/lib/config";
 
-type WalletType = "F_WALLET" | "I_WALLET" | "M_WALLET" | "BONUS_WALLET";
+type WalletType = "D_WALLET" | "P_WALLET" | "E_WALLET" | "A_WALLET";
 
-const ALL_WALLET_TYPES: WalletType[] = ["F_WALLET", "I_WALLET", "M_WALLET", "BONUS_WALLET"];
+const ALL_WALLET_TYPES: WalletType[] = ["D_WALLET", "P_WALLET", "E_WALLET", "A_WALLET"];
 
 interface WalletRule {
   wallet: WalletType;

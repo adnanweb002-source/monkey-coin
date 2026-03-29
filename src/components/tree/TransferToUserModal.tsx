@@ -26,7 +26,7 @@ import { walletConfig } from "@/lib/config";
 import { Loader2, AlertTriangle } from "lucide-react";
 import type { WalletCard as WalletCardType } from "@/types/wallet";
 
-type WalletType = "F_WALLET" | "I_WALLET" | "M_WALLET" | "BONUS_WALLET";
+type WalletType = "D_WALLET" | "P_WALLET" | "E_WALLET" | "A_WALLET";
 
 const externalSchema = z.object({
   fromWalletType: z.string().min(1, "Select wallet"),
@@ -93,7 +93,7 @@ const TransferToUserModal = ({
     },
   });
 
-  const walletTypes: WalletType[] = ["F_WALLET", "I_WALLET", "M_WALLET", "BONUS_WALLET"];
+  const walletTypes: WalletType[] = ["D_WALLET", "P_WALLET", "E_WALLET", "A_WALLET"];
 
   const getWalletBalance = (type: string) => {
     const wallet = wallets.find((w: WalletCardType) => w.type === type);

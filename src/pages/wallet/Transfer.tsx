@@ -17,7 +17,7 @@ import type { WalletCard as WalletCardType } from "@/types/wallet";
 import { useGetWallets } from "../api";
 import { useGetSettings } from "../api";
 
-type WalletType = "F_WALLET" | "I_WALLET" | "M_WALLET" | "BONUS_WALLET";
+type WalletType = "D_WALLET" | "P_WALLET" | "E_WALLET" | "A_WALLET";
 
 const externalSchema = z.object({
   fromWalletType: z.string().min(1, "Select wallet"),
@@ -45,8 +45,8 @@ const Transfer = () => {
     onError: (error: any) => { toast({ title: t("common.error"), description: error.response?.data?.message || t("wallet.transferFailed"), variant: "destructive" }); },
   });
 
-  const walletTypes: WalletType[] = ["F_WALLET", "I_WALLET", "M_WALLET", "BONUS_WALLET"];
-  const walletLabels: Record<string, string> = { F_WALLET: "D Wallet", I_WALLET: "P Wallet", M_WALLET: "E Wallet", BONUS_WALLET: "A Wallet" };
+  const walletTypes: WalletType[] = ["D_WALLET", "P_WALLET", "E_WALLET", "A_WALLET"];
+  const walletLabels: Record<string, string> = { D_WALLET: "D Wallet", P_WALLET: "P Wallet", E_WALLET: "E Wallet", A_WALLET: "A Wallet" };
 
   const getWalletBalance = (type: string) => { const wallet = wallets.find((w: WalletCardType) => w.type === type); return wallet ? parseFloat(wallet.balance || "0") : 0; };
   const selectedFromExternal = externalForm.watch("fromWalletType");

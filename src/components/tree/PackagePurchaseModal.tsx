@@ -38,10 +38,10 @@ interface PackagePurchaseModalProps {
 }
 
 const WALLET_LABELS: Record<string, string> = {
-  F_WALLET: "D Wallet",
-  M_WALLET: "E Wallet",
-  I_WALLET: "P Wallet",
-  BONUS_WALLET: "A Wallet",
+  D_WALLET: "D Wallet",
+  E_WALLET: "E Wallet",
+  P_WALLET: "P Wallet",
+  A_WALLET: "A Wallet",
 };
 
 const formatCurrency = (value: string | number) => {

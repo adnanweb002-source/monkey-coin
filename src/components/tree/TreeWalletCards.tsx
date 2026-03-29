@@ -3,9 +3,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const walletConfig = [
   { type: "D_WALLET", label: "D", name: "D Wallet", gradient: "bg-gradient-to-br from-[#C84B31] to-[#8B2F1C]" },
-  { type: "M_WALLET", label: "M", name: "M Wallet", gradient: "bg-gradient-to-br from-[#7B2D8E] to-[#4A1A55]" },
+  { type: "E_WALLET", label: "E", name: "E Wallet", gradient: "bg-gradient-to-br from-[#7B2D8E] to-[#4A1A55]" },
   { type: "A_WALLET", label: "A", name: "A Wallet", gradient: "bg-gradient-to-br from-[#2D8E5E] to-[#1A5538]" },
-  { type: "U_WALLET", label: "U", name: "U Wallet", gradient: "bg-gradient-to-br from-[#4A4A4A] to-[#2A2A2A]" },
+  { type: "P_WALLET", label: "P", name: "P Wallet", gradient: "bg-gradient-to-br from-[#4A4A4A] to-[#2A2A2A]" },
   { type: "BONUS_WALLET", label: "B", name: "B Wallet", gradient: "bg-gradient-to-br from-[#D4781C] to-[#8B4F12]" },
 ];
 

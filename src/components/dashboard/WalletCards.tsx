@@ -2,10 +2,10 @@ import type { WalletCard } from "@/types/wallet";
 import { walletConfig } from "@/lib/config";
 import { useNavigate } from "react-router-dom";
 const badgeColors = {
-  F_WALLET: "#FF971D",
-  I_WALLET: "#FF971D",
-  M_WALLET: "#FF971D",
-  BONUS_WALLET: "#FF971D",
+  D_WALLET: "#FF971D",
+  P_WALLET: "#FF971D",
+  E_WALLET: "#FF971D",
+  A_WALLET: "#FF971D",
 };
 
 const WalletCards = ({ wallets, columns }: { wallets: WalletCard[]; columns?: number }) => {
@@ -57,7 +57,7 @@ const WalletCards = ({ wallets, columns }: { wallets: WalletCard[]; columns?: nu
               {wallet?.amount}
             </p>
              <p className="text-white font-poppins text-sm font-bold underline">
-              {wallet?.type === "F_WALLET" ? "Deposit Wallet" : wallet?.type === "I_WALLET" ? "Passive Income Wallet" : wallet?.type === "M_WALLET" ? "Earning Wallet" : wallet?.type === "BONUS_WALLET" ? "Awards Wallet" : wallet?.type}
+              {wallet?.type === "D_WALLET" ? "Deposit Wallet" : wallet?.type === "P_WALLET" ? "Passive Income Wallet" : wallet?.type === "E_WALLET" ? "Earning Wallet" : wallet?.type === "A_WALLET" ? "Awards Wallet" : wallet?.type}
             </p>
           </div>
         </div>

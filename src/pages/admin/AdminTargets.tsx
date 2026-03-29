@@ -42,10 +42,10 @@ const MULTIPLIERS = ["X1", "X2", "X3", "X4", "X5", "X7", "X10"];
 const SALES_TYPES = ["DIRECT", "INDIRECT"];
 
 const WALLET_LABELS: Record<string, string> = {
-  F_WALLET: "D Wallet",
-  M_WALLET: "E Wallet",
-  I_WALLET: "P Wallet",
-  BONUS_WALLET: "A Wallet",
+  D_WALLET: "D Wallet",
+  E_WALLET: "E Wallet",
+  P_WALLET: "P Wallet",
+  A_WALLET: "A Wallet",
 };
 
 interface WalletBalance {

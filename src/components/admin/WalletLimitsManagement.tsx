@@ -38,7 +38,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
 
-type WalletType = "F_WALLET" | "I_WALLET" | "M_WALLET" | "BONUS_WALLET";
+type WalletType = "D_WALLET" | "P_WALLET" | "E_WALLET" | "A_WALLET";
 
 interface WalletLimit {
   id?: number;
@@ -53,13 +53,13 @@ interface WalletLimit {
 }
 
 const walletTypeConfig: Record<WalletType, { name: string; icon: React.ElementType; color: string }> = {
-  F_WALLET: { name: "Deposit Wallet", icon: Banknote, color: "bg-blue-500" },
-  M_WALLET: { name: "ROI / Direct Income Wallet", icon: TrendingUp, color: "bg-green-500" },
-  I_WALLET: { name: "Binary Income Wallet", icon: PiggyBank, color: "bg-purple-500" },
-  BONUS_WALLET: { name: "Bonus Wallet", icon: Gift, color: "bg-orange-500" },
+  D_WALLET: { name: "Deposit Wallet", icon: Banknote, color: "bg-blue-500" },
+  E_WALLET: { name: "Earning Wallet", icon: TrendingUp, color: "bg-green-500" },
+  P_WALLET: { name: "Passive Income Wallet", icon: PiggyBank, color: "bg-purple-500" },
+  A_WALLET: { name: "Awards Wallet", icon: Gift, color: "bg-orange-500" },
 };
 
-const ALL_WALLET_TYPES: WalletType[] = ["F_WALLET", "M_WALLET", "I_WALLET", "BONUS_WALLET"];
+const ALL_WALLET_TYPES: WalletType[] = ["D_WALLET", "E_WALLET", "P_WALLET", "A_WALLET"];
 
 const WalletLimitsManagement = () => {
   const { toast } = useToast();

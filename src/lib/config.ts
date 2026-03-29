@@ -11,25 +11,25 @@ export const walletConfig: Record<
   ApiWallet["type"],
   Omit<WalletCard, "id" | "amount" | "type" | "balance">
 > = {
-  F_WALLET: {
+  D_WALLET: {
     label: "D Wallet",
     color: "red",
     src: b_wallet,
     badge: "D",
   },
-  I_WALLET: {
+  P_WALLET: {
     label: "P Wallet",
     color: "blue",
     src: b_wallet,
     badge: "P",
   },
-  M_WALLET: {
+  E_WALLET: {
     label: "E Wallet",
     color: "green",
     src: b_wallet,
     badge: "E",
   },
-  BONUS_WALLET: {
+  A_WALLET: {
     label: "A Wallet",
     color: "orange",
     src: b_wallet,

@@ -18,7 +18,7 @@ interface WithdrawRequest { id: number; walletType: string; amount: string; meth
 
 const PAGE_SIZE = 20;
 const statusColors: Record<string, string> = { PENDING: "bg-yellow-500/20 text-yellow-500 border-yellow-500/30", APPROVED: "bg-green-500/20 text-green-500 border-green-500/30", COMPLETED: "bg-green-500/20 text-green-500 border-green-500/30", REJECTED: "bg-red-500/20 text-red-500 border-red-500/30", FAILED: "bg-red-500/20 text-red-500 border-red-500/30", CANCELLED: "bg-muted text-muted-foreground border-border" };
-const walletLabels: Record<string, string> = { F_WALLET: "D Wallet", I_WALLET: "P Wallet", M_WALLET: "E Wallet", BONUS_WALLET: "A Wallet" };
+const walletLabels: Record<string, string> = { D_WALLET: "D Wallet", P_WALLET: "P Wallet", E_WALLET: "E Wallet", A_WALLET: "A Wallet" };
 
 const WithdrawRequests = () => {
   const [requests, setRequests] = useState<WithdrawRequest[]>([]);

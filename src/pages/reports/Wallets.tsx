@@ -15,7 +15,7 @@ import type { ApiWallet } from "@/types/wallet";
 import WalletLimitsManagement from "@/components/admin/WalletLimitsManagement";
 import { useTranslation } from "react-i18next";
 
-type WalletType = "F_WALLET" | "I_WALLET" | "M_WALLET" | "BONUS_WALLET";
+type WalletType = "D_WALLET" | "P_WALLET" | "E_WALLET" | "A_WALLET";
 
 interface Transaction {
   id: number; txNumber: string; type: string; direction: "CREDIT" | "DEBIT";
@@ -23,7 +23,7 @@ interface Transaction {
 }
 
 const walletLabels: Record<WalletType, string> = {
-  F_WALLET: "D Wallet", I_WALLET: "P Wallet", M_WALLET: "E Wallet", BONUS_WALLET: "A Wallet",
+  D_WALLET: "D Wallet", P_WALLET: "P Wallet", E_WALLET: "E Wallet", A_WALLET: "A Wallet",
 };
 
 const Wallets = () => {
@@ -37,10 +37,10 @@ const Wallets = () => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const walletConfig: Record<WalletType, { name: string; description: string; icon: React.ElementType; color: string }> = {
-    F_WALLET: { name: t("reports.depositWallet"), description: t("reports.depositWallet"), icon: Banknote, color: "bg-blue-500" },
-    M_WALLET: { name: t("reports.earningWallet"), description: t("reports.earningWallet"), icon: TrendingUp, color: "bg-green-500" },
-    I_WALLET: { name: t("reports.passiveIncomeWallet"), description: t("reports.passiveIncomeWallet"), icon: PiggyBank, color: "bg-purple-500" },
-    BONUS_WALLET: { name: t("reports.awardsWallet"), description: t("reports.awardsWallet"), icon: Gift, color: "bg-orange-500" },
+    D_WALLET: { name: t("reports.depositWallet"), description: t("reports.depositWallet"), icon: Banknote, color: "bg-blue-500" },
+    E_WALLET: { name: t("reports.earningWallet"), description: t("reports.earningWallet"), icon: TrendingUp, color: "bg-green-500" },
+    P_WALLET: { name: t("reports.passiveIncomeWallet"), description: t("reports.passiveIncomeWallet"), icon: PiggyBank, color: "bg-purple-500" },
+    A_WALLET: { name: t("reports.awardsWallet"), description: t("reports.awardsWallet"), icon: Gift, color: "bg-orange-500" },
   };
 
   useEffect(() => {

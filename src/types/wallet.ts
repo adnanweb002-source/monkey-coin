@@ -5,14 +5,14 @@ interface WalletCard {
   color: "red" | "blue" | "green" | "purple" | "orange";
   src: string;
   badge: string;
-  type: "F_WALLET" | "I_WALLET" | "M_WALLET" | "BONUS_WALLET";
+  type: "D_WALLET" | "P_WALLET" | "E_WALLET" | "A_WALLET";
   balance?: string;
 }
 
 interface ApiWallet {
   id: number;
   userId: number;
-  type: "F_WALLET" | "I_WALLET" | "M_WALLET" | "BONUS_WALLET";
+  type: "D_WALLET" | "P_WALLET" | "E_WALLET" | "A_WALLET";
   balance: string;
   createdAt: string;
   updatedAt: string;

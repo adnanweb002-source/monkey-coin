@@ -47,6 +47,8 @@ const RankProgressCard = () => {
     queryFn: getRankProgress,
   });
 
+  console.log(progress)
+
   const isLoading = ranksLoading || progressLoading;
 
   // 🧠 Compute current rank
@@ -99,7 +101,7 @@ const RankProgressCard = () => {
       <p className="text-xs text-muted-foreground mb-4">
         Next rank:{" "}
         <span className="text-primary font-medium">
-          {progress?.completed
+          {progress?.completed == true
             ? "All ranks completed 🎉"
             : nextRankObj?.name || "—"}
         </span>
@@ -112,7 +114,7 @@ const RankProgressCard = () => {
           className="h-2.5 bg-muted"
         />
         <p className="text-xs text-muted-foreground mt-1.5">
-          {Math.floor(progressPercent)}% complete
+          {progressPercent ? `${Math.floor(progressPercent)}% complete}` : 'No Rank Available '}
         </p>
       </div>
 

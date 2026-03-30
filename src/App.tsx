@@ -75,10 +75,6 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            {/* Auth Routes */}
-            <Route path="/" element={<ProtectedDashboard />}>
-              <Route index element={<DashboardHome />} />
-            </Route>
 
             <Route path="/signup" element={<Index />} />
             <Route path="/signin" element={<Signin />} />

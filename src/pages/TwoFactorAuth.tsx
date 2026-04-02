@@ -35,7 +35,7 @@ const TwoFactorAuth = () => {
       
       // Simulating API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-      navigate("/success");
+      navigate("/panel/success");
     } catch (error) {
       toast({
         title: "Verification Failed",

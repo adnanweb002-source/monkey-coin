@@ -110,7 +110,7 @@ const NotificationBell = () => {
                   key={n.id}
                   onClick={() => {
                     !n.isRead && handleMarkAsRead(n.id);
-                    navigate("/notifications");
+                    navigate("/panel/notifications");
                   }}
                   className={cn(
                     "w-full text-left px-4 py-3 hover:bg-accent/50 transition-colors",

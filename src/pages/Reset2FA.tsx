@@ -53,7 +53,7 @@ const Reset2FA = () => {
       await api.post("/auth/reset-2fa", { email, token });
       setSuccess(true);
       toast({ title: "Success", description: "Two-factor authentication has been disabled successfully." });
-      setTimeout(() => navigate("/signin"), 3000);
+      setTimeout(() => navigate("/panel/signin"), 3000);
     } catch (error) {
       toast({ title: "Error", description: getErrorMessage(error), variant: "destructive" });
     } finally {

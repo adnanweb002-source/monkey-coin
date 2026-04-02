@@ -52,7 +52,7 @@ export const useGetUserTree=(userId:number)=>{
   return useQuery({
     queryKey:['user-tree'],
     queryFn:async()=>{
-      let response = await api?.get(`/tree/user/${1}?depth=${2}`);
+      let response = await api?.get(`/tree/user/${userId}?depth=${2}`);
       return response?.data;
     }
   })

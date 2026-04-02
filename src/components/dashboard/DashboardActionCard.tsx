@@ -13,7 +13,7 @@ const DashboardActionCard = ({ title, subtitle, icon: Icon, route }: DashboardAc
 
   return (
     <div
-      onClick={() => navigate(route)}
+      onClick={() => navigate(`/panel${route}`)}
       className="bg-card border border-border rounded-xl p-5 cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:border-primary/30 shadow-[0_0_20px_hsl(var(--primary)/0.15)] group"
     >
       <div className="flex items-start gap-4">

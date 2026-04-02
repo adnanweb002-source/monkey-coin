@@ -73,9 +73,8 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
+        <BrowserRouter basename="/panel">
           <Routes>
-
             <Route path="/signup" element={<Index />} />
             <Route path="/signin" element={<Signin />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />

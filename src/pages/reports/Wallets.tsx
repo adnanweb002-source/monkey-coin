@@ -182,7 +182,7 @@ const Wallets = () => {
                         <div className="text-center py-4 bg-secondary/30 rounded-lg"><p className="text-sm text-muted-foreground">{t("reports.noTransactionsYet")}</p></div>
                       )}
                     </div>
-                    <Button variant="outline" className="w-full" onClick={() => navigate(`/wallet/transactions?walletType=${walletLabels[wallet.type as WalletType]}`)}>
+                    <Button variant="outline" className="w-full" onClick={() => navigate(`/panel/wallet/transactions?walletType=${walletLabels[wallet.type as WalletType]}`)}>
                       <ExternalLink className="h-4 w-4 mr-2" />{t("reports.viewTransactions")}
                     </Button>
                   </CardContent>

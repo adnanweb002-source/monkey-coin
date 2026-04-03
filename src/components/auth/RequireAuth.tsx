@@ -29,9 +29,9 @@ const RequireAuth = ({ children, require2FA = true }: RequireAuthProps) => {
         if (
           profile.role === "ADMIN" &&
           import.meta.env.VITE_ENVIRONMENT === "production" &&
-          window.location.hostname !== "admin.gogex.xyz"
+          window.location.hostname !== "admin.vaultireinfinite.com"
         ) {
-          window.location.href = "https://admin.gogex.xyz";
+          window.location.href = "https://admin.vaultireinfinite.com";
           setIsLoading(false);
           return;
         }
@@ -55,7 +55,7 @@ const RequireAuth = ({ children, require2FA = true }: RequireAuthProps) => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/signin" state={{ from: location }} replace />;
+    return <Navigate to="/panel/signin" state={{ from: location }} replace />;
   }
 
   return <>{children}</>;

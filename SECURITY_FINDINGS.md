@@ -128,7 +128,7 @@ Treat audit output as a starting point; some items affect dev tooling only.
 
 - Refresh flow assumes **HttpOnly cookies** for refresh; access renewal via `/auth/refresh` avoids putting long-lived tokens in `localStorage` (profile blob is still stored there).
 - **Real auth check:** `RequireAuth` uses the API, not only `localStorage`, for route gating.
-- **Production admin host:** Redirect of admins to `admin.gogex.xyz` in prod; `DashboardLayout` attempts to keep non-admins off the admin host — **API must still enforce** roles.
+- **Production admin host:** Redirect of admins to `admin.vaultireinfinite.com` in prod; `DashboardLayout` attempts to keep non-admins off the admin host — **API must still enforce** roles.
 
 ---
 

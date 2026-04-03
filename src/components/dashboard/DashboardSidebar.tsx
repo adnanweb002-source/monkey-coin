@@ -270,7 +270,7 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
     } finally {
       localStorage.removeItem("userProfile");
       setIsLoggingOut(false);
-      navigate("/panel/signin");
+      navigate("/signin");
     }
   };
 

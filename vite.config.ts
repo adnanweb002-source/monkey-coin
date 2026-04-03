@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
-    allowedHosts: ["gogex.xyz", "www.gogex.xyz", "admin.gogex.xyz"]
+    allowedHosts: ["vaultireinfinite.com", "www.vaultireinfinite.com", "admin.vaultireinfinite.com"]
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {

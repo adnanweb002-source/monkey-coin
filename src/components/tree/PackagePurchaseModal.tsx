@@ -173,7 +173,7 @@ const PackagePurchaseModal = ({
   const availableWallets = useMemo(() => {
     if (isAdminPurchasingForOther) {
       // Admin purchasing for others: only Bonus Wallet
-      return wallets.filter((w) => w.type === "BONUS_WALLET");
+      return wallets.filter((w) => w.type === "A_WALLET");
     }
     return wallets;
   }, [wallets, isAdminPurchasingForOther]);

@@ -60,7 +60,7 @@ const useDashboardStats = () => {
       let rewardsEarned = 0;
       if (walletsRes.status === "fulfilled") {
         const wallets = walletsRes.value.data || [];
-        const bonusWallet = wallets.find((w: any) => w.type === "BONUS_WALLET");
+        const bonusWallet = wallets.find((w: any) => w.type === "A_WALLET");
         if (bonusWallet) {
           rewardsEarned = parseFloat(bonusWallet.balance || "0");
         }

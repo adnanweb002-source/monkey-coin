@@ -155,7 +155,7 @@ const AdminTargets = () => {
 
   // For admin assigning, use BONUS_WALLET only
   const availableWallets = useMemo(() => {
-    return wallets.filter((w) => w.type === "BONUS_WALLET");
+    return wallets.filter((w) => w.type === "A_WALLET");
   }, [wallets]);
 
   useEffect(() => {

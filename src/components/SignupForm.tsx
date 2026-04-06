@@ -142,7 +142,7 @@ const SignupForm = () => {
         description: "Your account has been created successfully.",
       });
 
-      navigate("/panel/profile");
+      navigate("/profile");
     } catch (error) {
       toast({
         title: "Error",

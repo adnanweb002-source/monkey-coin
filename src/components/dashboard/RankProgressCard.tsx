@@ -122,7 +122,7 @@ const RankProgressCard = () => {
       <Button
         variant="outline"
         size="sm"
-        onClick={() => navigate("/panel/reports/ranks")}
+        onClick={() => navigate("/reports/ranks")}
         className="border-primary/30 text-primary hover:bg-primary/10"
       >
         View Report

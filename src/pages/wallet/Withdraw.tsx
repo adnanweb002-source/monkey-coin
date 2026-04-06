@@ -366,7 +366,7 @@ const Withdraw = () => {
             <Button
               onClick={() => {
                 setShowSuccess(false);
-                navigate("/panel/wallet/withdraw-requests");
+                navigate("/wallet/withdraw-requests");
               }}
               className="w-full"
             >

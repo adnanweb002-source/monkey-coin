@@ -45,7 +45,7 @@ const Deposit = () => {
     try {
       await api.post("/wallet/deposit-request", { amount, method, reference });
       toast({ title: t("wallet.depositRequestSubmitted"), description: t("wallet.depositRequestSuccess") });
-      navigate("/panel/wallet/deposit-requests");
+      navigate("/wallet/deposit-requests");
     } catch (error: any) {
       toast({ title: t("common.error"), description: error?.response?.data?.message || "Failed to submit deposit request", variant: "destructive" });
     } finally {
@@ -58,7 +58,7 @@ const Deposit = () => {
     setIsQRModalOpen(true);
   };
 
-  const handlePaymentComplete = () => { navigate("/panel/wallet/deposit-history"); };
+  const handlePaymentComplete = () => { navigate("/wallet/deposit-history"); };
   const handleQRModalClose = () => { setIsQRModalOpen(false); setCryptoDepositData(null); };
 
   return (

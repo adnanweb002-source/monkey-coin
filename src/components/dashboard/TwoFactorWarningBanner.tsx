@@ -18,7 +18,7 @@ const TwoFactorWarningBanner = ({ isEnabled }: TwoFactorWarningBannerProps) => {
           <span className="font-medium">{t("twoFactor.securityWarning")}</span>
         </div>
         <p className="text-sm text-yellow-700 dark:text-yellow-400 flex-1">{t("twoFactor.notProtected")}</p>
-        <Button variant="outline" size="sm" onClick={() => navigate("/panel/profile", { state: { openTab: "security" } })} className="border-yellow-500/50 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-500/10 shrink-0">
+        <Button variant="outline" size="sm" onClick={() => navigate("/profile", { state: { openTab: "security" } })} className="border-yellow-500/50 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-500/10 shrink-0">
           <Shield className="h-4 w-4 mr-2" />{t("twoFactor.enable2FA")}
         </Button>
       </div>

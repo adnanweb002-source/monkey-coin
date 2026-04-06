@@ -55,7 +55,7 @@ const ResetPassword = () => {
       await api.post("/auth/reset-password", { email, token, newPassword: data.newPassword });
       setSuccess(true);
       toast({ title: t("common.success"), description: t("auth.passwordResetSuccessful") });
-      setTimeout(() => navigate("/panel/signin"), 3000);
+      setTimeout(() => navigate("/signin"), 3000);
     } catch (error) { toast({ title: t("common.error"), description: getErrorMessage(error), variant: "destructive" }); }
     finally { setIsLoading(false); }
   };

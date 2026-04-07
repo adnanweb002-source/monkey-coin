@@ -49,7 +49,7 @@ const SigninForm = () => {
       localStorage.setItem("userProfile", JSON.stringify(userProfile));
       if (userProfile?.role == "ADMIN") {
         toast({ title: "Admin Login Detected", description: "You have been signed in successfully." });
-        if (import.meta.env.VITE_ENVIRONMENT === "production") { window.location.href = "https://admin.vaultireinfinite.com/panel/panel"; } else { navigate("/panel"); }
+        if (import.meta.env.VITE_ENVIRONMENT === "production") { window.location.href = "https://admin.vaultireinfinite.com/panel"; } else { navigate("/panel"); }
       } else {
         toast({ title: t("common.success"), description: "You have been signed in successfully." });
         navigate("/panel");

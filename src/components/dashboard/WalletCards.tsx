@@ -30,7 +30,7 @@ const WalletCards = ({ wallets, columns }: { wallets: WalletCard[]; columns?: nu
           key={wallet.id}
           className="relative min-h-[10rem] w-full overflow-hidden rounded-lg p-4 cursor-pointer"
           onClick={()=>{
-            navigate("/panel/reports/wallets")
+            navigate("/reports/wallets")
           }}
         >
           {/* Background image */}

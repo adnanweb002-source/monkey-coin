@@ -31,7 +31,7 @@ const RequireAuth = ({ children, require2FA = true }: RequireAuthProps) => {
           import.meta.env.VITE_ENVIRONMENT === "production" &&
           window.location.hostname !== "admin.vaultireinfinite.com"
         ) {
-          window.location.href = "https://admin.vaultireinfinite.com";
+          window.location.href = "https://admin.vaultireinfinite.com/panel";
           setIsLoading(false);
           return;
         }

@@ -56,11 +56,11 @@ const useDashboardStats = () => {
         // If no withdrawal summary endpoint, default to 0
       }
 
-      // Rewards from BONUS_WALLET balance
+      // Rewards from A_WALLET balance
       let rewardsEarned = 0;
       if (walletsRes.status === "fulfilled") {
         const wallets = walletsRes.value.data || [];
-        const bonusWallet = wallets.find((w: any) => w.type === "BONUS_WALLET");
+        const bonusWallet = wallets.find((w: any) => w.type === "A_WALLET");
         if (bonusWallet) {
           rewardsEarned = parseFloat(bonusWallet.balance || "0");
         }

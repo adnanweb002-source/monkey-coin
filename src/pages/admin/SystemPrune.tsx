@@ -75,7 +75,7 @@ const SystemPrune = () => {
       });
 
       // Redirect to admin dashboard
-      navigate("/panel/admin/users", { replace: true });
+      navigate("/admin/users", { replace: true });
     } catch (err: unknown) {
       console.error("System prune error:", err);
       const message =

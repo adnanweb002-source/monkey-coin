@@ -70,7 +70,7 @@ const Notifications = () => {
 
   const handleRowClick = async (n: NotificationItem) => {
     if (!n.isRead) handleMarkAsRead(n.id);
-    if (n.redirectionRoute?.trim()) navigate(`/panel${n.redirectionRoute}`);
+    if (n.redirectionRoute?.trim()) navigate(`${n.redirectionRoute}`);
   };
 
   const handleMarkAll = async () => {

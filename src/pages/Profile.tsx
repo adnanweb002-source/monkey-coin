@@ -457,13 +457,13 @@ const Profile = () => {
                   <div className="border-t border-border pt-4 space-y-2">
                     <h4 className="text-sm font-medium text-foreground">{t("profile.reset2FA")}</h4>
                     <p className="text-sm text-muted-foreground">{t("profile.reset2FAHelper")}</p>
-                    <Button variant="outline" onClick={() => navigate("/panel/request-2fa-reset")} className="w-full sm:w-auto">
+                    <Button variant="outline" onClick={() => navigate("/request-2fa-reset")} className="w-full sm:w-auto">
                       {t("profile.reset2FA")}
                     </Button>
                   </div>
                   <div className="pt-2">
                     <button
-                      onClick={() => navigate("/panel/2fa-reset-request-for-admin")}
+                      onClick={() => navigate("/2fa-reset-request-for-admin")}
                       className="text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
                     >
                       {t("profile.lostBothAccess")}
@@ -479,7 +479,7 @@ const Profile = () => {
                       <p className="text-sm text-yellow-600 dark:text-yellow-500">{t("profile.twoFANotEnabledDesc")}</p>
                     </div>
                   </div>
-                  <Button onClick={() => navigate("/panel/security/2fa/setup")} className="w-full sm:w-auto">
+                  <Button onClick={() => navigate("/security/2fa/setup")} className="w-full sm:w-auto">
                     <Shield className="h-4 w-4 mr-2" />
                     {t("profile.setup2FA")}
                   </Button>

@@ -65,7 +65,7 @@ const Transfer = () => {
         {userProfile?.isWithdrawalRestricted && (
           <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-yellow-500/20 rounded-lg text-yellow-600 text-sm"><AlertTriangle size={16} /><span>{t("wallet.transferLocked")}</span></div>
         )}
-        {isDownlineOnly && !userProfile?.isisWithdrawalRestricted (
+        {isDownlineOnly && !userProfile?.isWithdrawalRestricted (
           <div className="flex items-center gap-2 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-yellow-600 text-sm"><AlertTriangle size={16} /><span>{t("wallet.transfersOnlyDownline")}</span></div>
         )}
         <div className="space-y-2">

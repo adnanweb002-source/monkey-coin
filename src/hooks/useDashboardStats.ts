@@ -19,7 +19,7 @@ const useDashboardStats = () => {
     queryKey: ["dashboard-stats"],
     queryFn: async () => {
       const [depositRes, directRes, binaryRes, walletsRes] = await Promise.allSettled([
-        api.get("/external-deposit/user-deposits", { params: { page: 1, pageSize: 1 } }),
+        api.get("/wallet/deposit/history", { params: { page: 1, limit: 10 } }),
         api.get<IncomeResponse>("/wallet/income/direct", { params: { skip: 0, take: 1 } }),
         api.get<IncomeResponse>("/wallet/income/binary", { params: { skip: 0, take: 1 } }),
         api.get("/wallet/user-wallets"),
@@ -28,13 +28,7 @@ const useDashboardStats = () => {
       // Fund Deposited: sum fiat from finished deposits
       let fundDeposited = 0;
       if (depositRes.status === "fulfilled") {
-        const deposits = depositRes.value.data?.data || depositRes.value.data || [];
-        if (Array.isArray(deposits)) {
-          fundDeposited = deposits.reduce(
-            (sum: number, d: any) => sum + (d.status === "finished" ? parseFloat(d.fiatAmount || "0") : 0),
-            0
-          );
-        }
+        fundDeposited = depositRes.value.data?.sumTotal || 0;
       }
 
       // Yield = direct + binary income totals
@@ -46,12 +40,10 @@ const useDashboardStats = () => {
         yieldReceived += parseFloat(binaryRes.value.data?.total || "0");
       }
 
-      // Total Withdrawal: from E wallet transactions or derive from wallets
       let totalWithdrawal = 0;
-      // We'll use a simple approach - check if there's a withdrawal endpoint
       try {
         const withdrawRes = await api.get("/wallet/withdraw-requests", { params: { skip: 0, take: 1 } });
-        totalWithdrawal = parseFloat(withdrawRes.data?.total || "0");
+        totalWithdrawal = parseFloat(withdrawRes.data?.[0]?.total || "0");
       } catch {
         // If no withdrawal summary endpoint, default to 0
       }

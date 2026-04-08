@@ -513,7 +513,7 @@ const Transactions = () => {
                           </TableCell>
                           {role === "ADMIN" && (
                             <TableCell className="font-mono text-sm">
-                              {tx.userId || "-"}
+                              {tx.user.memberId || "-"}
                             </TableCell>
                           )}
                           {role === "ADMIN" && (

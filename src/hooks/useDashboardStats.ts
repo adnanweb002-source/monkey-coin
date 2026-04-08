@@ -50,13 +50,13 @@ const useDashboardStats = () => {
       let totalWithdrawal = 0;
       // We'll use a simple approach - check if there's a withdrawal endpoint
       try {
-        const withdrawRes = await api.get("/wallet/withdraw-requests", { params: { skip: 0, take: 1, status: "APPROVED" } });
+        const withdrawRes = await api.get("/wallet/withdraw-requests", { params: { skip: 0, take: 1 } });
         totalWithdrawal = parseFloat(withdrawRes.data?.total || "0");
       } catch {
         // If no withdrawal summary endpoint, default to 0
       }
 
-      // Rewards from BONUS_WALLET balance
+      // Rewards from A_WALLET balance
       let rewardsEarned = 0;
       if (walletsRes.status === "fulfilled") {
         const wallets = walletsRes.value.data || [];

@@ -142,6 +142,8 @@ const AdminUsers = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  const hostname = window.location.hostname;
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(search.trim());
@@ -219,7 +221,7 @@ const AdminUsers = () => {
 
       // redirect to user panel
       if (import.meta.env.VITE_ENVIRONMENT === "production") {
-        window.location.href = "https://app.gogex.xyz";
+        window.location.href = "https://${hostname}/panel";
       } else {
         window.location.href = "/panel";
       }

@@ -11,7 +11,7 @@ const DashboardLayout = () => {
 
   const pageUrl = window.location.href;
   useEffect(() => {
-    if (pageUrl.includes("admin.gogex.xyz")) {
+    if (pageUrl.includes("admin.vaultireinfinite.com")) {
       if (localStorage.getItem("userProfile")) {
         const userProfile = JSON.parse(
           localStorage.getItem("userProfile") || "{}",

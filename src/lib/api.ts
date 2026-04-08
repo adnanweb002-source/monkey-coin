@@ -55,7 +55,7 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         // refresh token expired / invalid → logout
-        window.location.href = "/signin";
+        window.location.href = "/panel/signin";
         return Promise.reject(refreshError);
       }
     }

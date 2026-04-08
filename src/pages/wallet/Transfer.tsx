@@ -63,9 +63,9 @@ const Transfer = () => {
       {walletsLoading ? (<div className="flex justify-center py-8"><Loader2 className="animate-spin" /></div>) : (<WalletCards wallets={wallets} />)}
       <form onSubmit={externalForm.handleSubmit((data) => externalMutation.mutate(data))} className="bg-card rounded-lg p-6 space-y-4 max-w-md mx-auto">
         {userProfile?.isWithdrawalRestricted && (
-          <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-yellow-500/20 rounded-lg text-yellow-600 text-sm"><AlertTriangle size={16} /><span>{t("wallet.withdrawalsLocked")}</span></div>
+          <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-yellow-500/20 rounded-lg text-yellow-600 text-sm"><AlertTriangle size={16} /><span>{t("wallet.transferLocked")}</span></div>
         )}
-        {isDownlineOnly && (
+        {isDownlineOnly && !userProfile?.isisWithdrawalRestricted (
           <div className="flex items-center gap-2 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-yellow-600 text-sm"><AlertTriangle size={16} /><span>{t("wallet.transfersOnlyDownline")}</span></div>
         )}
         <div className="space-y-2">

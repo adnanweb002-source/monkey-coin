@@ -55,7 +55,7 @@ const RequireAuth = ({ children, require2FA = true }: RequireAuthProps) => {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/signin" state={{ from: location }} replace />;
+    return <Navigate to="/panel/signin" state={{ from: location }} replace />;
   }
 
   return <>{children}</>;

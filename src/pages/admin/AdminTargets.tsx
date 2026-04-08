@@ -153,7 +153,7 @@ const AdminTargets = () => {
     }
   }, []);
 
-  // For admin assigning, use BONUS_WALLET only
+  // For admin assigning, use A_WALLET only
   const availableWallets = useMemo(() => {
     return wallets.filter((w) => w.type === "A_WALLET");
   }, [wallets]);

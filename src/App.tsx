@@ -75,7 +75,6 @@ const App = () => (
         <Sonner />
         <BrowserRouter basename="/panel">
           <Routes>
-
           <Route path="/" element={<ProtectedDashboard />}>
               <Route index element={<DashboardHome />} />
             </Route>

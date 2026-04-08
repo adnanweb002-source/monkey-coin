@@ -268,6 +268,7 @@ const ExternalWalletsTab = () => {
                           size="sm"
                           onClick={() => setDeletingWallet(userWallet)}
                           className="flex-1"
+                          disabled={!canEdit}
                         >
                           <Trash2 className="h-4 w-4 mr-2" />
                           Delete

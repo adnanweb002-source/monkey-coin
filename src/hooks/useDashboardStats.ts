@@ -43,7 +43,7 @@ const useDashboardStats = () => {
       let totalWithdrawal = 0;
       try {
         const withdrawRes = await api.get("/wallet/withdraw-requests", { params: { skip: 0, take: 1 } });
-        totalWithdrawal = parseFloat(withdrawRes.data?.[0]?.total || "0");
+        totalWithdrawal = parseFloat(withdrawRes.data?.[0]?.sumTotal || "0");
       } catch {
         // If no withdrawal summary endpoint, default to 0
       }

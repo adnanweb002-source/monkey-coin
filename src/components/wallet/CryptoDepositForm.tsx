@@ -91,7 +91,6 @@ const CryptoDepositForm = ({ onDepositCreated }: CryptoDepositFormProps) => {
     <Card className="max-w-xl mx-auto">
       <CardHeader>
         <CardTitle className="text-center flex items-center justify-center gap-2">
-          <Bitcoin className="h-6 w-6" />
           Deposit
         </CardTitle>
       </CardHeader>

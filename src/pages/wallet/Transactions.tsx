@@ -122,27 +122,33 @@ const Transactions = () => {
     fetchWallets();
   }, []);
 
-  type MetaViewerProps = { data: any };
-  function MetaViewer({ data }: MetaViewerProps) {
+  type MetaViewerProps = { data: any, purpose: string };
+  function MetaViewer({ data, purpose }: MetaViewerProps) {
     if (!data) return null;
     return (
       <div className="space-y-1 text-xs">
-        {Object.entries(data).map(([key, value]) => (
-          <div key={key} className="pl-2">
-            <div className="flex gap-2">
-              <span className="text-muted-foreground font-medium">
-                {key.toLocaleUpperCase()}:
-              </span>
-              {typeof value === "object" && value !== null ? (
-                <div className="border-l pl-3 ml-1">
-                  <MetaViewer data={value} />
+        {
+          purpose.toLowerCase().includes("nowpayments")
+            ? (
+              <span className="break-all">Deposited via NowPayments</span>
+            ) : (
+              Object.entries(data).map(([key, value]) => (
+                <div key={key} className="pl-2">
+                  <div className="flex gap-2">
+                    <span className="text-muted-foreground font-medium">
+                      {key.toLocaleUpperCase()}:
+                    </span>
+                    {typeof value === "object" && value !== null ? (
+                      <div className="border-l pl-3 ml-1">
+                        <MetaViewer data={value} purpose={purpose} />
+                      </div>
+                    ) : (
+                      <span className="break-all">{String(value)}</span>
+                    )}
+                  </div>
                 </div>
-              ) : (
-                <span className="break-all">{String(value)}</span>
-              )}
-            </div>
-          </div>
-        ))}
+              ))
+            )}
       </div>
     );
   }
@@ -546,7 +552,7 @@ const Transactions = () => {
                                   {t("wallet.moreInformation")}:
                                 </p>
                                 <div className="bg-background rounded p-2">
-                                  <MetaViewer data={tx.meta} />
+                                  <MetaViewer data={tx.meta} purpose={tx.purpose} />
                                 </div>
                               </div>
                             </TableCell>

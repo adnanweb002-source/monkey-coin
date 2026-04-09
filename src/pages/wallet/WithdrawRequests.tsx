@@ -14,7 +14,7 @@ import AdminWithdrawActions from "@/components/admin/AdminWithdrawActions";
 import { walletConfig } from "@/lib/config";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
-interface WithdrawRequest { id: number; walletType: string; amount: string; method: string; address: string | null; status: "PENDING" | "APPROVED" | "REJECTED" | "FAILED" | "COMPLETED" | "CANCELLED"; adminNote: string | null; createdAt: string; updatedAt: string; wallet: any; }
+interface WithdrawRequest { id: number; walletType: string; amount: string; method: string; address: string | null; status: "PENDING" | "APPROVED" | "REJECTED" | "FAILED" | "COMPLETED" | "CANCELLED"; adminNote: string | null; createdAt: string; updatedAt: string; wallet: any; user: { memberId: string }; ip: string }
 
 const PAGE_SIZE = 20;
 const statusColors: Record<string, string> = { PENDING: "bg-yellow-500/20 text-yellow-500 border-yellow-500/30", APPROVED: "bg-green-500/20 text-green-500 border-green-500/30", COMPLETED: "bg-green-500/20 text-green-500 border-green-500/30", REJECTED: "bg-red-500/20 text-red-500 border-red-500/30", FAILED: "bg-red-500/20 text-red-500 border-red-500/30", CANCELLED: "bg-muted text-muted-foreground border-border" };
@@ -95,6 +95,8 @@ const WithdrawRequests = () => {
                       <TableHead>{t("common.amount")}</TableHead>
                       <TableHead>Platform Commission (12%)</TableHead>
                       <TableHead>Final Amount</TableHead>
+                      <TableHead>{t("profile.memberId")}</TableHead>
+                      <TableHead>{t("common.ipAddress")}</TableHead>
                       <TableHead>{t("wallet.method")}</TableHead>
                       <TableHead>{t("wallet.address")}</TableHead>
                       <TableHead>{t("common.status")}</TableHead>
@@ -110,6 +112,8 @@ const WithdrawRequests = () => {
                         <TableCell>${parseFloat(request.amount).toLocaleString()}</TableCell>
                         <TableCell>${(parseFloat(request.amount) * 0.12).toLocaleString()}</TableCell>
                         <TableCell className="font-bold">${(parseFloat(request.amount) * 0.88).toLocaleString()}</TableCell>
+                        <TableCell>{request.user?.memberId}</TableCell>
+                        <TableCell>{request.ip}</TableCell>
                         <TableCell>{request.method}</TableCell>
                         <TableCell className="max-w-[150px] truncate">{request.address || "-"}</TableCell>
                         <TableCell><Badge variant="outline" className={statusColors[request.status]}>{request.status}</Badge></TableCell>

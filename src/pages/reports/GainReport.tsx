@@ -28,6 +28,7 @@ import {
 import { format, subDays, startOfMonth } from "date-fns";
 import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { walletConfig } from "@/lib/config";
 
 interface Transaction {
   id: number;
@@ -38,6 +39,8 @@ interface Transaction {
   purpose: string;
   balanceAfter: string;
   createdAt: string;
+  meta?: Record<string, unknown>;
+  walletsUsed?: Record<string, number>;
 }
 
 interface GainReportData {
@@ -322,9 +325,14 @@ const GainReport = () => {
                           </TableHead>
                           <TableHead>{t("income.purpose")}</TableHead>
                           {type != "PACKAGE_PURCHASE" && (
-                            <TableHead className="text-right">
-                              {t("income.balanceAfter")}
-                            </TableHead>
+                            <>
+                              <TableHead className="text-right">
+                                {t("income.balanceAfter")}
+                              </TableHead>
+                              <TableHead className="text-right">
+                                {t("packages.walletSplitAllocation")}
+                              </TableHead>
+                            </>
                           )}
                         </TableRow>
                       </TableHeader>
@@ -363,10 +371,24 @@ const GainReport = () => {
                             </TableCell>
                             {
                               type != "PACKAGE_PURCHASE" &&
-                            
-                            <TableCell className="text-right">
-                              ${parseFloat(tx.balanceAfter).toLocaleString()}
-                            </TableCell>
+                              <>
+                                <TableCell className="text-right">
+                                  ${parseFloat(tx.balanceAfter).toLocaleString()}
+                                </TableCell>
+                                <TableCell className="text-right">
+                                  {tx.walletsUsed
+                                    ? Object.entries(tx.walletsUsed).map(([wallet, percentage]) => {
+                                      const actualAmount = (percentage / 100) * parseFloat(tx.amount);
+                                      return (
+                                        <div key={wallet}>
+                                          {walletConfig?.[wallet]?.label || wallet}: $
+                                          {actualAmount.toFixed(2)}
+                                        </div>
+                                      );
+                                    })
+                                    : "-"}
+                                </TableCell>
+                              </>
                             }
                           </TableRow>
                         ))}

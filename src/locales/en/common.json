@@ -195,7 +195,8 @@
     "cancelled": "Cancelled",
     "running": "Running",
     "locked": "Locked",
-    "unlocked": "Unlocked"
+    "unlocked": "Unlocked",
+    "ipAddress": "IP Address"
   },
   "wallet": {
     "deposit": "Deposit",
@@ -241,7 +242,7 @@
     "transferToDownline": "Transfer funds to another user in your downline",
     "transfersOnlyDownline": "Transfers are only allowed to users in your downline",
     "fromWallet": "From Wallet",
-    "selectWallet": "Select wallet",
+    "selectWallet": "Selected wallet",
     "recipientMemberId": "Recipient Member ID",
     "enterMemberId": "Enter member ID",
     "processing": "Processing...",
@@ -395,7 +396,8 @@
     "noPackages": "No packages available",
     "checkBackLater": "Check back later for new investment packages",
     "failedToLoad": "Failed to load packages",
-    "tryAgainLater": "Please try again later"
+    "tryAgainLater": "Please try again later",
+    "walletSplitAllocation": "Wallets Used"
   },
   "growthTools": {
     "title": "Growth Tools",

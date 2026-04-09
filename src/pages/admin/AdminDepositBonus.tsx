@@ -72,6 +72,7 @@ const DepositBonusSettings = () => {
         bonusPercentage: Number(data.bonusPercentage),
       };
       if (data.id) {
+        delete payload.id;
         const response = await api.patch(
           `/admin/deposit-bonus/${data.id}`,
           payload,

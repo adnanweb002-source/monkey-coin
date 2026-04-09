@@ -194,7 +194,8 @@
     "cancelled": "Отменено",
     "running": "Выполняется",
     "locked": "Заблокировано",
-    "unlocked": "Разблокировано"
+    "unlocked": "Разблокировано",
+    "ipAddress": "IP-адрес"
   },
   "wallet": {
     "deposit": "Пополнение",
@@ -394,7 +395,8 @@
     "noPackages": "Нет доступных пакетов",
     "checkBackLater": "Зайдите позже для новых предложений",
     "failedToLoad": "Не удалось загрузить пакеты",
-    "tryAgainLater": "Пожалуйста, попробуйте позже"
+    "tryAgainLater": "Пожалуйста, попробуйте позже",
+    "walletSplitAllocation": "Распределение кошельков"
   },
   "growthTools": {
     "title": "Инструменты роста",

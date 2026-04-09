@@ -194,7 +194,8 @@
     "cancelled": "रद्द",
     "running": "चल रहा",
     "locked": "लॉक",
-    "unlocked": "अनलॉक"
+    "unlocked": "अनलॉक",
+    "ipAddress": "IP पता"
   },
   "wallet": {
     "deposit": "जमा",
@@ -394,7 +395,8 @@
     "noPackages": "कोई पैकेज उपलब्ध नहीं है",
     "checkBackLater": "नए निवेश पैकेजों के लिए बाद में देखें",
     "failedToLoad": "पैकेज लोड करने में विफल",
-    "tryAgainLater": "कृपया बाद में पुनः प्रयास करें"
+    "tryAgainLater": "कृपया बाद में पुनः प्रयास करें",
+    "walletSplitAllocation": "वॉलेट स्प्लिट अलोकेशन"
   },
   "growthTools": {
     "title": "ग्रोथ टूल्स",

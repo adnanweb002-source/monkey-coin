@@ -194,7 +194,8 @@
     "cancelled": "Đã hủy",
     "running": "Đang chạy",
     "locked": "Đã khóa",
-    "unlocked": "Đã mở"
+    "unlocked": "Đã mở",
+    "ipAddress": "Địa chỉ IP"
   },
   "wallet": {
     "deposit": "Nạp tiền",
@@ -394,7 +395,8 @@
     "noPackages": "Không có gói nào khả dụng",
     "checkBackLater": "Vui lòng quay lại sau để xem các gói đầu tư mới",
     "failedToLoad": "Không thể tải các gói",
-    "tryAgainLater": "Vui lòng thử lại sau"
+    "tryAgainLater": "Vui lòng thử lại sau",
+    "walletSplitAllocation": "Phân bổ ví"
   },
   "growthTools": {
     "title": "Công cụ tăng trưởng",

@@ -194,7 +194,8 @@
     "cancelled": "Annulé",
     "running": "En cours",
     "locked": "Verrouillé",
-    "unlocked": "Déverrouillé"
+    "unlocked": "Déverrouillé",
+    "ipAddress": "Adresse IP"
   },
   "wallet": {
     "deposit": "Dépôt",
@@ -394,7 +395,8 @@
     "noPackages": "Aucun forfait disponible",
     "checkBackLater": "Revenez plus tard pour de nouveaux forfaits d'investissement",
     "failedToLoad": "Échec du chargement des forfaits",
-    "tryAgainLater": "Veuillez réessayer plus tard"
+    "tryAgainLater": "Veuillez réessayer plus tard",
+    "walletSplitAllocation": "Allocation de portefeuilles"
   },
   "growthTools": {
     "title": "Outils de croissance",

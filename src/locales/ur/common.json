@@ -194,7 +194,8 @@
     "cancelled": "منسوخ",
     "running": "جاری",
     "locked": "مقفل",
-    "unlocked": "کھلا"
+    "unlocked": "کھلا",
+    "ipAddress": "IP پتہ"
   },
   "wallet": {
     "deposit": "جمع",
@@ -394,7 +395,8 @@
     "noPackages": "کوئی پیکیج دستیاب نہیں ہے",
     "checkBackLater": "نئے پیکیجز کے لیے دوبارہ چیک کریں",
     "failedToLoad": "پیکیجز لوڈ کرنے میں ناکامی",
-    "tryAgainLater": "براہ کرم کچھ دیر بعد کوشش کریں"
+    "tryAgainLater": "براہ کرم کچھ دیر بعد کوشش کریں",
+    "walletSplitAllocation": "والیٹ سپلیٹ آلوکیشن"
   },
   "growthTools": {
     "title": "ترقی کے ٹولز",

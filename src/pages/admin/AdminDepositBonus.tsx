@@ -78,6 +78,7 @@ const DepositBonusSettings = () => {
         );
         return response.data.bonus;
       } else {
+        delete payload.id;
         const response = await api.post("/admin/deposit-bonus", payload);
         return response.data.bonus;
       }

@@ -194,7 +194,8 @@
     "cancelled": "ملغى",
     "running": "جاري",
     "locked": "مقفل",
-    "unlocked": "مفتوح"
+    "unlocked": "مفتوح",
+    "ipAddress": "عنوان IP"
   },
   "wallet": {
     "deposit": "إيداع",
@@ -394,7 +395,8 @@
     "noPackages": "لا توجد باقات متاحة",
     "checkBackLater": "تحقق لاحقاً من باقات الاستثمار الجديدة",
     "failedToLoad": "فشل في تحميل الباقات",
-    "tryAgainLater": "يرجى المحاولة لاحقاً"
+    "tryAgainLater": "يرجى المحاولة لاحقاً",
+    "walletSplitAllocation": "تخصيص المحافظ"
   },
   "growthTools": {
     "title": "أدوات النمو",

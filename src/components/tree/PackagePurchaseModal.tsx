@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import api from "@/lib/api";
 import type { Package as PackageType } from "@/types/package";
+import { useTranslation } from "react-i18next";
 
 interface WalletRule {
   [key: string]: number;
@@ -59,6 +60,7 @@ const PackagePurchaseModal = ({
   prefilledMemberId,
   prefilledUserId,
 }: PackagePurchaseModalProps) => {
+  const { t } = useTranslation();
   const [selectedPackage, setSelectedPackage] = useState<PackageType | null>(
     initialPackage,
   );
@@ -498,7 +500,7 @@ const PackagePurchaseModal = ({
             {availableWallets.length > 0 && totalAmount > 0 && (
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <Label>Wallet Split Allocation</Label>
+                  <Label>{t("packages.walletSplitAllocation")}</Label>
                   {!isAdminPurchasingForOther && (
                     <span className="text-xs text-muted-foreground">
                       Total must equal ${totalAmount.toFixed(2)}

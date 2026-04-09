@@ -194,7 +194,8 @@
     "cancelled": "Cancelado",
     "running": "En curso",
     "locked": "Bloqueado",
-    "unlocked": "Desbloqueado"
+    "unlocked": "Desbloqueado",
+    "ipAddress": "Dirección IP"
   },
   "wallet": {
     "deposit": "Depósito",
@@ -394,7 +395,8 @@
     "noPackages": "No hay paquetes disponibles",
     "checkBackLater": "Vuelve más tarde para ver nuevos paquetes de inversión",
     "failedToLoad": "Error al cargar los paquetes",
-    "tryAgainLater": "Por favor, inténtalo de nuevo más tarde"
+    "tryAgainLater": "Por favor, inténtalo de nuevo más tarde",
+    "walletSplitAllocation": "Distribución de billeteras"
   },
   "growthTools": {
     "title": "Herramientas de crecimiento",

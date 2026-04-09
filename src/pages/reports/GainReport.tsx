@@ -40,7 +40,7 @@ interface Transaction {
   balanceAfter: string;
   createdAt: string;
   meta?: Record<string, unknown>;
-  walletsUsed?: Record<string, string>;
+  walletsUsed?: Record<string, number>;
 }
 
 interface GainReportData {
@@ -376,11 +376,17 @@ const GainReport = () => {
                                   ${parseFloat(tx.balanceAfter).toLocaleString()}
                                 </TableCell>
                                 <TableCell className="text-right">
-                                  {tx.walletsUsed ? Object.entries(tx.walletsUsed).map(([wallet, amount]) => (
-                                    <div key={wallet}>
-                                      {walletConfig?.[wallet]?.label || wallet}: ${amount}%
-                                    </div>
-                                  )) : "-"}
+                                  {tx.walletsUsed
+                                    ? Object.entries(tx.walletsUsed).map(([wallet, percentage]) => {
+                                      const actualAmount = (percentage / 100) * parseFloat(tx.amount);
+                                      return (
+                                        <div key={wallet}>
+                                          {walletConfig?.[wallet]?.label || wallet}: $
+                                          {actualAmount.toFixed(2)}
+                                        </div>
+                                      );
+                                    })
+                                    : "-"}
                                 </TableCell>
                               </>
                             }

@@ -17,7 +17,7 @@ const DashboardLayout = () => {
           localStorage.getItem("userProfile") || "{}",
         );
         if (userProfile?.role !== "ADMIN") {
-          window.location.href = import.meta.env.VITE_URL + "signin";
+          window.location.href = import.meta.env.VITE_URL
         }
       } else {
         window.location.href = import.meta.env.VITE_URL + "signin";

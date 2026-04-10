@@ -11,16 +11,16 @@ const DashboardLayout = () => {
 
   const pageUrl = window.location.href;
   useEffect(() => {
-    if (pageUrl.includes("admin.vaultireinfinite.com")) {
+    if (pageUrl.includes(import.meta.env.VITE_ADMIN_URL)) {
       if (localStorage.getItem("userProfile")) {
         const userProfile = JSON.parse(
           localStorage.getItem("userProfile") || "{}",
         );
         if (userProfile?.role !== "ADMIN") {
-          window.location.href = "https://gogex.xyz/signin";
+          window.location.href = import.meta.env.VITE_URL + "signin";
         }
       } else {
-        window.location.href = "https://gogex.xyz/signin";
+        window.location.href = import.meta.env.VITE_URL + "signin";
       }
     }
   }, [pageUrl]);

@@ -29,9 +29,9 @@ const RequireAuth = ({ children, require2FA = true }: RequireAuthProps) => {
         if (
           profile.role === "ADMIN" &&
           import.meta.env.VITE_ENVIRONMENT === "production" &&
-          window.location.hostname !== "admin.gogex.tech"
+          window.location.hostname !== import.meta.env.VITE_ADMIN_URL
         ) {
-          window.location.href = "https://admin.gogex.tech/panel";
+          window.location.href = import.meta.env.VITE_ADMIN_URL
           setIsLoading(false);
           return;
         }

@@ -6,7 +6,6 @@ const walletConfig = [
   { type: "E_WALLET", label: "E", name: "E Wallet", gradient: "bg-gradient-to-br from-[#7B2D8E] to-[#4A1A55]" },
   { type: "A_WALLET", label: "A", name: "A Wallet", gradient: "bg-gradient-to-br from-[#2D8E5E] to-[#1A5538]" },
   { type: "P_WALLET", label: "P", name: "P Wallet", gradient: "bg-gradient-to-br from-[#4A4A4A] to-[#2A2A2A]" },
-  { type: "BONUS_WALLET", label: "B", name: "B Wallet", gradient: "bg-gradient-to-br from-[#D4781C] to-[#8B4F12]" },
 ];
 
 const TreeWalletCards = () => {

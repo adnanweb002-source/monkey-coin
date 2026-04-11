@@ -329,11 +329,14 @@ const GainReport = () => {
                               <TableHead className="text-right">
                                 {t("income.balanceAfter")}
                               </TableHead>
+                            </>
+                          )}
+                          {
+                            type == "PACKAGE_PURCHASE && (
                               <TableHead className="text-right">
                                 {t("packages.walletSplitAllocation")}
                               </TableHead>
-                            </>
-                          )}
+                            )}
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -375,7 +378,11 @@ const GainReport = () => {
                                 <TableCell className="text-right">
                                   ${parseFloat(tx.balanceAfter).toLocaleString()}
                                 </TableCell>
-                                <TableCell className="text-right">
+                              </>
+                            }
+                            {
+                              type == "PACKAGE_PURCHASE && (
+                              <TableCell className="text-right">
                                   {tx.walletsUsed
                                     ? Object.entries(tx.walletsUsed).map(([wallet, percentage]) => {
                                       const actualAmount = (percentage / 100) * parseFloat(tx.amount);
@@ -388,7 +395,7 @@ const GainReport = () => {
                                     })
                                     : "-"}
                                 </TableCell>
-                              </>
+                              )
                             }
                           </TableRow>
                         ))}

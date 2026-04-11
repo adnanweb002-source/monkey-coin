@@ -332,7 +332,7 @@ const GainReport = () => {
                             </>
                           )}
                           {
-                            type == "PACKAGE_PURCHASE && (
+                            type == "PACKAGE_PURCHASE" && (
                               <TableHead className="text-right">
                                 {t("packages.walletSplitAllocation")}
                               </TableHead>
@@ -381,7 +381,7 @@ const GainReport = () => {
                               </>
                             }
                             {
-                              type == "PACKAGE_PURCHASE && (
+                              type == "PACKAGE_PURCHASE" && (
                               <TableCell className="text-right">
                                   {tx.walletsUsed
                                     ? Object.entries(tx.walletsUsed).map(([wallet, percentage]) => {

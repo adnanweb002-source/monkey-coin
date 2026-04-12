@@ -34,6 +34,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface QueryReply {
   id: number;
@@ -71,6 +72,7 @@ const AdminSupportQueries = () => {
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [viewQuery, setViewQuery] = useState<AdminSupportQuery | null>(null);
   const [replyMessage, setReplyMessage] = useState("");
+  const [closeQuery, setCloseQuery] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -90,7 +92,7 @@ const AdminSupportQueries = () => {
 
   const replyMutation = useMutation({
     mutationFn: async ({ queryId, message }: { queryId: number; message: string }) => {
-      const response = await api.post(`/utility/queries/${queryId}/reply`, { message });
+      const response = await api.post(`/utility/queries/${queryId}/reply`, { message, shouldClose: closeQuery });
       return response.data;
     },
     onSuccess: () => {
@@ -317,6 +319,16 @@ const AdminSupportQueries = () => {
                 onChange={(e) => setReplyMessage(e.target.value)}
                 rows={3}
               />
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="closeQuery"
+                  checked={closeQuery}
+                  onCheckedChange={(checked) => setCloseQuery(checked === true)}
+                />
+                <Label htmlFor="closeQuery" className="font-normal cursor-pointer">
+                  Close Query
+                </Label>
+              </div>
             </div>
           )}
 

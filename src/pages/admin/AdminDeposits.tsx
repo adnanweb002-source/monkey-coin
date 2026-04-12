@@ -336,12 +336,12 @@ const AdminDeposits = () => {
                     {format(new Date(depositDetails.createdAt), "MMM dd, yyyy HH:mm:ss")}
                   </p>
                 </div>
-                <div>
+                {/* <div>
                   <p className="text-sm text-muted-foreground">Expires At</p>
                   <p className="text-sm">
                     {format(new Date(depositDetails.expiresAt), "MMM dd, yyyy HH:mm:ss")}
                   </p>
-                </div>
+                </div> */}
               </div>
 
               {depositDetails.meta && Object.keys(depositDetails.meta).length > 0 && (

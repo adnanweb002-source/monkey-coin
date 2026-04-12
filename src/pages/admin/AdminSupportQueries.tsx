@@ -34,11 +34,12 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface QueryReply {
   id: number;
   message: string;
-  isAdminReply: boolean;
+  userId: number | null;
   createdAt: string;
 }
 
@@ -71,6 +72,7 @@ const AdminSupportQueries = () => {
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [viewQuery, setViewQuery] = useState<AdminSupportQuery | null>(null);
   const [replyMessage, setReplyMessage] = useState("");
+  const [closeQuery, setCloseQuery] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -90,7 +92,7 @@ const AdminSupportQueries = () => {
 
   const replyMutation = useMutation({
     mutationFn: async ({ queryId, message }: { queryId: number; message: string }) => {
-      const response = await api.post(`/utility/queries/${queryId}/reply`, { message });
+      const response = await api.post(`/utility/queries/${queryId}/reply`, { message, shouldClose: closeQuery });
       return response.data;
     },
     onSuccess: () => {
@@ -288,14 +290,14 @@ const AdminSupportQueries = () => {
                 <div
                   key={reply.id}
                   className={`rounded-lg p-4 ${
-                    reply.isAdminReply
+                    reply.userId == null
                       ? "bg-primary/10 border border-primary/20"
                       : "bg-secondary"
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium">
-                      {reply.isAdminReply ? "Admin" : viewQuery.user.firstName}
+                      {reply.userId == null ? "Admin" : viewQuery.user.firstName}
                     </span>
                     <span className="text-xs text-muted-foreground">
                       {format(new Date(reply.createdAt), "MMM dd, yyyy HH:mm")}
@@ -317,6 +319,16 @@ const AdminSupportQueries = () => {
                 onChange={(e) => setReplyMessage(e.target.value)}
                 rows={3}
               />
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="closeQuery"
+                  checked={closeQuery}
+                  onCheckedChange={(checked) => setCloseQuery(checked === true)}
+                />
+                <Label htmlFor="closeQuery" className="font-normal cursor-pointer">
+                  Close Query
+                </Label>
+              </div>
             </div>
           )}
 
@@ -325,7 +337,7 @@ const AdminSupportQueries = () => {
               Close
             </Button>
             {viewQuery?.status !== "CLOSED" && (
-              <Button onClick={handleSendReply} disabled={replyMutation.isPending}>
+              <Button onClick={handleSendReply} disabled={replyMutation.isPending || !replyMessage.trim()}>
                 {replyMutation.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -89,7 +89,7 @@ const SigninForm = () => {
           <div className="flex justify-center">
             <InputOTP maxLength={6} value={otpValue} onChange={handleOtpChange}>
               <InputOTPGroup className="gap-2">
-                {[0,1,2,3,4,5].map((index) => <InputOTPSlot key={index} index={index} className="crypto-input w-10 h-12 text-center text-lg" />)}
+                {[0, 1, 2, 3, 4, 5].map((index) => <InputOTPSlot key={index} index={index} className="crypto-input w-10 h-12 text-center text-lg" />)}
               </InputOTPGroup>
             </InputOTP>
           </div>

@@ -52,7 +52,8 @@ interface DepositDetails {
   id: string;
   userId: number;
   paymentId: string;
-  amountFiat: string;
+  fiatAmount: string;
+  paidAmount: string;
   amountCrypto: string;
   crypto: string;
   address: string;
@@ -313,8 +314,8 @@ const AdminDeposits = () => {
                   </Badge>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Fiat Amount</p>
-                  <p className="font-medium">${parseFloat(depositDetails.amountFiat).toFixed(2)}</p>
+                  <p className="text-sm text-muted-foreground">Paid Amount</p>
+                  <p className="font-medium">${parseFloat(depositDetails.paidAmount).toFixed(2)}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Crypto Amount</p>

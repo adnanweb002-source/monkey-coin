@@ -77,7 +77,7 @@ const AdminDeposits = () => {
   const { data, isLoading, error } = useQuery<AdminDepositsResponse>({
     queryKey: ["admin-deposits", page, limit],
     queryFn: async () => {
-      const response = await api.get(`/admin/deposits?page=${page}&limit=${limit}`);
+      const response = await api.get(`/wallet/admin/deposits?page=${page}&limit=${limit}`);
       return response.data;
     },
   });
@@ -85,7 +85,7 @@ const AdminDeposits = () => {
   const { data: depositDetails, isLoading: isLoadingDetails } = useQuery<DepositDetails>({
     queryKey: ["admin-deposit-details", selectedDepositId],
     queryFn: async () => {
-      const response = await api.get(`/admin/deposits/${selectedDepositId}`);
+      const response = await api.get(`/wallet/admin/deposits/${selectedDepositId}`);
       return response.data;
     },
     enabled: !!selectedDepositId,

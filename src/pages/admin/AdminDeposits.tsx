@@ -32,9 +32,11 @@ interface AdminDepositItem {
   id: string;
   userId: number;
   paymentId: string;
-  amountFiat: string;
+  fiatAmount: string;
+  paidAmount: string;
   crypto: string;
   status: string;
+  meta: any;
   createdAt: string;
 }
 
@@ -58,7 +60,7 @@ interface DepositDetails {
   createdAt: string;
   updatedAt: string;
   expiresAt: string;
-  metadata?: Record<string, any>;
+  meta?: Record<string, any>;
 }
 
 const statusColors: Record<string, string> = {
@@ -185,7 +187,7 @@ const AdminDeposits = () => {
                     <TableRow>
                       <TableHead>User ID</TableHead>
                       <TableHead>Payment ID</TableHead>
-                      <TableHead>Fiat Amount</TableHead>
+                      <TableHead>Paid Amount</TableHead>
                       <TableHead>Crypto</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Created At</TableHead>
@@ -200,7 +202,7 @@ const AdminDeposits = () => {
                           {item.paymentId}
                         </TableCell>
                         <TableCell className="font-medium">
-                          ${parseFloat(item.amountFiat).toFixed(2)}
+                          ${parseFloat(item.paidAmount).toFixed(2)}
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline">{item.crypto}</Badge>
@@ -240,7 +242,7 @@ const AdminDeposits = () => {
                       <div>
                         <p className="text-sm text-muted-foreground">User #{item.userId}</p>
                         <p className="font-medium text-lg">
-                          ${parseFloat(item.amountFiat).toFixed(2)}
+                          ${parseFloat(item.paidAmount).toFixed(2)}
                         </p>
                       </div>
                       <Badge
@@ -342,11 +344,11 @@ const AdminDeposits = () => {
                 </div>
               </div>
 
-              {depositDetails.metadata && Object.keys(depositDetails.metadata).length > 0 && (
+              {depositDetails.meta && Object.keys(depositDetails.meta).length > 0 && (
                 <div>
-                  <p className="text-sm text-muted-foreground mb-2">Metadata</p>
+                  <p className="text-sm text-muted-foreground mb-2">meta</p>
                   <pre className="bg-muted p-3 rounded-lg text-xs overflow-x-auto">
-                    {JSON.stringify(depositDetails.metadata, null, 2)}
+                    {JSON.stringify(depositDetails.meta, null, 2)}
                   </pre>
                 </div>
               )}

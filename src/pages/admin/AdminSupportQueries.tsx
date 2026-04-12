@@ -38,7 +38,7 @@ import api from "@/lib/api";
 interface QueryReply {
   id: number;
   message: string;
-  isAdminReply: boolean;
+  userId: number | null;
   createdAt: string;
 }
 
@@ -288,14 +288,14 @@ const AdminSupportQueries = () => {
                 <div
                   key={reply.id}
                   className={`rounded-lg p-4 ${
-                    reply.isAdminReply
+                    reply.userId == null
                       ? "bg-primary/10 border border-primary/20"
                       : "bg-secondary"
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium">
-                      {reply.isAdminReply ? "Admin" : viewQuery.user.firstName}
+                      {reply.userId == null ? "Admin" : viewQuery.user.firstName}
                     </span>
                     <span className="text-xs text-muted-foreground">
                       {format(new Date(reply.createdAt), "MMM dd, yyyy HH:mm")}
@@ -325,7 +325,7 @@ const AdminSupportQueries = () => {
               Close
             </Button>
             {viewQuery?.status !== "CLOSED" && (
-              <Button onClick={handleSendReply} disabled={replyMutation.isPending}>
+              <Button onClick={handleSendReply} disabled={replyMutation.isPending || !replyMessage.trim()}>
                 {replyMutation.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

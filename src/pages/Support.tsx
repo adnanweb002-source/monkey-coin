@@ -18,7 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import api from "@/lib/api";
 import { useTranslation } from "react-i18next";
 
-interface QueryReply { id: number; message: string; isAdminReply: boolean; createdAt: string; }
+interface QueryReply { id: number; message: string; userId: number | null; createdAt: string; }
 interface SupportQuery { id: number; message: string; status: "OPEN" | "CLOSED" | "PENDING"; createdAt: string; updatedAt: string; replies: QueryReply[]; }
 
 const PAGE_SIZE = 10;
@@ -34,6 +34,7 @@ const Support = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [viewQuery, setViewQuery] = useState<SupportQuery | null>(null);
   const [newMessage, setNewMessage] = useState("");
+  const [replyMessage, setReplyMessage] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -57,6 +58,36 @@ const Support = () => {
   const handleSubmitQuery = () => {
     if (!newMessage.trim()) { toast({ title: t("common.error"), description: t("support.messageEmpty"), variant: "destructive" }); return; }
     createMutation.mutate(newMessage.trim());
+  };
+
+  const replyMutation = useMutation({
+    mutationFn: async ({ queryId, message }: { queryId: number; message: string }) => {
+      const response = await api.post(`/utility/queries/${queryId}/reply/user`, { message });
+      return response.data;
+    },
+    onSuccess: () => {
+      toast({ title: "Success", description: "Reply sent successfully" });
+      setReplyMessage("");
+      setViewQuery(null);
+      queryClient.invalidateQueries({ queryKey: ["support-queries"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to send reply",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSendReply = () => {
+    if (!replyMessage.trim()) {
+      toast({ title: "Error", description: "Reply message cannot be empty", variant: "destructive" });
+      return;
+    }
+    if (viewQuery) {
+      replyMutation.mutate({ queryId: viewQuery.id, message: replyMessage.trim() });
+    }
   };
 
   const queries = data?.data || data || [];
@@ -167,9 +198,9 @@ const Support = () => {
                 <p className="text-sm text-foreground">{viewQuery?.message}</p>
               </div>
               {viewQuery?.replies?.map((reply) => (
-                <div key={reply.id} className={`rounded-lg p-4 ${reply.isAdminReply ? "bg-primary/10 border border-primary/20" : "bg-secondary"}`}>
+                <div key={reply.id} className={`rounded-lg p-4 ${reply.userId == null ? "bg-primary/10 border border-primary/20" : "bg-secondary"}`}>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium">{reply.isAdminReply ? t("support.supportTeam") : t("support.you")}</span>
+                    <span className="text-sm font-medium">{reply.userId == null ? t("support.supportTeam") : t("support.you")}</span>
                     <span className="text-xs text-muted-foreground">{format(new Date(reply.createdAt), "MMM dd, yyyy HH:mm")}</span>
                   </div>
                   <p className="text-sm text-foreground">{reply.message}</p>
@@ -180,7 +211,37 @@ const Support = () => {
               )}
             </div>
           </ScrollArea>
-          <DialogFooter><Button variant="outline" onClick={() => setViewQuery(null)}>{t("common.close")}</Button></DialogFooter>
+          {viewQuery?.status !== "CLOSED" && (
+            <div className="space-y-2">
+              <Label htmlFor="reply">Reply</Label>
+              <Textarea
+                id="reply"
+                placeholder="Type your reply..."
+                value={replyMessage}
+                onChange={(e) => setReplyMessage(e.target.value)}
+                rows={3}
+              />
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setViewQuery(null)}>{t("common.close")}</Button>
+
+            {viewQuery?.status !== "CLOSED" && (
+              <Button onClick={handleSendReply} disabled={replyMutation.isPending || !replyMessage.trim()}>
+                {replyMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send className="mr-2 h-4 w-4" />
+                    Send Reply
+                  </>
+                )}
+              </Button>
+            )}
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

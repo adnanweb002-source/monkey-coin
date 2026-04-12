@@ -32,9 +32,11 @@ interface AdminDepositItem {
   id: string;
   userId: number;
   paymentId: string;
-  amountFiat: string;
+  fiatAmount: string;
+  paidAmount: string;
   crypto: string;
   status: string;
+  meta: any;
   createdAt: string;
 }
 
@@ -50,7 +52,8 @@ interface DepositDetails {
   id: string;
   userId: number;
   paymentId: string;
-  amountFiat: string;
+  fiatAmount: string;
+  paidAmount: string;
   amountCrypto: string;
   crypto: string;
   address: string;
@@ -58,7 +61,7 @@ interface DepositDetails {
   createdAt: string;
   updatedAt: string;
   expiresAt: string;
-  metadata?: Record<string, any>;
+  meta?: Record<string, any>;
 }
 
 const statusColors: Record<string, string> = {
@@ -77,7 +80,7 @@ const AdminDeposits = () => {
   const { data, isLoading, error } = useQuery<AdminDepositsResponse>({
     queryKey: ["admin-deposits", page, limit],
     queryFn: async () => {
-      const response = await api.get(`/admin/deposits?page=${page}&limit=${limit}`);
+      const response = await api.get(`/wallet/admin/deposits?page=${page}&limit=${limit}`);
       return response.data;
     },
   });
@@ -85,7 +88,7 @@ const AdminDeposits = () => {
   const { data: depositDetails, isLoading: isLoadingDetails } = useQuery<DepositDetails>({
     queryKey: ["admin-deposit-details", selectedDepositId],
     queryFn: async () => {
-      const response = await api.get(`/admin/deposits/${selectedDepositId}`);
+      const response = await api.get(`/wallet/admin/deposits/${selectedDepositId}`);
       return response.data;
     },
     enabled: !!selectedDepositId,
@@ -185,7 +188,7 @@ const AdminDeposits = () => {
                     <TableRow>
                       <TableHead>User ID</TableHead>
                       <TableHead>Payment ID</TableHead>
-                      <TableHead>Fiat Amount</TableHead>
+                      <TableHead>Paid Amount</TableHead>
                       <TableHead>Crypto</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Created At</TableHead>
@@ -200,7 +203,7 @@ const AdminDeposits = () => {
                           {item.paymentId}
                         </TableCell>
                         <TableCell className="font-medium">
-                          ${parseFloat(item.amountFiat).toFixed(2)}
+                          ${parseFloat(item.paidAmount).toFixed(2)}
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline">{item.crypto}</Badge>
@@ -240,7 +243,7 @@ const AdminDeposits = () => {
                       <div>
                         <p className="text-sm text-muted-foreground">User #{item.userId}</p>
                         <p className="font-medium text-lg">
-                          ${parseFloat(item.amountFiat).toFixed(2)}
+                          ${parseFloat(item.paidAmount).toFixed(2)}
                         </p>
                       </div>
                       <Badge
@@ -311,8 +314,8 @@ const AdminDeposits = () => {
                   </Badge>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Fiat Amount</p>
-                  <p className="font-medium">${parseFloat(depositDetails.amountFiat).toFixed(2)}</p>
+                  <p className="text-sm text-muted-foreground">Paid Amount</p>
+                  <p className="font-medium">${parseFloat(depositDetails.paidAmount).toFixed(2)}</p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Crypto Amount</p>
@@ -334,19 +337,19 @@ const AdminDeposits = () => {
                     {format(new Date(depositDetails.createdAt), "MMM dd, yyyy HH:mm:ss")}
                   </p>
                 </div>
-                <div>
+                {/* <div>
                   <p className="text-sm text-muted-foreground">Expires At</p>
                   <p className="text-sm">
                     {format(new Date(depositDetails.expiresAt), "MMM dd, yyyy HH:mm:ss")}
                   </p>
-                </div>
+                </div> */}
               </div>
 
-              {depositDetails.metadata && Object.keys(depositDetails.metadata).length > 0 && (
+              {depositDetails.meta && Object.keys(depositDetails.meta).length > 0 && (
                 <div>
-                  <p className="text-sm text-muted-foreground mb-2">Metadata</p>
+                  <p className="text-sm text-muted-foreground mb-2">meta</p>
                   <pre className="bg-muted p-3 rounded-lg text-xs overflow-x-auto">
-                    {JSON.stringify(depositDetails.metadata, null, 2)}
+                    {JSON.stringify(depositDetails.meta, null, 2)}
                   </pre>
                 </div>
               )}

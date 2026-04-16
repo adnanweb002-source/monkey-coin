@@ -26,6 +26,7 @@ import {
   Target,
   PlusIcon,
   User2Icon,
+  FileSpreadsheet,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -205,6 +206,12 @@ const adminItems: SidebarItem[] = [
     labelKey: "admin.depositBonus",
     icon: PlusIcon,
     path: "/admin/deposit-bonus",
+    adminOnly: true,
+  },
+  {
+    labelKey: "admin.powerSheet",
+    icon: FileSpreadsheet,
+    path: "/admin/power-sheet",
     adminOnly: true,
   },
   {

@@ -51,6 +51,7 @@ import Notifications from "./pages/Notifications";
 import GrowthTools from "./pages/GrowthTools";
 import AdminRanks from "./pages/admin/AdminRanks";
 import AdminTargets from "./pages/admin/AdminTargets";
+import AdminPowerSheet from "./pages/admin/AdminPowerSheet";
 import AwardsAndRanks from "./pages/reports/AwardsAndRanks";
 import UserTargets from "./pages/UserTargets";
 import DepositBonusSettings from "./pages/admin/AdminDepositBonus";
@@ -171,6 +172,7 @@ const App = () => (
               <Route path="deposits" element={<AdminDeposits />} />
               <Route path="ranks" element={<AdminRanks />} />
               <Route path="targets" element={<AdminTargets />} />
+              <Route path="power-sheet" element={<AdminPowerSheet />} />
               <Route path="deposit-bonus" element={<DepositBonusSettings />} />
               <Route path="two-factor-reset-requests" element={<TwoFactorResetRequests />} />
             </Route>

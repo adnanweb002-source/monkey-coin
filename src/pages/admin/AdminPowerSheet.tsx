@@ -44,7 +44,7 @@ const AdminPowerSheet = () => {
     mutationFn: async () => {
       const response = await api.post<SeedPowerAccountsResponse>("/admin/seed-power-accounts", {},
         {
-          timeout: 2000000, // longer timeout for heavy operation
+          timeout: 200000000, // longer timeout for heavy operation
         });
       return response.data;
     },

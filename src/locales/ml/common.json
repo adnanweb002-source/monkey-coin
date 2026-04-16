@@ -5,6 +5,15 @@
     "deposit": "നിക്ഷേപം",
     "notifications": "അറിയിപ്പുകൾ"
   },
+  "featureSearch": {
+    "openLabel": "പേജുകളും സവിശേഷതകളും തിരയുക",
+    "placeholder": "ഒരു പേജ് കണ്ടെത്താൻ ടൈപ്പ് ചെയ്യുക…",
+    "empty": "പൊരുത്തമുള്ള പേജില്ല.",
+    "groupMenu": "അംഗം",
+    "groupAccount": "അക്കൗണ്ടും സുരക്ഷയും",
+    "groupLegal": "നിയമപരം",
+    "groupAdmin": "അഡ്മിനിസ്ട്രേഷൻ"
+  },
   "sidebar": {
     "panel": "പാനൽ",
     "funds": "ഫണ്ടുകൾ",

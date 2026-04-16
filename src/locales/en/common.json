@@ -60,7 +60,24 @@
     "ranks": "Ranks",
     "targets": "Targets",
     "depositBonus": "Deposit Bonus",
-    "twoFactorResetRequests": "2FA Reset Requests"
+    "twoFactorResetRequests": "2FA Reset Requests",
+    "powerSheet": "Power Sheet"
+  },
+  "adminPowerSheet": {
+    "title": "Power Sheet Generator",
+    "subtitle": "Create power accounts and download credentials as Excel",
+    "cardTitle": "Generate Power Accounts Sheet",
+    "cardDescription": "Runs the admin seed process and exports the response CSV as an Excel file.",
+    "powerAccountsLabel": "Power Accounts",
+    "powerAccountsDesc": "Creates 15 power accounts under the company network.",
+    "subAccountsLabel": "Sub Accounts",
+    "subAccountsDesc": "Creates 100 left-side sub accounts for each power account.",
+    "infoNote": "This action creates users and should only be used for controlled admin seeding.",
+    "generateAndDownload": "Generate and Download Excel",
+    "generating": "Generating and downloading...",
+    "downloadSuccess": "Excel downloaded. Power accounts: {{powerCount}}, sub accounts: {{subCount}}.",
+    "generateFailed": "Failed to generate power sheet",
+    "emptyCsv": "The server response did not include CSV data."
   },
   "auth": {
     "signIn": "Sign In",

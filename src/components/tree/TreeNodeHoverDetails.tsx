@@ -6,12 +6,9 @@ import { Badge } from "@/components/ui/badge";
 interface TreeNodeHoverDetailsProps {
   node: TreeNode;
   position: { x: number; y: number };
-  nodeHeight: number;
-  isMobile?: boolean;
-  onClose: () => void;
 }
 
-const TreeNodeHoverDetails = ({ node, position, nodeHeight, isMobile, onClose }: TreeNodeHoverDetailsProps) => {
+const TreeNodeHoverDetails = ({ node, position }: TreeNodeHoverDetailsProps) => {
   const getName = (email: string) => {
     const name = email.split("@")[0];
     return name.charAt(0).toUpperCase() + name.slice(1);
@@ -90,14 +87,6 @@ const TreeNodeHoverDetails = ({ node, position, nodeHeight, isMobile, onClose }:
 
   return (
     <>
-      {/* Backdrop (mobile/tap mode only) */}
-      {isMobile && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={onClose}
-          onTouchStart={onClose}
-        />
-      )}
       {/* Tooltip Panel - positioned directly below the node with arrow pointing up */}
       <div
         className={cn(

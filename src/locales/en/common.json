@@ -5,6 +5,15 @@
     "deposit": "Deposit",
     "notifications": "Notifications"
   },
+  "featureSearch": {
+    "openLabel": "Search pages and features",
+    "placeholder": "Type to find a page…",
+    "empty": "No matching page.",
+    "groupMenu": "Member",
+    "groupAccount": "Account & security",
+    "groupLegal": "Legal",
+    "groupAdmin": "Administration"
+  },
   "sidebar": {
     "panel": "Panel",
     "funds": "Funds",

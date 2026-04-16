@@ -5,6 +5,15 @@
     "deposit": "Пополнение",
     "notifications": "Уведомления"
   },
+  "featureSearch": {
+    "openLabel": "Поиск страниц и функций",
+    "placeholder": "Введите запрос…",
+    "empty": "Ничего не найдено.",
+    "groupMenu": "Участник",
+    "groupAccount": "Аккаунт и безопасность",
+    "groupLegal": "Правовая информация",
+    "groupAdmin": "Администрирование"
+  },
   "sidebar": {
     "panel": "Панель",
     "funds": "Средства",

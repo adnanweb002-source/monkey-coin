@@ -5,6 +5,15 @@
     "deposit": "إيداع",
     "notifications": "الإشعارات"
   },
+  "featureSearch": {
+    "openLabel": "البحث في الصفحات والميزات",
+    "placeholder": "اكتب للعثور على صفحة…",
+    "empty": "لا توجد صفحة مطابقة.",
+    "groupMenu": "العضو",
+    "groupAccount": "الحساب والأمان",
+    "groupLegal": "قانوني",
+    "groupAdmin": "الإدارة"
+  },
   "sidebar": {
     "panel": "لوحة التحكم",
     "funds": "الأموال",

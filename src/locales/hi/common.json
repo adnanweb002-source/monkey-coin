@@ -5,6 +5,15 @@
     "deposit": "जमा करें",
     "notifications": "सूचनाएं"
   },
+  "featureSearch": {
+    "openLabel": "पृष्ठ और सुविधाएँ खोजें",
+    "placeholder": "पृष्ठ खोजने के लिए टाइप करें…",
+    "empty": "कोई मेल खाता पृष्ठ नहीं।",
+    "groupMenu": "सदस्य",
+    "groupAccount": "खाता और सुरक्षा",
+    "groupLegal": "कानूनी",
+    "groupAdmin": "प्रशासन"
+  },
   "sidebar": {
     "panel": "पैनल",
     "funds": "फंड",

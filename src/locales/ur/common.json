@@ -5,6 +5,15 @@
     "deposit": "رقم جمع کروائیں",
     "notifications": "اطلاعات"
   },
+  "featureSearch": {
+    "openLabel": "صفحات اور فیچرز تلاش کریں",
+    "placeholder": "صفحہ تلاش کرنے کے لیے ٹائپ کریں…",
+    "empty": "کوئی مماثل صفحہ نہیں۔",
+    "groupMenu": "رکن",
+    "groupAccount": "اکاؤنٹ اور سیکیورٹی",
+    "groupLegal": "قانونی",
+    "groupAdmin": "انتظامیہ"
+  },
   "sidebar": {
     "panel": "پینل",
     "funds": "فنڈز",

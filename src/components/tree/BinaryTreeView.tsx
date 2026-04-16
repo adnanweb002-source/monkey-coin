@@ -11,6 +11,7 @@ import TreeNodeCard from "./TreeNodeCard";
 import TreeNodeContextMenu from "./TreeNodeContextMenu";
 import TreeNodeHoverDetails from "./TreeNodeHoverDetails";
 import AddUserNode from "./AddUserNode";
+import { Info } from "lucide-react";
 
 interface BinaryTreeViewProps {
   rootNode: TreeNode | null;
@@ -52,6 +53,7 @@ const BinaryTreeView = ({
   // IMPORTANT: this ref must point to the *inner* relative tree container (the one that owns absolute nodes)
   // so tooltip positioning is stable and doesn't drift due to outer centering.
   const containerRef = useRef<HTMLDivElement>(null);
+  const detailsPanelRef = useRef<HTMLDivElement>(null);
 
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const longPressTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
@@ -134,8 +136,10 @@ const BinaryTreeView = ({
     };
   };
 
-  const showNodeDetailsPanel = useCallback(
-    (node: TreeNode) => {
+  const handleInfoButtonClick = useCallback(
+    (e: ReactMouseEvent<HTMLButtonElement>, node: TreeNode) => {
+      e.preventDefault();
+      e.stopPropagation();
       const pos = getNodePosition(node.id);
       if (!pos) return;
       setHoverState({
@@ -145,6 +149,8 @@ const BinaryTreeView = ({
       });
       if (isMobile) {
         setTappedNodeId(node.id);
+      } else {
+        setTappedNodeId(null);
       }
     },
     [isMobile],
@@ -286,6 +292,24 @@ const BinaryTreeView = ({
     setTappedNodeId(null);
   }, []);
 
+  useEffect(() => {
+    if (!hoverState.node) return;
+
+    const onPointerDown = (e: PointerEvent) => {
+      const target = e.target;
+      if (!(target instanceof Node)) return;
+      if (detailsPanelRef.current?.contains(target)) return;
+      const el = target instanceof Element ? target : null;
+      if (el?.closest?.("[data-tree-node-info-btn]")) return;
+
+      closeHoverDetails();
+    };
+
+    document.addEventListener("pointerdown", onPointerDown, true);
+    return () =>
+      document.removeEventListener("pointerdown", onPointerDown, true);
+  }, [hoverState.node, closeHoverDetails]);
+
   const getMaxDepth = (
     node: TreeNode | null,
     currentDepth: number = 0,
@@ -417,7 +441,6 @@ const BinaryTreeView = ({
         key={`menu-${node.id}`}
         node={node}
         isAdmin={isAdmin}
-        onViewDetails={showNodeDetailsPanel}
       >
         <div
           className="absolute"
@@ -432,6 +455,16 @@ const BinaryTreeView = ({
           onTouchEnd={(e) => handleTouchEnd(node, e)}
           onTouchCancel={handleTouchCancel}
         >
+          <button
+            type="button"
+            data-tree-node-info-btn
+            aria-label="View member details"
+            className="absolute -top-1 -right-1 z-20 flex h-5 w-5 items-center justify-center rounded-full border border-primary/40 bg-background/95 text-primary shadow-sm hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary/30"
+            onClick={(e) => handleInfoButtonClick(e, node)}
+            onPointerDown={(e) => e.stopPropagation()}
+          >
+            <Info className="h-3 w-3" strokeWidth={2.5} />
+          </button>
           <TreeNodeCard
             node={node}
             isRoot={!parentId}
@@ -583,15 +616,13 @@ const BinaryTreeView = ({
         {/* Hover Details Popup */}
         {hoverState.node && (
           <div
+            ref={detailsPanelRef}
             onMouseEnter={handlePopupMouseEnter}
             onMouseLeave={handlePopupMouseLeave}
           >
             <TreeNodeHoverDetails
               node={hoverState.node}
               position={hoverState.position}
-              nodeHeight={hoverState.nodeHeight}
-              isMobile={isMobile}
-              onClose={closeHoverDetails}
             />
           </div>
         )}

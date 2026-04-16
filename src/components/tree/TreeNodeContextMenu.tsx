@@ -40,7 +40,6 @@ import {
   Loader2,
   Gift,
   Package,
-  Info,
 } from "lucide-react";
 import TransferToUserModal from "./TransferToUserModal";
 import SendBonusModal from "./SendBonusModal";
@@ -51,18 +50,11 @@ interface TreeNodeContextMenuProps {
   node: TreeNode;
   children: React.ReactNode;
   isAdmin: boolean;
-  /** Opens the same member details panel as hover (below the node). */
-  onViewDetails?: (node: TreeNode) => void;
 }
 
 type AdminAction = "suspend" | "activate" | "disable2fa" | "resetPassword" | null;
 
-const TreeNodeContextMenu = ({
-  node,
-  children,
-  isAdmin,
-  onViewDetails,
-}: TreeNodeContextMenuProps) => {
+const TreeNodeContextMenu = ({ node, children, isAdmin }: TreeNodeContextMenuProps) => {
   const [transferOpen, setTransferOpen] = useState(false);
   const [bonusOpen, setBonusOpen] = useState(false);
   const [purchaseOpen, setPurchaseOpen] = useState(false);
@@ -209,17 +201,6 @@ const TreeNodeContextMenu = ({
           {children}
         </ContextMenuTrigger>
         <ContextMenuContent className="w-56">
-          {onViewDetails && (
-            <>
-              <ContextMenuItem
-                onClick={() => onViewDetails(node)}
-              >
-                <Info className="mr-2 h-4 w-4" />
-                View Details
-              </ContextMenuItem>
-              <ContextMenuSeparator />
-            </>
-          )}
           <ContextMenuItem onClick={() => setTransferOpen(true)}>
             <ArrowRightLeft className="mr-2 h-4 w-4" />
             Transfer Funds to This User

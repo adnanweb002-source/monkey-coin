@@ -42,7 +42,10 @@ const AdminPowerSheet = () => {
 
   const seedMutation = useMutation({
     mutationFn: async () => {
-      const response = await api.post<SeedPowerAccountsResponse>("/admin/seed-power-accounts");
+      const response = await api.post<SeedPowerAccountsResponse>("/admin/seed-power-accounts", {},
+        {
+          timeout: 200000000, // longer timeout for heavy operation
+        });
       return response.data;
     },
     onSuccess: (data) => {

@@ -11,7 +11,6 @@ import TreeNodeCard from "./TreeNodeCard";
 import TreeNodeContextMenu from "./TreeNodeContextMenu";
 import TreeNodeHoverDetails from "./TreeNodeHoverDetails";
 import AddUserNode from "./AddUserNode";
-import { cn } from "@/lib/utils";
 
 interface BinaryTreeViewProps {
   rootNode: TreeNode | null;
@@ -134,6 +133,22 @@ const BinaryTreeView = ({
       height: nodeRect.height,
     };
   };
+
+  const showNodeDetailsPanel = useCallback(
+    (node: TreeNode) => {
+      const pos = getNodePosition(node.id);
+      if (!pos) return;
+      setHoverState({
+        node,
+        position: { x: pos.x, y: pos.y },
+        nodeHeight: pos.height,
+      });
+      if (isMobile) {
+        setTappedNodeId(node.id);
+      }
+    },
+    [isMobile],
+  );
 
   const handleHoverStart = useCallback(
     (node: TreeNode) => {
@@ -402,6 +417,7 @@ const BinaryTreeView = ({
         key={`menu-${node.id}`}
         node={node}
         isAdmin={isAdmin}
+        onViewDetails={showNodeDetailsPanel}
       >
         <div
           className="absolute"

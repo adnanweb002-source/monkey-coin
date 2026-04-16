@@ -36,6 +36,51 @@ const downloadCsvAsExcel = (csvData: string, fileName?: string) => {
   URL.revokeObjectURL(url);
 };
 
+const downloadMultiSheetExcel = (csvData: string, fileName?: string) => {
+  const workbook = XLSX.utils.book_new();
+
+  // Parse CSV into JSON
+  const rows = XLSX.utils.sheet_to_json(
+    XLSX.read(csvData, { type: "string" }).Sheets.Sheet1
+  );
+
+  // Group by sheetName
+  const grouped: Record<string, any[]> = {};
+
+  rows.forEach((row: any) => {
+    const sheet = row.sheetName || "Sheet1";
+
+    if (!grouped[sheet]) grouped[sheet] = [];
+
+    // remove sheetName from inside sheet
+    const { sheetName, ...rest } = row;
+    grouped[sheet].push(rest);
+  });
+
+  // Create sheets
+  Object.entries(grouped).forEach(([sheetName, data]) => {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+  });
+
+  // Export
+  const xlsxData = XLSX.write(workbook, {
+    bookType: "xlsx",
+    type: "array",
+  });
+
+  const blob = new Blob([xlsxData], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = getXlsxFileName(fileName);
+  link.click();
+  URL.revokeObjectURL(url);
+};
+
 const AdminPowerSheet = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
@@ -57,9 +102,9 @@ const AdminPowerSheet = () => {
         });
         return;
       }
-
-      downloadCsvAsExcel(data.csv, data.fileName);
-
+    
+      downloadMultiSheetExcel(data.csv, data.fileName);
+    
       toast({
         title: t("common.success"),
         description: t("adminPowerSheet.downloadSuccess", {

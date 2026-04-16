@@ -5,6 +5,15 @@
     "deposit": "Nạp tiền",
     "notifications": "Thông báo"
   },
+  "featureSearch": {
+    "openLabel": "Tìm trang và tính năng",
+    "placeholder": "Gõ để tìm trang…",
+    "empty": "Không có trang phù hợp.",
+    "groupMenu": "Thành viên",
+    "groupAccount": "Tài khoản & bảo mật",
+    "groupLegal": "Pháp lý",
+    "groupAdmin": "Quản trị"
+  },
   "sidebar": {
     "panel": "Bảng điều khiển",
     "funds": "Quỹ",

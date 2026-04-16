@@ -5,6 +5,15 @@
     "deposit": "存款",
     "notifications": "通知"
   },
+  "featureSearch": {
+    "openLabel": "搜索页面与功能",
+    "placeholder": "输入以查找页面…",
+    "empty": "没有匹配的页面。",
+    "groupMenu": "会员",
+    "groupAccount": "账户与安全",
+    "groupLegal": "法律信息",
+    "groupAdmin": "管理"
+  },
   "sidebar": {
     "panel": "控制面板",
     "funds": "资金",

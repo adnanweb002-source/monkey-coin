@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Moon, Sun, Plus, Menu } from "lucide-react";
+import { Moon, Sun, Plus, Menu, Search } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useTranslation } from "react-i18next";
 import { UserProfile } from "@/types/user";
@@ -8,6 +8,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import UserAvatar from "@/components/common/UserAvatar";
 import LanguageSelector from "@/components/common/LanguageSelector";
 import NotificationBell from "@/components/notifications/NotificationBell";
+import { FeatureSearchDialog } from "@/components/dashboard/FeatureSearchDialog";
 
 interface DashboardHeaderProps {
   onMenuClick: () => void;
@@ -23,6 +24,18 @@ const DashboardHeader = ({
   const { theme, setTheme } = useTheme();
   const { t } = useTranslation();
   const isMobile = useIsMobile();
+  const [featureSearchOpen, setFeatureSearchOpen] = useState(false);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setFeatureSearchOpen((open) => !open);
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   useEffect(() => {
     const stored = localStorage.getItem("userProfile");
@@ -105,6 +118,21 @@ const DashboardHeader = ({
       {/* Right section */}
       <div className="flex items-center gap-2 md:gap-4">
         {isMobile && <LanguageSelector compact />}
+
+        <button
+          type="button"
+          onClick={() => setFeatureSearchOpen(true)}
+          className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-secondary flex items-center justify-center text-foreground hover:bg-secondary/80 transition-colors shrink-0"
+          aria-label={t("featureSearch.openLabel")}
+          title={`${t("featureSearch.openLabel")} (Ctrl+K)`}
+        >
+          <Search size={18} />
+        </button>
+
+        <FeatureSearchDialog
+          open={featureSearchOpen}
+          onOpenChange={setFeatureSearchOpen}
+        />
 
         {!isMobile && (
           <Link

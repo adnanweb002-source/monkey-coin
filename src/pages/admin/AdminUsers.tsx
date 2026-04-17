@@ -221,7 +221,7 @@ const AdminUsers = () => {
 
       // redirect to user panel
       if (import.meta.env.VITE_ENVIRONMENT === "production") {
-        window.location.href = "https://${hostname}/panel";
+        window.location.href = `https://${hostname}/panel`;
       } else {
         window.location.href = "/panel";
       }

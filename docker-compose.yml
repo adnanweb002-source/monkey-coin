@@ -1,10 +1,8 @@
 version: "3.8"
 
 services:
-  vite-app:
+  panel:
     build: .
-    ports:
-      - "8080:8080"
+    container_name: panel
     volumes:
-      - .:/app
-      - /app/node_modules
+      - /var/www/panel:/app/dist

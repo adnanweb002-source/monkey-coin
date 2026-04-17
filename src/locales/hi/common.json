@@ -72,20 +72,20 @@
     "powerSheet": "Power Sheet"
   },
   "adminPowerSheet": {
-    "title": "Power Sheet Generator",
-    "subtitle": "Create power accounts and download credentials as Excel",
-    "cardTitle": "Generate Power Accounts Sheet",
-    "cardDescription": "Runs the admin seed process and exports the response CSV as an Excel file.",
-    "powerAccountsLabel": "Power Accounts",
-    "powerAccountsDesc": "Creates 15 power accounts under the company network.",
-    "subAccountsLabel": "Sub Accounts",
-    "subAccountsDesc": "Creates 100 left-side sub accounts for each power account.",
-    "infoNote": "This action creates users and should only be used for controlled admin seeding.",
-    "generateAndDownload": "Generate and Download Excel",
-    "generating": "Generating and downloading...",
-    "downloadSuccess": "Excel downloaded. Power accounts: {{powerCount}}, sub accounts: {{subCount}}.",
-    "generateFailed": "Failed to generate power sheet",
-    "emptyCsv": "The server response did not include CSV data."
+    "title": "Power Sheet जेनरेटर",
+    "subtitle": "पावर अकाउंट्स बनाएं और क्रेडेंशियल्स Excel के रूप में डाउनलोड करें",
+    "cardTitle": "पावर अकाउंट्स शीट जनरेट करें",
+    "cardDescription": "एडमिन सीड प्रक्रिया चलाता है और रिस्पॉन्स CSV को Excel फ़ाइल के रूप में एक्सपोर्ट करता है।",
+    "powerAccountsLabel": "पावर अकाउंट्स",
+    "powerAccountsDesc": "कंपनी नेटवर्क के अंतर्गत 15 पावर अकाउंट्स बनाता है।",
+    "subAccountsLabel": "सब-अकाउंट्स",
+    "subAccountsDesc": "प्रत्येक पावर अकाउंट के लिए 100 लेफ्ट-साइड सब-अकाउंट्स बनाता है।",
+    "infoNote": "यह प्रक्रिया यूज़र्स बनाती है और केवल नियंत्रित एडमिन सीडिंग के लिए ही उपयोग में लें।",
+    "generateAndDownload": "जनरेट करें और Excel डाउनलोड करें",
+    "generating": "जनरेट किया जा रहा है और डाउनलोड हो रहा है...",
+    "downloadSuccess": "Excel डाउनलोड हो गया। पावर अकाउंट्स: {{powerCount}}, सब-अकाउंट्स: {{subCount}}.",
+    "generateFailed": "पावर शीट जनरेट करने में विफल",
+    "emptyCsv": "सर्वर के रिस्पॉन्स में CSV डेटा शामिल नहीं था।"
   },
   "auth": {
     "signIn": "साइन इन",
@@ -423,11 +423,11 @@
     "failedToLoad": "पैकेज लोड करने में विफल",
     "tryAgainLater": "कृपया बाद में पुनः प्रयास करें",
     "walletSplitAllocation": "वॉलेट स्प्लिट अलोकेशन",
-    "promoPosterAlt": "Early joiners promotional poster",
-    "promoCountdownLabel": "Offer ends in",
-    "hours": "Hours",
-    "minutes": "Minutes",
-    "seconds": "Seconds"
+    "promoPosterAlt": "Early joiners प्रोमो पोस्टर",
+    "promoCountdownLabel": "पैकेज 24 अप्रैल से लाइव होंगे",
+    "hours": "घंटे",
+    "minutes": "मिनट",
+    "seconds": "सेकंड"
   },
   "growthTools": {
     "title": "ग्रोथ टूल्स",

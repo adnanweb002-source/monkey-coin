@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
 import {
   Home,
   DollarSign,
@@ -51,6 +52,7 @@ import { useNotifications } from "@/contexts/NotificationContext";
 import { useTheme } from "next-themes";
 import { FaUserShield } from "react-icons/fa";
 import { RiUserShared2Fill } from "react-icons/ri";
+import { getMyTargets } from "@/lib/userTargetsApi";
 
 interface SidebarItem {
   labelKey: string;
@@ -129,11 +131,11 @@ const sidebarItems: SidebarItem[] = [
     ],
   },
   { labelKey: "sidebar.notifications", icon: Bell, path: "/notifications" },
-  {
-    labelKey: "sidebar.holidayList",
-    icon: File,
-    path: "/reports/holiday-list",
-  },
+  // {
+  //   labelKey: "sidebar.holidayList",
+  //   icon: File,
+  //   path: "/reports/holiday-list",
+  // },
   {
     labelKey: "sidebar.marketingTools",
     icon: Wrench,
@@ -255,6 +257,14 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
     hasMore,
   } = useNotifications();
 
+  const { data: myTargets = [] } = useQuery({
+    queryKey: ["my-targets-sidebar"],
+    queryFn: getMyTargets,
+    retry: false,
+  });
+
+  const hasAssignedTargets = myTargets.length > 0;
+
   useEffect(() => {
     const stored = localStorage.getItem("userProfile");
     if (stored) {
@@ -374,7 +384,13 @@ const DashboardSidebar = ({ isOpen, onToggle }: DashboardSidebarProps) => {
                     </button>
                     {expandedItems.includes(item.labelKey) && (
                       <ul className="mt-1 ml-6 space-y-1">
-                        {item.children.map((child) => (
+                        {item.children
+                          .filter(
+                            (child) =>
+                              child.labelKey !== "sidebar.targets" ||
+                              hasAssignedTargets,
+                          )
+                          .map((child) => (
                           <li key={child.path}>
                             <Link
                               to={child.path}

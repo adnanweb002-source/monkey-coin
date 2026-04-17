@@ -37,6 +37,7 @@ const CRYPTO_OPTIONS = [
   { value: "USDTERC20", label: "USDT ERC20" },
   { value: "USDTBEP20", label: "USDT BEP20" },
   { value: "DOGE", label: "Dogecoin (DOGE)" },
+  { value: "TRX", label: "Tron (TRX)" },
 ];
 
 const CryptoDepositForm = ({ onDepositCreated }: CryptoDepositFormProps) => {

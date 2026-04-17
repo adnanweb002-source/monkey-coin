@@ -5,7 +5,7 @@ export type AvatarId = typeof VALID_AVATAR_IDS[number];
 // Helper to get avatar image path
 export const getAvatarPath = (avatarId?: string): string => {
   const validId = avatarId && VALID_AVATAR_IDS.includes(avatarId as AvatarId) ? avatarId : "default";
-  return `@/assets/avatars/${validId}.png`;
+  return `/panel/avatars/${validId}.png`;
 };
 
 interface UserProfile {

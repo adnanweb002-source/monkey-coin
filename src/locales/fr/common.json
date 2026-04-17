@@ -422,7 +422,12 @@
     "checkBackLater": "Revenez plus tard pour de nouveaux forfaits d'investissement",
     "failedToLoad": "Échec du chargement des forfaits",
     "tryAgainLater": "Veuillez réessayer plus tard",
-    "walletSplitAllocation": "Allocation de portefeuilles"
+    "walletSplitAllocation": "Allocation de portefeuilles",
+    "promoPosterAlt": "Early joiners promotional poster",
+    "promoCountdownLabel": "Offer ends in",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds"
   },
   "growthTools": {
     "title": "Outils de croissance",

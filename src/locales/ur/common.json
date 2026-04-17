@@ -422,7 +422,12 @@
     "checkBackLater": "نئے پیکیجز کے لیے دوبارہ چیک کریں",
     "failedToLoad": "پیکیجز لوڈ کرنے میں ناکامی",
     "tryAgainLater": "براہ کرم کچھ دیر بعد کوشش کریں",
-    "walletSplitAllocation": "والیٹ سپلیٹ آلوکیشن"
+    "walletSplitAllocation": "والیٹ سپلیٹ آلوکیشن",
+    "promoPosterAlt": "Early joiners promotional poster",
+    "promoCountdownLabel": "Offer ends in",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds"
   },
   "growthTools": {
     "title": "ترقی کے ٹولز",

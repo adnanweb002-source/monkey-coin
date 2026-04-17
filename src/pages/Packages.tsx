@@ -4,7 +4,7 @@ import api from "@/lib/api";
 import type { Package } from "@/types/package";
 import { useQuery } from "@tanstack/react-query";
 import { Clock, Percent, TrendingUp, Wallet, PackageIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PackagePurchaseModal from "@/components/tree/PackagePurchaseModal";
 
@@ -15,10 +15,49 @@ const formatCurrency = (value: string) => {
   return `$${num.toFixed(0)}`;
 };
 
+const getTimeParts = (targetMs: number, nowMs: number) => {
+  const remaining = Math.max(0, targetMs - nowMs);
+  const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((remaining / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((remaining / (1000 * 60)) % 60);
+  const seconds = Math.floor((remaining / 1000) % 60);
+  return { days, hours, minutes, seconds };
+};
+
 const Packages = () => {
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [nowMs, setNowMs] = useState(Date.now());
   const { t } = useTranslation();
+
+  const promoEnabled = import.meta.env.VITE_PACKAGES_PROMO_ENABLED === "true";
+  const promoEndAt = import.meta.env.VITE_PACKAGES_PROMO_END_AT as
+    | string
+    | undefined;
+  const promoImage =
+    (import.meta.env.VITE_PACKAGES_PROMO_IMAGE_URL as string | undefined) ||
+    "/images/early-joiners-poster.png";
+
+  const promoEndMs = useMemo(() => {
+    if (!promoEndAt) return Number.NaN;
+    return new Date(promoEndAt).getTime();
+  }, [promoEndAt]);
+
+  const showPromoBanner =
+    promoEnabled && Number.isFinite(promoEndMs) && nowMs < promoEndMs;
+
+  useEffect(() => {
+    if (!showPromoBanner) return;
+    const timer = window.setInterval(() => {
+      setNowMs(Date.now());
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [showPromoBanner]);
+
+  const countdown = useMemo(() => {
+    if (!showPromoBanner) return null;
+    return getTimeParts(promoEndMs, nowMs);
+  }, [showPromoBanner, promoEndMs, nowMs]);
 
   const { data: packages = [], isLoading: isLoadingPackages, isError } = useQuery({
     queryKey: ["packages"],
@@ -83,6 +122,39 @@ const Packages = () => {
         <h1 className="text-2xl font-bold text-foreground">{t("packages.title")}</h1>
         <p className="text-muted-foreground mt-1">{t("packages.subtitle")}</p>
       </div>
+
+      {showPromoBanner && countdown && (
+        <div className="bg-card rounded-xl border border-border overflow-hidden">
+          <img
+            src={promoImage}
+            alt={t("packages.promoPosterAlt")}
+            className="w-full h-auto object-cover"
+          />
+          <div className="px-4 py-4 md:px-6 md:py-5 border-t border-border">
+            <p className="text-sm md:text-base font-medium text-foreground mb-3">
+              {t("packages.promoCountdownLabel")}
+            </p>
+            <div className="grid grid-cols-4 gap-2 md:gap-4">
+              {[
+                { key: "days", value: countdown.days, label: t("packages.days") },
+                { key: "hours", value: countdown.hours, label: t("packages.hours") },
+                { key: "minutes", value: countdown.minutes, label: t("packages.minutes") },
+                { key: "seconds", value: countdown.seconds, label: t("packages.seconds") },
+              ].map((item) => (
+                <div
+                  key={item.key}
+                  className="rounded-lg bg-secondary/40 border border-border p-2 text-center"
+                >
+                  <p className="text-xl md:text-2xl font-bold text-foreground leading-none">
+                    {String(item.value).padStart(2, "0")}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">{item.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {activePackages.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center bg-card rounded-xl border border-border">

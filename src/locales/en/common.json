@@ -423,7 +423,12 @@
     "checkBackLater": "Check back later for new investment packages",
     "failedToLoad": "Failed to load packages",
     "tryAgainLater": "Please try again later",
-    "walletSplitAllocation": "Wallets Used"
+    "walletSplitAllocation": "Wallets Used",
+    "promoPosterAlt": "Early joiners promotional poster",
+    "promoCountdownLabel": "Offer ends in",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds"
   },
   "growthTools": {
     "title": "Growth Tools",

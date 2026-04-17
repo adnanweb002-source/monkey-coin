@@ -72,20 +72,20 @@
     "powerSheet": "Power Sheet"
   },
   "adminPowerSheet": {
-    "title": "Power Sheet Generator",
-    "subtitle": "Create power accounts and download credentials as Excel",
-    "cardTitle": "Generate Power Accounts Sheet",
-    "cardDescription": "Runs the admin seed process and exports the response CSV as an Excel file.",
-    "powerAccountsLabel": "Power Accounts",
-    "powerAccountsDesc": "Creates 15 power accounts under the company network.",
-    "subAccountsLabel": "Sub Accounts",
-    "subAccountsDesc": "Creates 100 left-side sub accounts for each power account.",
-    "infoNote": "This action creates users and should only be used for controlled admin seeding.",
-    "generateAndDownload": "Generate and Download Excel",
-    "generating": "Generating and downloading...",
-    "downloadSuccess": "Excel downloaded. Power accounts: {{powerCount}}, sub accounts: {{subCount}}.",
-    "generateFailed": "Failed to generate power sheet",
-    "emptyCsv": "The server response did not include CSV data."
+    "title": "إنشاء جدول الحسابات القوية",
+    "subtitle": "إنشاء حسابات قوية وتحميل البيانات كملف Excel",
+    "cardTitle": "إنشاء جدول حسابات قوية",
+    "cardDescription": "يقوم بتشغيل عملية إنشاء الحسابات القوية ويصدر الاستجابة كملف CSV كملف Excel.",
+    "powerAccountsLabel": "حسابات قوية",
+    "powerAccountsDesc": "إنشاء 15 حساب قوي تحت شبكة الشركة.",
+    "subAccountsLabel": "حسابات فرعية",
+    "subAccountsDesc": "إنشاء 100 حساب فرعي على الجانب الأيسر لكل حساب قوي.",
+    "infoNote": "هذه العملية تنشئ المستخدمين ويجب استخدامها فقط لإنشاء الحسابات القوية بشكل منظم.",
+    "generateAndDownload": "إنشاء وتحميل ملف Excel",
+    "generating": "جاري الإنشاء والتحميل...",
+    "downloadSuccess": "تم تحميل الملف Excel. حسابات قوية: {{powerCount}}, حسابات فرعية: {{subCount}}.",
+    "generateFailed": "فشل إنشاء جدول الحسابات القوية",
+    "emptyCsv": "لم يتم تضمين بيانات CSV في الاستجابة من الخادم."
   },
   "auth": {
     "signIn": "تسجيل الدخول",
@@ -424,10 +424,10 @@
     "tryAgainLater": "يرجى المحاولة لاحقاً",
     "walletSplitAllocation": "تخصيص المحافظ",
     "promoPosterAlt": "Early joiners promotional poster",
-    "promoCountdownLabel": "Offer ends in",
-    "hours": "Hours",
-    "minutes": "Minutes",
-    "seconds": "Seconds"
+    "promoCountdownLabel": "Packages Go Live from the 24th",
+    "hours": "ساعات",
+    "minutes": "دقائق",
+    "seconds": "ثواني"
   },
   "growthTools": {
     "title": "أدوات النمو",

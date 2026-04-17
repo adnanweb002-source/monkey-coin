@@ -131,7 +131,7 @@ const Packages = () => {
             </p>
             <div className="grid grid-cols-4 gap-2 md:gap-4">
               {[
-                { key: "days", value: countdown.days, label: t("packages.days") },
+                { key: "days", value: countdown.days, label: t("profile.days") },
                 { key: "hours", value: countdown.hours, label: t("packages.hours") },
                 { key: "minutes", value: countdown.minutes, label: t("packages.minutes") },
                 { key: "seconds", value: countdown.seconds, label: t("packages.seconds") },

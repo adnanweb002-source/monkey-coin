@@ -424,6 +424,20 @@ const GainReport = () => {
                           {t("common.page")} {currentPage} {t("common.of")}{" "}
                           {totalPages}
                         </span>
+                        <select
+                          value={currentPage}
+                          onChange={(e) =>
+                            setSkip((Math.max(1, Number(e.target.value)) - 1) * TAKE)
+                          }
+                          className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+                          aria-label="Jump to page"
+                        >
+                          {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                            <option key={pageNum} value={pageNum}>
+                              {pageNum}
+                            </option>
+                          ))}
+                        </select>
                         <Button
                           variant="outline"
                           size="sm"

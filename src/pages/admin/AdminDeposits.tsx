@@ -38,6 +38,18 @@ interface AdminDepositItem {
   status: string;
   meta: any;
   createdAt: string;
+  user?: {
+    id: number;
+    memberId: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    country: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+  };
 }
 
 interface AdminDepositsResponse {
@@ -62,6 +74,18 @@ interface DepositDetails {
   updatedAt: string;
   expiresAt: string;
   meta?: Record<string, any>;
+  user?: {
+    id: number;
+    memberId: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    country: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+  };
 }
 
 const statusColors: Record<string, string> = {
@@ -186,7 +210,7 @@ const AdminDeposits = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>User ID</TableHead>
+                      <TableHead>Member ID</TableHead>
                       <TableHead>Payment ID</TableHead>
                       <TableHead>Paid Amount</TableHead>
                       <TableHead>Crypto</TableHead>
@@ -198,7 +222,7 @@ const AdminDeposits = () => {
                   <TableBody>
                     {data.data.map((item) => (
                       <TableRow key={item.id}>
-                        <TableCell>{item.userId}</TableCell>
+                        <TableCell>{item?.user?.memberId || "-"}</TableCell>
                         <TableCell className="font-mono text-xs">
                           {item.paymentId}
                         </TableCell>
@@ -241,7 +265,7 @@ const AdminDeposits = () => {
                   <Card key={item.id} className="p-4">
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <p className="text-sm text-muted-foreground">User #{item.userId}</p>
+                        <p className="text-sm text-muted-foreground">User #{item.user?.memberId || "-"}</p>
                         <p className="font-medium text-lg">
                           ${parseFloat(item.paidAmount).toFixed(2)}
                         </p>

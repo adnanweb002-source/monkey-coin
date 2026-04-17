@@ -91,10 +91,10 @@ const TreeNodeContextMenu = ({ node, children, isAdmin }: TreeNodeContextMenuPro
       setConfirmAction(null);
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.response?.data?.message || "Failed to suspend user", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to suspend user",
+        variant: "destructive"
       });
     },
   });
@@ -110,10 +110,10 @@ const TreeNodeContextMenu = ({ node, children, isAdmin }: TreeNodeContextMenuPro
       setConfirmAction(null);
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.response?.data?.message || "Failed to activate user", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to activate user",
+        variant: "destructive"
       });
     },
   });
@@ -129,10 +129,10 @@ const TreeNodeContextMenu = ({ node, children, isAdmin }: TreeNodeContextMenuPro
       setConfirmAction(null);
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.response?.data?.message || "Failed to disable 2FA", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to disable 2FA",
+        variant: "destructive"
       });
     },
   });
@@ -148,10 +148,10 @@ const TreeNodeContextMenu = ({ node, children, isAdmin }: TreeNodeContextMenuPro
       setNewPassword("");
     },
     onError: (error: any) => {
-      toast({ 
-        title: "Error", 
-        description: error.response?.data?.message || "Failed to reset password", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "Failed to reset password",
+        variant: "destructive"
       });
     },
   });
@@ -178,8 +178,8 @@ const TreeNodeContextMenu = ({ node, children, isAdmin }: TreeNodeContextMenuPro
     resetPasswordMutation.mutate({ userId: node.id, password: newPassword });
   };
 
-  const isProcessing = suspendMutation.isPending || activateMutation.isPending || 
-                       disable2faMutation.isPending || resetPasswordMutation.isPending;
+  const isProcessing = suspendMutation.isPending || activateMutation.isPending ||
+    disable2faMutation.isPending || resetPasswordMutation.isPending;
 
   const getConfirmMessage = () => {
     switch (confirmAction) {
@@ -206,24 +206,28 @@ const TreeNodeContextMenu = ({ node, children, isAdmin }: TreeNodeContextMenuPro
             Transfer Funds to This User
           </ContextMenuItem>
 
-          <ContextMenuItem onClick={() => setPurchaseOpen(true)}>
-            <Package className="mr-2 h-4 w-4 text-primary" />
-            Purchase Package for User
-          </ContextMenuItem>
+          {
+            import.meta.env.VITE_PACKAGES_PROMO_ENABLED !== "true" && (
+              <ContextMenuItem onClick={() => setPurchaseOpen(true)}>
+                <Package className="mr-2 h-4 w-4 text-primary" />
+                Purchase Package for User
+              </ContextMenuItem>
+            )}
+
 
           {isAdmin && (
             <>
               <ContextMenuSeparator />
-              
+
               <ContextMenuItem onClick={() => setBonusOpen(true)}>
                 <Gift className="mr-2 h-4 w-4 text-primary" />
                 Send Bonus
               </ContextMenuItem>
 
               <ContextMenuSeparator />
-              
+
               {node.isActive ? (
-                <ContextMenuItem 
+                <ContextMenuItem
                   onClick={() => setConfirmAction("suspend")}
                   className="text-destructive focus:text-destructive"
                 >

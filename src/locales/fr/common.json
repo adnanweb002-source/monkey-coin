@@ -72,20 +72,20 @@
     "powerSheet": "Power Sheet"
   },
   "adminPowerSheet": {
-    "title": "Power Sheet Generator",
-    "subtitle": "Create power accounts and download credentials as Excel",
-    "cardTitle": "Generate Power Accounts Sheet",
-    "cardDescription": "Runs the admin seed process and exports the response CSV as an Excel file.",
-    "powerAccountsLabel": "Power Accounts",
-    "powerAccountsDesc": "Creates 15 power accounts under the company network.",
-    "subAccountsLabel": "Sub Accounts",
-    "subAccountsDesc": "Creates 100 left-side sub accounts for each power account.",
-    "infoNote": "This action creates users and should only be used for controlled admin seeding.",
-    "generateAndDownload": "Generate and Download Excel",
-    "generating": "Generating and downloading...",
-    "downloadSuccess": "Excel downloaded. Power accounts: {{powerCount}}, sub accounts: {{subCount}}.",
-    "generateFailed": "Failed to generate power sheet",
-    "emptyCsv": "The server response did not include CSV data."
+    "title": "Générateur de feuille de puissance",
+    "subtitle": "Créer des comptes de puissance et télécharger les identifiants en tant que fichier Excel",
+    "cardTitle": "Générer la feuille de puissance",
+    "cardDescription": "Exécute le processus d'ensemencement administratif et exporte la réponse CSV en tant que fichier Excel.",
+    "powerAccountsLabel": "Comptes de puissance",
+    "powerAccountsDesc": "Crée 15 comptes de puissance sous le réseau de la société.",
+    "subAccountsLabel": "Comptes sous-jacents",
+    "subAccountsDesc": "Crée 100 comptes sous-jacents sur le côté gauche de chaque compte de puissance.",
+    "infoNote": "Cette action crée des utilisateurs et ne doit être utilisée que pour un semis administratif contrôlé.",
+    "generateAndDownload": "Générer et télécharger Excel",
+    "generating": "Génération et téléchargement en cours...",
+    "downloadSuccess": "Excel téléchargé. Comptes de puissance: {{powerCount}}, comptes sous-jacents: {{subCount}}.",
+    "generateFailed": "Échec de la génération de la feuille de puissance",
+    "emptyCsv": "La réponse du serveur n'a pas inclus de données CSV."
   },
   "auth": {
     "signIn": "Se connecter",
@@ -422,7 +422,12 @@
     "checkBackLater": "Revenez plus tard pour de nouveaux forfaits d'investissement",
     "failedToLoad": "Échec du chargement des forfaits",
     "tryAgainLater": "Veuillez réessayer plus tard",
-    "walletSplitAllocation": "Allocation de portefeuilles"
+    "walletSplitAllocation": "Allocation de portefeuilles",
+    "promoPosterAlt": "Cartel promotional de early joiners",
+    "promoCountdownLabel": "Packages en direct depuis le 24 avril",
+    "hours": "Heures",
+    "minutes": "Minutes",
+    "seconds": "Secondes"
   },
   "growthTools": {
     "title": "Outils de croissance",

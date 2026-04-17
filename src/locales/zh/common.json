@@ -422,7 +422,12 @@
     "checkBackLater": "请稍后回来查看新的投资套餐",
     "failedToLoad": "加载套餐失败",
     "tryAgainLater": "请稍后再试",
-    "walletSplitAllocation": "钱包分配"
+    "walletSplitAllocation": "钱包分配",
+    "promoPosterAlt": "Early joiners promotional poster",
+    "promoCountdownLabel": "Packages Go Live from the 24th",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds"
   },
   "growthTools": {
     "title": "增长工具",

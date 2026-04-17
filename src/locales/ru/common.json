@@ -422,7 +422,12 @@
     "checkBackLater": "Зайдите позже для новых предложений",
     "failedToLoad": "Не удалось загрузить пакеты",
     "tryAgainLater": "Пожалуйста, попробуйте позже",
-    "walletSplitAllocation": "Распределение кошельков"
+    "walletSplitAllocation": "Распределение кошельков",
+    "promoPosterAlt": "Early joiners promotional poster",
+    "promoCountdownLabel": "Packages Go Live from the 24th",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds"
   },
   "growthTools": {
     "title": "Инструменты роста",

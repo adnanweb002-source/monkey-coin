@@ -72,20 +72,20 @@
     "powerSheet": "Power Sheet"
   },
   "adminPowerSheet": {
-    "title": "Power Sheet Generator",
-    "subtitle": "Create power accounts and download credentials as Excel",
-    "cardTitle": "Generate Power Accounts Sheet",
-    "cardDescription": "Runs the admin seed process and exports the response CSV as an Excel file.",
-    "powerAccountsLabel": "Power Accounts",
-    "powerAccountsDesc": "Creates 15 power accounts under the company network.",
-    "subAccountsLabel": "Sub Accounts",
-    "subAccountsDesc": "Creates 100 left-side sub accounts for each power account.",
-    "infoNote": "This action creates users and should only be used for controlled admin seeding.",
-    "generateAndDownload": "Generate and Download Excel",
-    "generating": "Generating and downloading...",
-    "downloadSuccess": "Excel downloaded. Power accounts: {{powerCount}}, sub accounts: {{subCount}}.",
-    "generateFailed": "Failed to generate power sheet",
-    "emptyCsv": "The server response did not include CSV data."
+    "title": "Generador de hojas de cálculo de poder",
+    "subtitle": "Crea cuentas de poder y descarga las credenciales como Excel",
+    "cardTitle": "Generar hoja de cálculo de cuentas de poder",
+    "cardDescription": "Ejecuta el proceso de semilla administrativo y exporta la respuesta CSV como un archivo Excel.",
+    "powerAccountsLabel": "Cuentas de poder",
+    "powerAccountsDesc": "Crea 15 cuentas de poder bajo la red de la empresa.",
+    "subAccountsLabel": "Cuentas subyacentes",
+    "subAccountsDesc": "Crea 100 cuentas subyacentes en el lado izquierdo de cada cuenta de poder.",
+    "infoNote": "Esta acción crea usuarios y solo debe ser utilizada para un semillero administrativo controlado.",
+    "generateAndDownload": "Generar y descargar Excel",
+    "generating": "Generando y descargando...",
+    "downloadSuccess": "Excel descargado. Cuentas de poder: {{powerCount}}, cuentas subyacentes: {{subCount}}.",
+    "generateFailed": "Error al generar la hoja de cálculo de poder",
+    "emptyCsv": "La respuesta del servidor no incluyó datos CSV."
   },
   "auth": {
     "signIn": "Iniciar sesión",
@@ -422,7 +422,12 @@
     "checkBackLater": "Vuelve más tarde para ver nuevos paquetes de inversión",
     "failedToLoad": "Error al cargar los paquetes",
     "tryAgainLater": "Por favor, inténtalo de nuevo más tarde",
-    "walletSplitAllocation": "Distribución de billeteras"
+    "walletSplitAllocation": "Distribución de billeteras",
+    "promoPosterAlt": "Cartel promocional de early joiners",
+    "promoCountdownLabel": "Paquetes en vivo desde el 24 de abril",
+    "hours": "Horas",
+    "minutes": "Minutos",
+    "seconds": "Segundos"
   },
   "growthTools": {
     "title": "Herramientas de crecimiento",

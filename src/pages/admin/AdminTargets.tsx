@@ -485,10 +485,22 @@ const AdminTargets = () => {
           <p className="text-sm text-muted-foreground">
             Page {meta.page} of {meta.totalPages} ({meta.total} total)
           </p>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(page - 1)}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
+            <select
+              value={page}
+              onChange={(e) => setPage(Math.max(1, Number(e.target.value)))}
+              className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+              aria-label="Jump to page"
+            >
+              {Array.from({ length: meta.totalPages }, (_, i) => i + 1).map((pageNum) => (
+                <option key={pageNum} value={pageNum}>
+                  {pageNum}
+                </option>
+              ))}
+            </select>
             <Button variant="outline" size="sm" disabled={page >= meta.totalPages} onClick={() => setPage(page + 1)}>
               <ChevronRight className="h-4 w-4" />
             </Button>

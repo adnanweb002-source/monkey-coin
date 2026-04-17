@@ -83,6 +83,20 @@ const ReferralIncome = () => {
                   <div className="flex items-center gap-2">
                     <Button variant="outline" size="sm" onClick={() => setSkip(Math.max(0, skip - TAKE))} disabled={skip === 0}><ChevronLeft className="h-4 w-4 mr-1" />{t("common.previous")}</Button>
                     <span className="text-sm text-muted-foreground px-2">{t("common.page")} {currentPage} {t("common.of")} {totalPages}</span>
+                    <select
+                      value={currentPage}
+                      onChange={(e) =>
+                        setSkip((Math.max(1, Number(e.target.value)) - 1) * TAKE)
+                      }
+                      className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+                      aria-label="Jump to page"
+                    >
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                        <option key={pageNum} value={pageNum}>
+                          {pageNum}
+                        </option>
+                      ))}
+                    </select>
                     <Button variant="outline" size="sm" onClick={() => setSkip(skip + TAKE)} disabled={skip + TAKE >= count}>{t("common.next")}<ChevronRight className="h-4 w-4 ml-1" /></Button>
                   </div>
                 </div>

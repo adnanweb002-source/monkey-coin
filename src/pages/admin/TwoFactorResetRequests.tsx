@@ -299,9 +299,23 @@ const TwoFactorResetRequests = () => {
           >
             Previous
           </Button>
-          <span className="text-sm text-muted-foreground">
-            Page {pagination.page} of {pagination.totalPages}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">
+              Page {pagination.page} of {pagination.totalPages}
+            </span>
+            <select
+              value={page}
+              onChange={(e) => setPage(Math.max(1, Number(e.target.value)))}
+              className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+              aria-label="Jump to page"
+            >
+              {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((pageNum) => (
+                <option key={pageNum} value={pageNum}>
+                  {pageNum}
+                </option>
+              ))}
+            </select>
+          </div>
           <Button
             variant="outline"
             disabled={page === pagination.totalPages}

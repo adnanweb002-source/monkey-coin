@@ -112,7 +112,7 @@ const MyTree = () => {
   const handleAddUser = (parentId: string, position: "LEFT" | "RIGHT") => {
     toast.info(`Add user to ${position} of parent ${parentId}`);
     window.open(
-      `/signup?ref=${memberId}&position=${position}&parent=${parentId}`,
+      `/panel/signup?ref=${memberId}&position=${position}&parent=${parentId}`,
       "_blank",
     );
   };

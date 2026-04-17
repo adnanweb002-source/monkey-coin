@@ -43,7 +43,7 @@ const AffiliateLinksCard = ({ user }: { user: UserProfile | null }) => {
     sponsorMemberId: string,
     position: "LEFT" | "RIGHT",
   ) => {
-    return `${DOMAIN}/signup?ref=${sponsorMemberId}&position=${position}`;
+    return `${DOMAIN}/panel/signup?ref=${sponsorMemberId}&position=${position}`;
   };
 
   const leftLink = memberId ? buildAffiliateLink(memberId, "LEFT") : "";

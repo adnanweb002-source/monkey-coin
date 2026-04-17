@@ -128,7 +128,7 @@ const Packages = () => {
           <img
             src={promoImage}
             alt={t("packages.promoPosterAlt")}
-            className="w-full h-[400px] object-cover"
+            className="w-full h-auto object-cover"
           />
           <div className="px-4 py-4 md:px-6 md:py-5 border-t border-border">
             <p className="text-sm md:text-base font-medium text-foreground mb-3">

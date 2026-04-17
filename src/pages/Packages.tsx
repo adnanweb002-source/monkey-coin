@@ -36,7 +36,7 @@ const Packages = () => {
     | undefined;
   const promoImage =
     (import.meta.env.VITE_PACKAGES_PROMO_IMAGE_URL as string | undefined) ||
-    "/images/early-joiners-poster.png";
+    "/panel/images/early-joiners-poster.png";
 
   const promoEndMs = useMemo(() => {
     if (!promoEndAt) return Number.NaN;
@@ -156,7 +156,7 @@ const Packages = () => {
         </div>
       )}
 
-      {activePackages.length === 0 ? (
+      {activePackages.length === 0 && !isLoadingPackages && !isError  && !showPromoBanner ? (
         <div className="flex flex-col items-center justify-center py-16 text-center bg-card rounded-xl border border-border">
           <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center mb-4">
             <PackageIcon size={28} className="text-muted-foreground" />

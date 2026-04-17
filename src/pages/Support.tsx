@@ -93,15 +93,22 @@ const Support = () => {
   const queries = data?.data || data || [];
   const total = data?.total || queries.length || 0;
   const totalPages = Math.ceil(total / PAGE_SIZE);
+  const openTelegram = () =>
+    window.open("https://t.me/vaultireinfinite", "_blank", "noopener,noreferrer");
+  const openWhatsapp = () =>
+    window.open("https://wa.link/8rhovc", "_blank", "noopener,noreferrer");
+  const openEmail = () => {
+    window.location.href = "mailto:support@vaultireinfinite.com";
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <h1 className="text-2xl font-bold text-foreground">{t("support.title")}</h1>
         <div className="flex items-center gap-2">
-          <Button onClick={() => setCreateModalOpen(true)}><FaWhatsapp /></Button>
-          <Button onClick={() => setCreateModalOpen(true)}><RiTelegramLine /></Button>
-          <Button onClick={() => setCreateModalOpen(true)}><MdOutlineMail /></Button>
+          <Button onClick={openWhatsapp}><FaWhatsapp /></Button>
+          <Button onClick={openTelegram}><RiTelegramLine /></Button>
+          <Button onClick={openEmail}><MdOutlineMail /></Button>
           <Button onClick={() => setCreateModalOpen(true)}><Plus className="mr-2 h-4 w-4" />{t("support.raiseNewQuery")}</Button>
         </div>
       </div>

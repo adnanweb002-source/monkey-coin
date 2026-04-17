@@ -422,7 +422,12 @@
     "checkBackLater": "Vuelve más tarde para ver nuevos paquetes de inversión",
     "failedToLoad": "Error al cargar los paquetes",
     "tryAgainLater": "Por favor, inténtalo de nuevo más tarde",
-    "walletSplitAllocation": "Distribución de billeteras"
+    "walletSplitAllocation": "Distribución de billeteras",
+    "promoPosterAlt": "Early joiners promotional poster",
+    "promoCountdownLabel": "Offer ends in",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds"
   },
   "growthTools": {
     "title": "Herramientas de crecimiento",

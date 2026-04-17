@@ -422,7 +422,12 @@
     "checkBackLater": "नए निवेश पैकेजों के लिए बाद में देखें",
     "failedToLoad": "पैकेज लोड करने में विफल",
     "tryAgainLater": "कृपया बाद में पुनः प्रयास करें",
-    "walletSplitAllocation": "वॉलेट स्प्लिट अलोकेशन"
+    "walletSplitAllocation": "वॉलेट स्प्लिट अलोकेशन",
+    "promoPosterAlt": "Early joiners promotional poster",
+    "promoCountdownLabel": "Offer ends in",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds"
   },
   "growthTools": {
     "title": "ग्रोथ टूल्स",

@@ -288,7 +288,7 @@
     "selectWithdrawalAddress": "പിൻവലിക്കൽ വിലാസം തിരഞ്ഞെടുക്കുക",
     "submitWithdrawal": "പിൻവലിക്കൽ സമർപ്പിക്കുക",
     "withdrawalsLocked": "പിൻവലിക്കൽ ലോക്ക് ചെയ്തിരിക്കുന്നു",
-    "transferLocked":  "പിൻവലിക്കൽ ലോക്ക് ചെയ്തിരിക്കുന്നു",
+    "transferLocked": "പിൻവലിക്കൽ ലോക്ക് ചെയ്തിരിക്കുന്നു",
     "withdrawalsLockedMessage": "പിൻവലിക്കൽ അഭ്യർത്ഥിക്കുന്നതിന് മുമ്പ് നിങ്ങളുടെ ടാർഗെറ്റ് പൂർത്തിയാക്കുക.",
     "insufficientBalance": "ബാലൻസ് തികയുന്നില്ല",
     "insufficientBalanceDesc": "നിങ്ങളുടെ {{wallet}} ബാലൻസ് അപര്യാപ്തമാണ്",
@@ -422,7 +422,12 @@
     "checkBackLater": "പുതിയ പാക്കേജുകൾക്കായി പിന്നീട് പരിശോധിക്കുക",
     "failedToLoad": "പാക്കേജുകൾ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല",
     "tryAgainLater": "ദയവായി പിന്നീട് ശ്രമിക്കുക",
-    "walletSplitAllocation": "വോളറ്റ് സ്പ്ലിറ്റ് അലോകേഷൻ"
+    "walletSplitAllocation": "വോളറ്റ് സ്പ്ലിറ്റ് അലോകേഷൻ",
+    "promoPosterAlt": "Early joiners promotional poster",
+    "promoCountdownLabel": "Offer ends in",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds"
   },
   "growthTools": {
     "title": "ഗ്രോത്ത് ടൂളുകൾ",

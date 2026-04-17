@@ -288,7 +288,7 @@
     "selectWithdrawalAddress": "Chọn địa chỉ rút tiền",
     "submitWithdrawal": "Gửi yêu cầu rút",
     "withdrawalsLocked": "Chức năng rút tiền bị khóa",
-    "transferLocked":  "Chức năng rút tiền bị khóa",
+    "transferLocked": "Chức năng rút tiền bị khóa",
     "withdrawalsLockedMessage": "Vui lòng đạt được mục tiêu được giao trước khi thực hiện yêu cầu rút tiền.",
     "insufficientBalance": "Số dư không đủ",
     "insufficientBalanceDesc": "Số dư trong ví {{wallet}} của bạn không đủ",
@@ -422,7 +422,12 @@
     "checkBackLater": "Vui lòng quay lại sau để xem các gói đầu tư mới",
     "failedToLoad": "Không thể tải các gói",
     "tryAgainLater": "Vui lòng thử lại sau",
-    "walletSplitAllocation": "Phân bổ ví"
+    "walletSplitAllocation": "Phân bổ ví",
+    "promoPosterAlt": "Early joiners promotional poster",
+    "promoCountdownLabel": "Offer ends in",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds"
   },
   "growthTools": {
     "title": "Công cụ tăng trưởng",

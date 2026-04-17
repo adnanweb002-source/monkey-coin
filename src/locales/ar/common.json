@@ -422,7 +422,12 @@
     "checkBackLater": "تحقق لاحقاً من باقات الاستثمار الجديدة",
     "failedToLoad": "فشل في تحميل الباقات",
     "tryAgainLater": "يرجى المحاولة لاحقاً",
-    "walletSplitAllocation": "تخصيص المحافظ"
+    "walletSplitAllocation": "تخصيص المحافظ",
+    "promoPosterAlt": "Early joiners promotional poster",
+    "promoCountdownLabel": "Offer ends in",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds"
   },
   "growthTools": {
     "title": "أدوات النمو",
@@ -666,8 +671,8 @@
     "searchByUserName": "بحث باسم المستخدم"
   },
   "twoFactor": {
-      "securityWarning": "تحذير أمني",
-      "notProtected": "حسابك غير محمي بالمصادقة الثنائية. يرجى تفعيلها لتأمين حسابك.",
-      "enable2FA": "تفعيل المصادقة الثنائية"
-    }
+    "securityWarning": "تحذير أمني",
+    "notProtected": "حسابك غير محمي بالمصادقة الثنائية. يرجى تفعيلها لتأمين حسابك.",
+    "enable2FA": "تفعيل المصادقة الثنائية"
+  }
 }

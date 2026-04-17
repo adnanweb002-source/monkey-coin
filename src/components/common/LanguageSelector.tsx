@@ -14,9 +14,12 @@ const LanguageSelector = ({ compact = false }: LanguageSelectorProps) => {
   const [isChanging, setIsChanging] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const currentLang = SUPPORTED_LANGUAGES.find(
-    (lang) => lang.code === i18n.language
-  ) || SUPPORTED_LANGUAGES[0];
+  const currentLang =
+    SUPPORTED_LANGUAGES.find((lang) => lang.code === i18n.language) ||
+    SUPPORTED_LANGUAGES.find(
+      (lang) => lang.code === i18n.language.split("-")[0],
+    ) ||
+    SUPPORTED_LANGUAGES[0];
 
   // Close dropdown on outside click
   useEffect(() => {

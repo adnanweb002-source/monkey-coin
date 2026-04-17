@@ -17,6 +17,7 @@ const DownlineDeposit = () => {
   const [deposits, setDeposits] = useState<ExternalDeposit[]>([]);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const { toast } = useToast();
@@ -29,6 +30,7 @@ const DownlineDeposit = () => {
       const data = res.data?.data || [];
       setDeposits(prev => append ? [...prev, ...data] : data);
       setTotal(res.data?.total || 0);
+      setTotalAmount(res.data?.totalAmount || 0);
       setPage(pageNum);
     } catch (error: any) {
       toast({ title: t("common.error"), description: error?.response?.data?.message || t("reports.noDownlineDeposits"), variant: "destructive" });
@@ -62,7 +64,7 @@ const DownlineDeposit = () => {
             </div>
             <div>
               <p className="text-sm text-muted-foreground">{t("reports.totalDownlineDeposit")}</p>
-              <p className="text-3xl font-bold text-foreground">${parseFloat(total.toString()).toLocaleString()}</p>
+              <p className="text-3xl font-bold text-foreground">${parseFloat(totalAmount?.toString() || "0").toLocaleString()}</p>
             </div>
           </div>
         </CardContent>

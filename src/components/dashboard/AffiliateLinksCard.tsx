@@ -16,6 +16,28 @@ interface TreeStats {
   rightActive: number;
 }
 
+/**
+ * Recursively counts the total number of active nodes on a particular side ("LEFT" or "RIGHT").
+ * A node is considered active if its `activePackageCount` is > 0.
+ */
+const recursivelyFindActive = (
+  node: any,
+  side: "LEFT" | "RIGHT"
+): number => {
+  if (!node) return 0;
+  const child = side === "LEFT" ? node.leftChild : node.rightChild;
+  if (!child) return 0;
+
+  // Count this child if active, plus all active nodes in both sub-branches
+  const isActive = child.activePackageCount && child.activePackageCount > 0 ? 1 : 0;
+  // Add actives under both of this child’s children recursively
+  return (
+    isActive +
+    recursivelyFindActive(child, "LEFT") +
+    recursivelyFindActive(child, "RIGHT")
+  );
+};
+
 const AffiliateLinksCard = ({ user }: { user: UserProfile | null }) => {
   const memberId = user?.memberId || "";
 
@@ -26,10 +48,10 @@ const AffiliateLinksCard = ({ user }: { user: UserProfile | null }) => {
         const res = await api.get(`/tree/user/${user?.id}?depth=200`);
         const tree = res.data;
         return {
-          leftTotal: tree?.leftChild ? 1 : 0,
-          leftActive: tree?.leftChild?.isActive ? 1 : 0,
-          rightTotal: tree?.rightChild ? 1 : 0,
-          rightActive: tree?.rightChild?.isActive ? 1 : 0,
+          leftTotal: tree?.totalLeft || 0,
+          leftActive: recursivelyFindActive(tree, "LEFT"),
+          rightTotal: tree?.totalRight || 0,
+          rightActive: recursivelyFindActive(tree, "RIGHT"),
         };
       } catch {
         return { leftTotal: 0, leftActive: 0, rightTotal: 0, rightActive: 0 };

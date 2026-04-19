@@ -682,6 +682,8 @@
   "downlineView": {
     "title": "ഡൗൺലൈൻ കാഴ്ച",
     "totalUsers": "ആകെ ഉപയോക്താക്കൾ",
+    "showingRange": "{{from}} മുതൽ {{to}} വരെ, ആകെ {{total}} അംഗങ്ങൾ",
+    "jumpToPage": "പേജിലേക്ക് പോകുക",
     "viewMode": "കാഴ്ച",
     "binaryDownline": "ബൈനറി ഡൗൺലൈൻ",
     "directReferrals": "നേരിട്ടുള്ള റഫറലുകൾ",

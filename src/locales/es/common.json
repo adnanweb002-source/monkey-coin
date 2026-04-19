@@ -682,6 +682,8 @@
   "downlineView": {
     "title": "Vista de línea descendente",
     "totalUsers": "Total de usuarios",
+    "showingRange": "Mostrando {{from}} a {{to}} de {{total}} miembros",
+    "jumpToPage": "Ir a la página",
     "viewMode": "Vista",
     "binaryDownline": "Línea descendente binaria",
     "directReferrals": "Referidos directos",

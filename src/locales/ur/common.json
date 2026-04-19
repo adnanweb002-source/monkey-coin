@@ -682,6 +682,8 @@
   "downlineView": {
     "title": "ڈاؤن لائن منظر",
     "totalUsers": "کل صارفین",
+    "showingRange": "{{from}} سے {{to}} تک، کل {{total}} اراکین",
+    "jumpToPage": "صفحے پر جائیں",
     "viewMode": "منظر",
     "binaryDownline": "بائنری ڈاؤن لائن",
     "directReferrals": "براہ راست ریفرلز",

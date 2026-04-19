@@ -682,6 +682,8 @@
   "downlineView": {
     "title": "डाउनलाइन दृश्य",
     "totalUsers": "कुल उपयोगकर्ता",
+    "showingRange": "{{from}} से {{to}} तक, कुल {{total}} सदस्य",
+    "jumpToPage": "पृष्ठ पर जाएँ",
     "viewMode": "दृश्य",
     "binaryDownline": "बाइनरी डाउनलाइन",
     "directReferrals": "प्रत्यक्ष रेफरल",

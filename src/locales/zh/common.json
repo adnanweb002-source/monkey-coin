@@ -682,6 +682,8 @@
   "downlineView": {
     "title": "下线视图",
     "totalUsers": "用户总数",
+    "showingRange": "显示第 {{from}}–{{to}} 条，共 {{total}} 名成员",
+    "jumpToPage": "跳转页码",
     "viewMode": "视图",
     "binaryDownline": "双轨下线",
     "directReferrals": "直推",

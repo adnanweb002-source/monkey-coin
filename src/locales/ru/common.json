@@ -682,6 +682,8 @@
   "downlineView": {
     "title": "Просмотр даунлайна",
     "totalUsers": "Всего пользователей",
+    "showingRange": "Показано {{from}}–{{to}} из {{total}} участников",
+    "jumpToPage": "Перейти на страницу",
     "viewMode": "Режим",
     "binaryDownline": "Бинарный даунлайн",
     "directReferrals": "Прямые рефералы",

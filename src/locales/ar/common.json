@@ -682,6 +682,8 @@
   "downlineView": {
     "title": "عرض الخط السفلي",
     "totalUsers": "إجمالي المستخدمين",
+    "showingRange": "عرض {{from}} إلى {{to}} من {{total}} عضوًا",
+    "jumpToPage": "انتقل إلى الصفحة",
     "viewMode": "العرض",
     "binaryDownline": "الخط السفلي الثنائي",
     "directReferrals": "الإحالات المباشرة",

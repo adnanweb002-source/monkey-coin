@@ -179,7 +179,7 @@ const DashboardHeader = ({
                   ? t("common.admin")
                   : userProfile?.activePackageCount > 0
                     ? t("common.active")
-                    : t("common.user")}
+                    : t("common.inactive")}
               </p>
             </div>
           )}

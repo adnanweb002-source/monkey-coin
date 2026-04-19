@@ -18,7 +18,7 @@ import api, { getErrorMessage } from "@/lib/api";
 import type { DownlineMembersResponse } from "@/types/downline";
 import { cn } from "@/lib/utils";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 15;
 
 type DownlineMode = "binary" | "referral";
 

@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { RefreshCw, Users } from "lucide-react";
+import { ChevronLeft, ChevronRight, RefreshCw, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -158,109 +158,138 @@ const DownlineView = () => {
             {t("downlineView.empty")}
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{t("downlineView.memberId")}</TableHead>
-                  <TableHead>{t("downlineView.name")}</TableHead>
-                  <TableHead>{t("auth.email")}</TableHead>
-                  <TableHead>{t("downlineView.phone")}</TableHead>
-                  <TableHead>{t("downlineView.status")}</TableHead>
-                  <TableHead>{t("downlineView.position")}</TableHead>
-                  <TableHead className="text-right">
-                    {t("downlineView.rank")}
-                  </TableHead>
-                  <TableHead className="text-right">
-                    {t("downlineView.activePackages")}
-                  </TableHead>
-                  <TableHead className="text-right">
-                    {t("downlineView.totalDeposits")}
-                  </TableHead>
-                  <TableHead className="text-right">
-                    {t("downlineView.totalWithdrawals")}
-                  </TableHead>
-                  <TableHead className="text-right">
-                    {t("downlineView.totalPackage")}
-                  </TableHead>
-                  <TableHead>{t("downlineView.joined")}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {rows.map((r) => (
-                  <TableRow key={r.id}>
-                    <TableCell className="font-mono text-sm">
-                      {r.memberId}
-                    </TableCell>
-                    <TableCell className="whitespace-nowrap">
-                      {r.firstName} {r.lastName}
-                    </TableCell>
-                    <TableCell className="text-sm max-w-[200px] truncate">
-                      {r.email}
-                    </TableCell>
-                    <TableCell className="text-sm whitespace-nowrap">
-                      {r.phoneNumber ?? "—"}
-                    </TableCell>
-                    <TableCell className="text-sm">{r.status}</TableCell>
-                    <TableCell className="text-sm">
-                      {r.position ?? "—"}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {r.currentRank}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      {r.activePackageCount}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      ${formatMoney(r.totalDeposits)}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      ${formatMoney(r.totalWithdrawals)}
-                    </TableCell>
-                    <TableCell className="text-right tabular-nums">
-                      ${formatMoney(r.totalPackageAmount)}
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
-                      {formatDate(r.createdAt)}
-                    </TableCell>
+          <>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t("downlineView.memberId")}</TableHead>
+                    <TableHead>{t("downlineView.name")}</TableHead>
+                    <TableHead>{t("auth.email")}</TableHead>
+                    <TableHead>{t("downlineView.phone")}</TableHead>
+                    <TableHead>{t("downlineView.status")}</TableHead>
+                    <TableHead>{t("downlineView.position")}</TableHead>
+                    <TableHead className="text-right">
+                      {t("downlineView.rank")}
+                    </TableHead>
+                    <TableHead className="text-right">
+                      {t("downlineView.activePackages")}
+                    </TableHead>
+                    <TableHead className="text-right">
+                      {t("downlineView.totalDeposits")}
+                    </TableHead>
+                    <TableHead className="text-right">
+                      {t("downlineView.totalWithdrawals")}
+                    </TableHead>
+                    <TableHead className="text-right">
+                      {t("downlineView.totalPackage")}
+                    </TableHead>
+                    <TableHead>{t("downlineView.joined")}</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+                </TableHeader>
+                <TableBody>
+                  {rows.map((r) => (
+                    <TableRow key={r.id}>
+                      <TableCell className="font-mono text-sm">
+                        {r.memberId}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        {r.firstName} {r.lastName}
+                      </TableCell>
+                      <TableCell className="text-sm max-w-[200px] truncate">
+                        {r.email}
+                      </TableCell>
+                      <TableCell className="text-sm whitespace-nowrap">
+                        {r.phoneNumber ?? "—"}
+                      </TableCell>
+                      <TableCell className="text-sm">{r.status}</TableCell>
+                      <TableCell className="text-sm">
+                        {r.position ?? "—"}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {r.currentRank}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        {r.activePackageCount}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        ${formatMoney(r.totalDeposits)}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        ${formatMoney(r.totalWithdrawals)}
+                      </TableCell>
+                      <TableCell className="text-right tabular-nums">
+                        ${formatMoney(r.totalPackageAmount)}
+                      </TableCell>
+                      <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
+                        {formatDate(r.createdAt)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
+            {totalPages > 1 && (
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between px-4 py-3 border-t border-border">
+                <p className="text-sm text-muted-foreground">
+                  {t("downlineView.showingRange", {
+                    from: (page - 1) * PAGE_SIZE + 1,
+                    to: Math.min(page * PAGE_SIZE, total),
+                    total,
+                  })}
+                </p>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={page <= 1 || isLoading}
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    {t("common.previous")}
+                  </Button>
+                  <span className="text-sm text-muted-foreground">
+                    {t("downlineView.pageOf", { page, totalPages })}
+                  </span>
+                  <select
+                    value={page}
+                    onChange={(e) =>
+                      setPage(
+                        Math.max(
+                          1,
+                          Math.min(totalPages, Number(e.target.value)),
+                        ),
+                      )
+                    }
+                    className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+                    aria-label={t("downlineView.jumpToPage")}
+                  >
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                      (pageNum) => (
+                        <option key={pageNum} value={pageNum}>
+                          {pageNum}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={page >= totalPages || isLoading}
+                    onClick={() =>
+                      setPage((p) => (p < totalPages ? p + 1 : p))
+                    }
+                  >
+                    {t("common.next")}
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
-
-      {totalPages > 1 && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-          <span>
-            {t("downlineView.pageOf", {
-              page,
-              totalPages,
-            })}
-          </span>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page <= 1 || isLoading}
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-            >
-              {t("common.previous")}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page >= totalPages || isLoading}
-              onClick={() =>
-                setPage((p) => (p < totalPages ? p + 1 : p))
-              }
-            >
-              {t("common.next")}
-            </Button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

@@ -683,6 +683,8 @@
   "downlineView": {
     "title": "Downline View",
     "totalUsers": "Total users",
+    "showingRange": "Showing {{from}} to {{to}} of {{total}} members",
+    "jumpToPage": "Jump to page",
     "viewMode": "View",
     "binaryDownline": "Binary downline",
     "directReferrals": "Direct referrals",

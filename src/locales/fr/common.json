@@ -682,6 +682,8 @@
   "downlineView": {
     "title": "Vue filleuls",
     "totalUsers": "Nombre total d’utilisateurs",
+    "showingRange": "Affichage de {{from}} à {{to}} sur {{total}} membres",
+    "jumpToPage": "Aller à la page",
     "viewMode": "Affichage",
     "binaryDownline": "Downline binaire",
     "directReferrals": "Filleuls directs",

@@ -682,6 +682,8 @@
   "downlineView": {
     "title": "Xem tuyến dưới",
     "totalUsers": "Tổng số người dùng",
+    "showingRange": "Hiển thị {{from}}–{{to}} trong tổng số {{total}} thành viên",
+    "jumpToPage": "Chuyển đến trang",
     "viewMode": "Chế độ xem",
     "binaryDownline": "Tuyến dưới nhị phân",
     "directReferrals": "Giới thiệu trực tiếp",

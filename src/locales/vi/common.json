@@ -692,6 +692,7 @@
     "name": "Họ tên",
     "phone": "Điện thoại",
     "status": "Trạng thái",
+    "statusSuspended": "Đã đình chỉ",
     "position": "Vị trí",
     "rank": "Cấp bậc",
     "activePackages": "Gói đang hoạt động",

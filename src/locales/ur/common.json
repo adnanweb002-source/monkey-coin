@@ -692,6 +692,7 @@
     "name": "نام",
     "phone": "فون",
     "status": "حالت",
+    "statusSuspended": "معطل",
     "position": "پوزیشن",
     "rank": "رینک",
     "activePackages": "فعال پیکجز",

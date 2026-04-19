@@ -692,6 +692,7 @@
     "name": "नाम",
     "phone": "फोन",
     "status": "स्थिति",
+    "statusSuspended": "निलंबित",
     "position": "पोज़िशन",
     "rank": "रैंक",
     "activePackages": "सक्रिय पैकेज",

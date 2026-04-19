@@ -692,6 +692,7 @@
     "name": "Имя",
     "phone": "Телефон",
     "status": "Статус",
+    "statusSuspended": "Приостановлен",
     "position": "Позиция",
     "rank": "Ранг",
     "activePackages": "Активные пакеты",

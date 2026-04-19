@@ -692,6 +692,7 @@
     "name": "الاسم",
     "phone": "الهاتف",
     "status": "الحالة",
+    "statusSuspended": "معلّق",
     "position": "الموضع",
     "rank": "الرتبة",
     "activePackages": "الباقات النشطة",

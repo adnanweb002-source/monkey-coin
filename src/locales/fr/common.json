@@ -692,6 +692,7 @@
     "name": "Nom",
     "phone": "Téléphone",
     "status": "Statut",
+    "statusSuspended": "Suspendu",
     "position": "Position",
     "rank": "Rang",
     "activePackages": "Forfaits actifs",

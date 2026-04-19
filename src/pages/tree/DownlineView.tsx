@@ -170,9 +170,9 @@ const DownlineView = () => {
                     <TableHead>{t("downlineView.phone")}</TableHead>
                     <TableHead>{t("downlineView.status")}</TableHead>
                     <TableHead>{t("downlineView.position")}</TableHead>
-                    <TableHead className="text-right">
+                    {/* <TableHead className="text-right">
                       {t("downlineView.rank")}
-                    </TableHead>
+                    </TableHead> */}
                     <TableHead className="text-right">
                       {t("downlineView.activePackages")}
                     </TableHead>
@@ -221,9 +221,9 @@ const DownlineView = () => {
                       <TableCell className="text-sm">
                         {r.position ?? "—"}
                       </TableCell>
-                      <TableCell className="text-right tabular-nums">
+                      {/* <TableCell className="text-right tabular-nums">
                         {r.currentRank}
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell className="text-right tabular-nums">
                         {r.activePackageCount}
                       </TableCell>

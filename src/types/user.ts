@@ -25,6 +25,7 @@ interface UserProfile {
   leftBv?: number;
   rightBv?: number;
   avatarId?: string;
+  activePackageCount?: number;
 }
 
 

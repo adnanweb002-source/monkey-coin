@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import api from "@/lib/api";
+import api, { getErrorMessage } from "@/lib/api";
 import { TreeNode } from "@/types/tree";
 import BinaryTreeView from "@/components/tree/BinaryTreeView";
 import TreeControls from "@/components/tree/TreeControls";
-import TreeWalletCards from "@/components/tree/TreeWalletCards";
+import TreeAffiliateLinks from "@/components/tree/TreeAffiliateLinks";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle } from "lucide-react";
 import { toast } from "sonner";
@@ -19,31 +19,12 @@ const useGetTree = (userId: number, depth: number) => {
         const response = await api.get(`/tree/user/${userId}?depth=${depth}`);
         return response.data;
       } catch {
-        // Return mock data for development when API is unavailable
         return {} as TreeNode;
       }
     },
   });
 };
 
-// Helper to count business volume (total nodes in left/right branches)
-const countBusinessVolume = (
-  node: TreeNode | null,
-): { left: number; right: number } => {
-  const countNodes = (n: TreeNode | null): number => {
-    if (!n) return 0;
-    return 1 + countNodes(n.leftChild) + countNodes(n.rightChild);
-  };
-
-  if (!node) return { left: 0, right: 0 };
-
-  return {
-    left: countNodes(node.leftChild),
-    right: countNodes(node.rightChild),
-  };
-};
-
-// Helper to check if a node matches search query
 const nodeMatchesSearch = (node: TreeNode | null, query: string): boolean => {
   if (!node || !query.trim()) return false;
   const lowerQuery = query.toLowerCase().trim();
@@ -54,7 +35,6 @@ const nodeMatchesSearch = (node: TreeNode | null, query: string): boolean => {
   );
 };
 
-// Helper to collect all matching node IDs in the tree
 const findMatchingNodeIds = (
   node: TreeNode | null,
   query: string,
@@ -79,29 +59,34 @@ const MyTree = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [depth] = useState(3);
 
-  const userId = localStorage.getItem("userProfile")
-    ? JSON.parse(localStorage.getItem("userProfile") || "").id
-    : 1;
+  let userId = 1;
+  let memberId: string | null = null;
+  try {
+    const raw = localStorage.getItem("userProfile");
+    if (raw) {
+      const p = JSON.parse(raw) as { id?: number; memberId?: string };
+      if (typeof p?.id === "number") userId = p.id;
+      memberId = p.memberId ?? null;
+    }
+  } catch {
+    /* keep defaults */
+  }
 
-  const memberId = localStorage.getItem("userProfile")
-    ? JSON.parse(localStorage.getItem("userProfile") || "").memberId
-    : null;
-
-  const [currentRootId, setCurrentRootId] = useState(userId);
+  const [currentRootId, setCurrentRootId] = useState<number>(userId);
+  /** Stack of previous tree roots when drilling into child nodes (for Shift Up). */
+  const [rootHistory, setRootHistory] = useState<number[]>([]);
 
   const { data: wallets } = useGetWallets();
 
   const { data: treeData, isLoading, error } = useGetTree(currentRootId, depth);
 
-  console.log(treeData);
-
   const matchingNodeIds = treeData
     ? findMatchingNodeIds(treeData, searchQuery)
     : new Set<number>();
 
-  console.log("Matching node IDs:", matchingNodeIds);
-
   const handleNodeClick = (node: TreeNode) => {
+    if (node.id === currentRootId) return;
+    setRootHistory((prev) => [...prev, currentRootId]);
     setCurrentRootId(node.id);
 
     toast.info(`Selected: ${node.email}`, {
@@ -109,34 +94,30 @@ const MyTree = () => {
     });
   };
 
+  const handleMyPosition = () => {
+    setCurrentRootId(userId);
+    setRootHistory([]);
+  };
+
+  const handleShiftUp = () => {
+    setRootHistory((prev) => {
+      if (prev.length === 0) return prev;
+      const next = [...prev];
+      const parentRoot = next.pop()!;
+      setCurrentRootId(parentRoot);
+      return next;
+    });
+  };
+
+  const shiftUpDisabled =
+    currentRootId === userId || rootHistory.length === 0;
+
   const handleAddUser = (parentId: string, position: "LEFT" | "RIGHT") => {
     toast.info(`Add user to ${position} of parent ${parentId}`);
     window.open(
       `/panel/signup?ref=${memberId}&position=${position}&parent=${parentId}`,
       "_blank",
     );
-  };
-
-  const businessVolume = treeData
-    ? countBusinessVolume(treeData)
-    : { left: 0, right: 0 };
-
-  const getExtremeLeftNode = (node: TreeNode | null): TreeNode | null => {
-    if (!node) return null;
-    let current = node;
-    while (current.leftChild) {
-      current = current.leftChild;
-    }
-    return current;
-  };
-
-  const getExtremeRightNode = (node: TreeNode | null): TreeNode | null => {
-    if (!node) return null;
-    let current = node;
-    while (current.rightChild) {
-      current = current.rightChild;
-    }
-    return current;
   };
 
   const handleSearch = async () => {
@@ -153,6 +134,7 @@ const MyTree = () => {
       const foundUserId = res.data?.userId;
 
       if (foundUserId) {
+        setRootHistory([]);
         setCurrentRootId(foundUserId);
 
         toast.success("User found", {
@@ -161,14 +143,14 @@ const MyTree = () => {
       } else {
         toast.error("User not found in your tree");
       }
-    } catch (err) {
-      console.log(err)
-      toast.error(err?.response?.data?.message || "User not found in your downline");
+    } catch (err: unknown) {
+      toast.error(
+        getErrorMessage(err) || "User not found in your downline",
+      );
     }
   };
 
-   const handleExtremeLeftClick = async () => {
-
+  const handleExtremeLeftClick = async () => {
     try {
       const res = await api.get(
         `/tree/search/extreme-left?rootUserId=${userId}`,
@@ -177,6 +159,7 @@ const MyTree = () => {
       const foundUserId = res.data?.userId;
 
       if (foundUserId) {
+        setRootHistory([]);
         setCurrentRootId(foundUserId);
 
         toast.success("User found", {
@@ -185,15 +168,14 @@ const MyTree = () => {
       } else {
         toast.error("User not found in your tree");
       }
-    } catch (err) {
-      console.log(err)
-      toast.error(err?.response?.data?.message || "User not found in your downline");
+    } catch (err: unknown) {
+      toast.error(
+        getErrorMessage(err) || "User not found in your downline",
+      );
     }
   };
 
-
-     const handleExtremeRightClick = async () => {
-
+  const handleExtremeRightClick = async () => {
     try {
       const res = await api.get(
         `/tree/search/extreme-right?rootUserId=${userId}`,
@@ -202,6 +184,7 @@ const MyTree = () => {
       const foundUserId = res.data?.userId;
 
       if (foundUserId) {
+        setRootHistory([]);
         setCurrentRootId(foundUserId);
 
         toast.success("User found", {
@@ -210,38 +193,34 @@ const MyTree = () => {
       } else {
         toast.error("User not found in your tree");
       }
-    } catch (err) {
-      console.log(err)
-      toast.error(err?.response?.data?.message || "User not found in your downline");
+    } catch (err: unknown) {
+      toast.error(
+        getErrorMessage(err) || "User not found in your downline",
+      );
     }
   };
 
   return (
     <div className="space-y-4 min-h-screen p-4">
-      {/* Wallet Cards */}
-      {/* <TreeWalletCards />
-      
-      */}
-
       <div className="mb-6">
         <WalletCards wallets={wallets} />
       </div>
 
-      {/* Tree Controls */}
+      <TreeAffiliateLinks memberId={memberId} />
+
       <TreeControls
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         onSearchSubmit={handleSearch}
-        extremeLeft={businessVolume.left}
-        extremeRight={businessVolume.right}
         onExtremeLeftClick={handleExtremeLeftClick}
         onExtremeRightClick={handleExtremeRightClick}
-        setCurrentRootId={setCurrentRootId}
+        onMyPosition={handleMyPosition}
+        onShiftUp={handleShiftUp}
+        shiftUpDisabled={shiftUpDisabled}
         currentRootId={currentRootId}
         userId={userId}
       />
 
-      {/* Tree Visualization Container */}
       {isLoading ? (
         <div className="flex flex-col items-center justify-center p-8 space-y-4">
           <Skeleton className="w-28 h-28 rounded-xl bg-[#2a2a2a]" />

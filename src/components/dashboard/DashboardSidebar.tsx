@@ -28,6 +28,7 @@ import {
   PlusIcon,
   User2Icon,
   FileSpreadsheet,
+  Network,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -77,6 +78,11 @@ const sidebarItems: SidebarItem[] = [
   },
   { labelKey: "sidebar.makeInvestment", icon: DollarSign, path: "/packages" },
   { labelKey: "sidebar.myTree", icon: TreePine, path: "/tree" },
+  {
+    labelKey: "sidebar.downlineView",
+    icon: Network,
+    path: "/tree/downline",
+  },
   {
     labelKey: "sidebar.income",
     icon: FileText,

@@ -57,6 +57,7 @@ import UserTargets from "./pages/UserTargets";
 import DepositBonusSettings from "./pages/admin/AdminDepositBonus";
 import TwoFactorResetRequests from "./pages/admin/TwoFactorResetRequests";
 import NotFound from "./pages/NotFound";
+import AnalyticsBootstrap from "./components/analytics/AnalyticsBootstrap";
 
 
 const queryClient = new QueryClient();
@@ -75,6 +76,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter basename="/panel">
+          <AnalyticsBootstrap />
           <Routes>
           <Route path="/" element={<ProtectedDashboard />}>
               <Route index element={<DashboardHome />} />

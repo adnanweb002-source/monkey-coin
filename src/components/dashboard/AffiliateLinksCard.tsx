@@ -111,6 +111,9 @@ const AffiliateLinksCard = ({ user }: { user: UserProfile | null }) => {
               variant="ghost"
               size="icon"
               className="h-7 w-7 shrink-0"
+              data-analytics="affiliate_link_copy"
+              data-analytics-category="growth"
+              data-analytics-meta={JSON.stringify({ side: "LEFT" })}
               onClick={() => copyLink(leftLink, "Left")}
             >
               <Copy className="h-3.5 w-3.5" />
@@ -145,6 +148,9 @@ const AffiliateLinksCard = ({ user }: { user: UserProfile | null }) => {
               variant="ghost"
               size="icon"
               className="h-7 w-7 shrink-0"
+              data-analytics="affiliate_link_copy"
+              data-analytics-category="growth"
+              data-analytics-meta={JSON.stringify({ side: "RIGHT" })}
               onClick={() => copyLink(rightLink, "Right")}
             >
               <Copy className="h-3.5 w-3.5" />

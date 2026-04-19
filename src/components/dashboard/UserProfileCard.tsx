@@ -5,9 +5,11 @@ import UserAvatar from "@/components/common/UserAvatar";
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 const UserProfileCard = ({ user }: { user: UserProfile | null }) => {
   if (!user) return null;
+  const { t } = useTranslation();
 
   const copyMemberId = async () => {
     if (!user.memberId) return;
@@ -62,10 +64,10 @@ const UserProfileCard = ({ user }: { user: UserProfile | null }) => {
           <Shield className="h-3.5 w-3.5 text-primary shrink-0" />
           <span
             className={
-              user.status === "ACTIVE" ? "text-green-500" : "text-destructive"
+              user.activePackageCount > 0 ? "text-green-500" : "text-destructive"
             }
           >
-            {user.status}
+            {user.activePackageCount > 0 ? t("common.active") : t("common.inactive")}
           </span>
         </div>
       </div>

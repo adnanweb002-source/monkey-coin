@@ -177,7 +177,7 @@ const DashboardHeader = ({
               <p className="text-xs text-primary">
                 {userProfile?.role === "ADMIN"
                   ? t("common.admin")
-                  : userProfile?.status === "ACTIVE"
+                  : userProfile?.activePackageCount > 0
                     ? t("common.active")
                     : t("common.user")}
               </p>

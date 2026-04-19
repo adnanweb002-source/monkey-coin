@@ -692,6 +692,7 @@
     "name": "姓名",
     "phone": "电话",
     "status": "状态",
+    "statusSuspended": "已暂停",
     "position": "位置",
     "rank": "等级",
     "activePackages": "有效套餐",

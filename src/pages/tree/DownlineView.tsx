@@ -13,11 +13,12 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 import api, { getErrorMessage } from "@/lib/api";
 import type { DownlineMembersResponse } from "@/types/downline";
 import { cn } from "@/lib/utils";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 15;
 
 type DownlineMode = "binary" | "referral";
 
@@ -202,7 +203,21 @@ const DownlineView = () => {
                       <TableCell className="text-sm whitespace-nowrap">
                         {r.phoneNumber ?? "—"}
                       </TableCell>
-                      <TableCell className="text-sm">{r.status}</TableCell>
+                      <TableCell>
+                        {String(r.status).toUpperCase() === "SUSPENDED" ? (
+                          <Badge className="bg-red-500/20 text-red-600 border-red-500/30">
+                            {t("downlineView.statusSuspended")}
+                          </Badge>
+                        ) : r.activePackageCount > 0 ? (
+                          <Badge className="bg-green-500/20 text-green-600 border-green-500/30">
+                            {t("common.active")}
+                          </Badge>
+                        ) : (
+                          <Badge className="bg-gray-500/20 text-gray-600 border-gray-500/30">
+                            {t("common.inactive")}
+                          </Badge>
+                        )}
+                      </TableCell>
                       <TableCell className="text-sm">
                         {r.position ?? "—"}
                       </TableCell>
@@ -212,11 +227,15 @@ const DownlineView = () => {
                       <TableCell className="text-right tabular-nums">
                         {r.activePackageCount}
                       </TableCell>
-                      <TableCell className="text-right tabular-nums">
-                        ${formatMoney(r.totalDeposits)}
+                      <TableCell className="text-right">
+                        <span className="text-green-600 font-medium">
+                          ${Number(r.totalDeposits).toFixed(2)}
+                        </span>
                       </TableCell>
-                      <TableCell className="text-right tabular-nums">
-                        ${formatMoney(r.totalWithdrawals)}
+                      <TableCell className="text-right">
+                        <span className="text-red-600 font-medium">
+                          ${Number(r.totalWithdrawals).toFixed(2)}
+                        </span>
                       </TableCell>
                       <TableCell className="text-right tabular-nums">
                         ${formatMoney(r.totalPackageAmount)}

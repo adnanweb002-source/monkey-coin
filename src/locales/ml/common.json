@@ -692,6 +692,7 @@
     "name": "പേര്",
     "phone": "ഫോൺ",
     "status": "സ്ഥിതി",
+    "statusSuspended": "സസ്പെൻഡ് ചെയ്തു",
     "position": "പൊസിഷൻ",
     "rank": "റാങ്ക്",
     "activePackages": "സജീവ പാക്കേജുകൾ",

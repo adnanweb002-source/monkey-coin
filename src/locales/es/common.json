@@ -692,6 +692,7 @@
     "name": "Nombre",
     "phone": "Teléfono",
     "status": "Estado",
+    "statusSuspended": "Suspendido",
     "position": "Posición",
     "rank": "Rango",
     "activePackages": "Paquetes activos",

@@ -58,6 +58,13 @@ export const APP_FEATURES: AppFeature[] = [
   },
   { id: "tree", labelKey: "sidebar.myTree", path: "/tree", group: "menu" },
   {
+    id: "downline-view",
+    labelKey: "sidebar.downlineView",
+    path: "/tree/downline",
+    group: "menu",
+    searchHints: ["team", "binary", "referral", "network"],
+  },
+  {
     id: "income-daily",
     labelKey: "sidebar.dailyIncome",
     path: "/income/daily",

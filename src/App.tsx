@@ -25,6 +25,7 @@ import WithdrawRequests from "./pages/wallet/WithdrawRequests";
 import Transactions from "./pages/wallet/Transactions";
 import Transfer from "./pages/wallet/Transfer";
 import MyTree from "./pages/tree/MyTree";
+import DownlineView from "./pages/tree/DownlineView";
 import HolidayList from "./pages/HolidayList";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsAndConditions from "./pages/TermsAndConditions";
@@ -108,6 +109,7 @@ const App = () => (
             {/* Tree Routes - wrapped in layout */}
             <Route path="/tree" element={<ProtectedDashboard />}>
               <Route index element={<MyTree />} />
+              <Route path="downline" element={<DownlineView />} />
             </Route>
 
             {/* Packages Route */}

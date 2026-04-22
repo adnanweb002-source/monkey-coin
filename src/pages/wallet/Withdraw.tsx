@@ -293,7 +293,7 @@ const Withdraw = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="USDT_TRC_20">USDT (TRC20)</SelectItem>
-                    <SelectItem value="USDT_ERC_20">USDT (ERC20)</SelectItem>
+                    <SelectItem value="USDT_BEP_20">USDT (BEP20)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

@@ -682,6 +682,7 @@
   },
   "downlineView": {
     "title": "Downline View",
+    "searchMemberId": "Search by member ID",
     "totalUsers": "Total users",
     "showingRange": "Showing {{from}} to {{to}} of {{total}} members",
     "jumpToPage": "Jump to page",

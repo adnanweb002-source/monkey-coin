@@ -1,8 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, ChevronRight, RefreshCw, Users } from "lucide-react";
+import { ChevronLeft, ChevronRight, RefreshCw, Search, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -26,6 +27,19 @@ const DownlineView = () => {
   const { t } = useTranslation();
   const [mode, setMode] = useState<DownlineMode>("binary");
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search.trim());
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch]);
 
   const endpoint = useMemo(
     () =>
@@ -36,10 +50,14 @@ const DownlineView = () => {
   );
 
   const { data, isLoading, isFetching, error, refetch } = useQuery({
-    queryKey: ["downline-members", mode, page],
+    queryKey: ["downline-members", mode, page, debouncedSearch],
     queryFn: async () => {
       const res = await api.get<DownlineMembersResponse>(endpoint, {
-        params: { page, pageSize: PAGE_SIZE },
+        params: {
+          page,
+          pageSize: PAGE_SIZE,
+          ...(debouncedSearch ? { memberId: debouncedSearch } : {}),
+        },
       });
       return res.data;
     },
@@ -48,6 +66,8 @@ const DownlineView = () => {
   const setModeAndReset = (next: DownlineMode) => {
     setMode(next);
     setPage(1);
+    setSearch("");
+    setDebouncedSearch("");
   };
 
   const total = data?.total ?? 0;
@@ -127,10 +147,22 @@ const DownlineView = () => {
         </CardContent>
       </Card>
 
-      <div className="flex justify-end">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative w-full sm:max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={t("downlineView.searchMemberId")}
+            className="pl-9 h-9"
+            aria-label={t("downlineView.searchMemberId")}
+          />
+        </div>
         <Button
           variant="outline"
           size="sm"
+          className="self-end sm:self-auto"
           onClick={() => refetch()}
           disabled={isFetching}
         >

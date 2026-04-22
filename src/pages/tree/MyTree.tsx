@@ -75,6 +75,7 @@ const MyTree = () => {
   const [currentRootId, setCurrentRootId] = useState<number>(userId);
   /** Stack of previous tree roots when drilling into child nodes (for Shift Up). */
   const [rootHistory, setRootHistory] = useState<number[]>([]);
+  const [isShiftUpLoading, setIsShiftUpLoading] = useState(false);
 
   const { data: wallets } = useGetWallets();
 
@@ -99,18 +100,33 @@ const MyTree = () => {
     setRootHistory([]);
   };
 
-  const handleShiftUp = () => {
-    setRootHistory((prev) => {
-      if (prev.length === 0) return prev;
-      const next = [...prev];
-      const parentRoot = next.pop()!;
-      setCurrentRootId(parentRoot);
-      return next;
-    });
+  const handleShiftUp = async () => {
+    if (rootHistory.length > 0) {
+      setRootHistory((prev) => {
+        if (prev.length === 0) return prev;
+        const next = [...prev];
+        const parentRoot = next.pop()!;
+        setCurrentRootId(parentRoot);
+        return next;
+      });
+      return;
+    }
+    setIsShiftUpLoading(true);
+    try {
+      const res = await api.get<{ userId: number }>(
+        "/tree/search/shift-up",
+        { params: { currentNodeUserId: String(currentRootId) } },
+      );
+      const parentId = res.data?.userId;
+      if (parentId != null) {
+        setCurrentRootId(parentId);
+      }
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err) || "Could not shift up");
+    } finally {
+      setIsShiftUpLoading(false);
+    }
   };
-
-  const shiftUpDisabled =
-    currentRootId === userId || rootHistory.length === 0;
 
   const handleAddUser = (parentId: string, position: "LEFT" | "RIGHT") => {
     toast.info(`Add user to ${position} of parent ${parentId}`);
@@ -216,7 +232,7 @@ const MyTree = () => {
         onExtremeRightClick={handleExtremeRightClick}
         onMyPosition={handleMyPosition}
         onShiftUp={handleShiftUp}
-        shiftUpDisabled={shiftUpDisabled}
+        shiftUpLoading={isShiftUpLoading}
         currentRootId={currentRootId}
         userId={userId}
       />

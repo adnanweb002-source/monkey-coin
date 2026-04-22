@@ -10,7 +10,8 @@ interface TreeControlsProps {
   onExtremeRightClick?: () => void;
   onMyPosition?: () => void;
   onShiftUp?: () => void;
-  shiftUpDisabled?: boolean;
+  /** When true, Shift Up is in progress (e.g. API). */
+  shiftUpLoading?: boolean;
   currentRootId?: number | null;
   userId?: number;
 }
@@ -26,7 +27,7 @@ const TreeControls = ({
   onExtremeRightClick,
   onMyPosition,
   onShiftUp,
-  shiftUpDisabled = true,
+  shiftUpLoading = false,
   currentRootId,
   userId,
 }: TreeControlsProps) => {
@@ -70,7 +71,7 @@ const TreeControls = ({
         <button
           type="button"
           onClick={onShiftUp}
-          disabled={shiftUpDisabled}
+          disabled={shiftUpLoading}
           className={btnClass}
         >
           {t("tree.shiftUp")}

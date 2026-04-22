@@ -35,7 +35,7 @@ const CRYPTO_OPTIONS = [
   { value: "USDTTRC20", label: "Tether (USDT TRC20)" },
   { value: "LTC", label: "Litecoin (LTC)" },
   { value: "USDTERC20", label: "USDT ERC20" },
-  { value: "USDTBEP20", label: "USDT BEP20" },
+  { value: "USDTBSC", label: "USDT BEP20" },
   { value: "DOGE", label: "Dogecoin (DOGE)" },
   { value: "TRX", label: "Tron (TRX)" },
 ];

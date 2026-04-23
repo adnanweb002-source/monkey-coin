@@ -51,7 +51,7 @@
     "input-otp": "^1.4.2",
     "lucide-react": "^0.462.0",
     "next-themes": "^0.3.0",
-    "pdfjs-dist": "^4.10.38",
+    "pdfjs-dist": "4.8.69",
     "qrcode.react": "^4.2.0",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
@@ -70,6 +70,9 @@
     "vaul": "^0.9.9",
     "xlsx": "^0.18.5",
     "zod": "^3.25.76"
+  },
+  "overrides": {
+    "pdfjs-dist": "4.8.69"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",

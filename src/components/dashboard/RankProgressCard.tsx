@@ -47,8 +47,6 @@ const RankProgressCard = () => {
     queryFn: getRankProgress,
   });
 
-  console.log(progress)
-
   const isLoading = ranksLoading || progressLoading;
 
   // 🧠 Compute current rank

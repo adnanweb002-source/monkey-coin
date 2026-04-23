@@ -67,8 +67,6 @@ const SystemPrune = () => {
     try {
       const response = await api.post("/admin/prune-system", { confirm: CONFIRM_KEYWORD });
 
-      console.log("System prune response:", response.data);
-
       toast({
         title: "System Prune Completed",
         description: "System prune completed successfully. All data has been cleared.",

@@ -14,7 +14,6 @@ const TreeNodeHoverDetails = ({ node, position }: TreeNodeHoverDetailsProps) => 
     return name.charAt(0).toUpperCase() + name.slice(1);
   };
 
-  console.log("Rendering TreeNodeHoverDetails for node:", node);
 
   const formatBV = (value: number | string | undefined) => {
     if (value === undefined || value === null) return "—";

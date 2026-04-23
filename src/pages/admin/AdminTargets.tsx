@@ -253,7 +253,6 @@ const AdminTargets = () => {
   };
 
   const openEdit = (target: Target) => {
-    console.log(target)
     setEditingTarget(target);
     setForm({
       memberId: target.user.memberId,

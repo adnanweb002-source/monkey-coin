@@ -94,7 +94,8 @@ function LazyPdfPage({
   );
 }
 
-const pdfjsRuntimeVersion = pdfjs.version ?? "4.10.38";
+// Must match installed pdfjs-dist (same as react-pdf) so cmaps/standard_fonts unpkg paths align.
+const pdfjsRuntimeVersion = pdfjs.version ?? "4.8.69";
 
 /**
  * `Document` with `url` alone sometimes never triggers a visible fetch; loading bytes

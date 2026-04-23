@@ -18,7 +18,7 @@ const OptimizedBusinessPdfViewer = lazy(() =>
 
 const businessPresentationPdfs = [
   { language: "Arabic", fileName: "BUSINESS PRESENTATION ARABIC.pdf" },
-  { language: "English", fileName: "BUSINESS PRESENTATION ENGLISH-1.pdf" },
+  { language: "English", fileName: "BUSINESS PRESENTATION ENGLISH.pdf" },
   { language: "Filipino", fileName: "BUSINESS PRESENTATION FILIPINO.pdf" },
   { language: "French", fileName: "BUSINESS PRESENTATION FRENCH.pdf" },
   { language: "Hindi", fileName: "BUSINESS PRESENTATION HINDI.pdf" },

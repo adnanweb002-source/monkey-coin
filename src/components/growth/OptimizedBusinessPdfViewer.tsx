@@ -100,10 +100,16 @@ const getDocumentOptions = () =>
     cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjsRuntimeVersion}/cmaps/`,
     cMapPacked: true,
     standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjsRuntimeVersion}/standard_fonts/`,
-    disableRange: false,
-    disableStream: false,
-    rangeChunkSize: 128 * 1024,
+    // Many static hosts (and some CDNs) do not support byte-range; PDF.js then fails. Full fetch is more reliable.
+    disableRange: true,
+    disableStream: true,
   }) as const;
+
+function toAbsoluteFileUrl(href: string) {
+  if (typeof window === "undefined") return href;
+  if (href.startsWith("http://") || href.startsWith("https://")) return href;
+  return new URL(href, window.location.origin).href;
+}
 
 export function OptimizedBusinessPdfViewer({ fileUrl, className }: Props) {
   const { t } = useTranslation();
@@ -112,6 +118,7 @@ export function OptimizedBusinessPdfViewer({ fileUrl, className }: Props) {
   const [err, setErr] = useState<Error | null>(null);
   const { ref: sizeRef, width: containerW } = useContainerWidth();
   const documentOptions = useMemo(() => getDocumentOptions(), []);
+  const fileUrlAbsolute = useMemo(() => toAbsoluteFileUrl(fileUrl), [fileUrl]);
 
   const pageW = useMemo(
     () => Math.max(200, containerW - 4),
@@ -130,7 +137,7 @@ export function OptimizedBusinessPdfViewer({ fileUrl, className }: Props) {
     setNumPages(0);
     setErr(null);
     setLoadPct(null);
-  }, [fileUrl]);
+  }, [fileUrlAbsolute]);
 
   return (
     <div className={cn("flex flex-col gap-2", className)}>
@@ -147,9 +154,13 @@ export function OptimizedBusinessPdfViewer({ fileUrl, className }: Props) {
           </div>
         ) : (
           <Document
-            key={fileUrl}
-            file={fileUrl}
+            key={fileUrlAbsolute}
+            file={fileUrlAbsolute}
             options={documentOptions}
+            onSourceError={(e) => {
+              setErr(e instanceof Error ? e : new Error(String(e)));
+              setLoadPct(null);
+            }}
             onLoadSuccess={({ numPages: n }) => {
               setNumPages(n);
               setLoadPct(100);
@@ -157,7 +168,7 @@ export function OptimizedBusinessPdfViewer({ fileUrl, className }: Props) {
             }}
             onLoadProgress={onLoadProgress}
             onLoadError={(e) => {
-              setErr(e);
+              setErr(e instanceof Error ? e : new Error(String(e)));
               setLoadPct(null);
             }}
             loading={

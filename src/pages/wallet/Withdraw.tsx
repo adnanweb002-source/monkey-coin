@@ -189,8 +189,8 @@ const Withdraw = () => {
         <div className="flex items-start gap-3 p-4 rounded-lg border border-destructive/30 bg-destructive/10">
           <CloudCog className="h-5 w-5 text-destructive mt-0.5 shrink-0" />
           <p className="text-sm text-foreground">
-            <strong>{t("wallet.withdrawalsLocked")}:</strong>{" "}
-            {t("wallet.withdrawalsLockedMessage")}
+            <strong>{t("wallet.withdrawalsLockedFromEWallet")}:</strong>{" "}
+            {t("wallet.withdrawalsLockedMessageEWallet")}
           </p>
         </div>
       )}
@@ -242,7 +242,11 @@ const Withdraw = () => {
                         <SelectItem
                           key={wallet.id}
                           value={wallet.type}
-                          disabled={parseFloat(wallet.balance) <= 0}
+                          disabled={parseFloat(wallet.balance) <= 0
+                            || (
+                              wallet.type === "E_WALLET" && isTargetLocked
+                            )
+                          }
                         >
                           {walletLabels[wallet.type] || wallet.type} - $
                           {parseFloat(wallet.balance).toLocaleString()}
@@ -318,7 +322,7 @@ const Withdraw = () => {
                 type="submit"
                 disabled={
                   isLoading ||
-                  isTargetLocked ||
+                  (selectedWalletType === "E_WALLET" && isTargetLocked) ||
                   !selectedWalletType ||
                   user?.isWithdrawalRestricted ||
                   !amount ||
@@ -329,13 +333,8 @@ const Withdraw = () => {
                 className="w-full"
                 size="lg"
               >
-                {isTargetLocked
-                  ? t("wallet.withdrawalsLocked")
-                  : isLoading
-                    ? t("wallet.submitting")
-                    : user?.isWithdrawalRestricted
-                      ? t("wallet.withdrawalsLocked")
-                      : t("wallet.submitWithdrawal")}
+
+                {isLoading ? t("wallet.submitting") : t("wallet.submitWithdrawal")}
               </Button>
             </form>
           )}
@@ -346,10 +345,10 @@ const Withdraw = () => {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-green-600">
-              🎉{ t("wallet.withdrawalRequestSubmitted")}
+              🎉{t("wallet.withdrawalRequestSubmitted")}
             </DialogTitle>
             <DialogDescription>
-             {t("wallet.withdrawalRequestSuccess")}
+              {t("wallet.withdrawalRequestSuccess")}
             </DialogDescription>
           </DialogHeader>
 

@@ -291,6 +291,8 @@
     "withdrawalsLocked": "Chức năng rút tiền bị khóa",
     "transferLocked": "Chức năng rút tiền bị khóa",
     "withdrawalsLockedMessage": "Vui lòng đạt được mục tiêu được giao trước khi thực hiện yêu cầu rút tiền.",
+    "withdrawalsLockedFromEWallet": "Rút tiền bị khóa đối với E Wallet.",
+    "withdrawalsLockedMessageEWallet": "Vui lòng đạt được mục tiêu được giao trước khi thực hiện yêu cầu rút tiền từ E Wallet.",
     "insufficientBalance": "Số dư không đủ",
     "insufficientBalanceDesc": "Số dư trong ví {{wallet}} của bạn không đủ",
     "selectWalletError": "Vui lòng chọn ví",

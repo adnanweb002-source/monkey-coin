@@ -291,6 +291,8 @@
     "withdrawalsLocked": "Вывод заблокирован",
     "transferLocked": "Вывод заблокирован",
     "withdrawalsLockedMessage": "Пожалуйста, достигните назначенной цели, прежде чем подавать запрос на вывод.",
+    "withdrawalsLockedFromEWallet": "Вывод средств заблокирован для E Wallet.",
+    "withdrawalsLockedMessageEWallet": "Пожалуйста, достигните назначенной цели, прежде чем подавать запрос на вывод из E Wallet.",
     "insufficientBalance": "Недостаточно средств",
     "insufficientBalanceDesc": "На вашем кошельке {{wallet}} недостаточно средств",
     "selectWalletError": "Пожалуйста, выберите кошелек",

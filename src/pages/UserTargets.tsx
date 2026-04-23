@@ -151,7 +151,7 @@ const UserTargets = () => {
                       <td className="py-2 pr-4">{idx + 1}</td>
                       <td className="py-2 pr-4">${tgt.targetAmount.toLocaleString()}</td>
                       <td className="py-2 pr-4">${tgt.achieved.toLocaleString()}</td>
-                      <td className="py-2 pr-4">${tgt.remaining.toLocaleString()}</td>
+                      <td className="py-2 pr-4">${(tgt.targetAmount - tgt.achieved).toLocaleString()}</td>
                       <td className="py-2 pr-4"><Badge variant="outline">{tgt.salesType}</Badge></td>
                       <td className="py-2">
                         <Badge variant={tgt.completed ? "default" : "secondary"}>

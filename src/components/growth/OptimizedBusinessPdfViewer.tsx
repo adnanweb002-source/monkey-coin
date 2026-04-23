@@ -95,96 +95,161 @@ function LazyPdfPage({
 }
 
 const pdfjsRuntimeVersion = pdfjs.version ?? "4.10.38";
-const getDocumentOptions = () =>
-  ({
-    cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjsRuntimeVersion}/cmaps/`,
-    cMapPacked: true,
-    standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjsRuntimeVersion}/standard_fonts/`,
-    // Many static hosts (and some CDNs) do not support byte-range; PDF.js then fails. Full fetch is more reliable.
-    disableRange: true,
-    disableStream: true,
-  }) as const;
 
-function toAbsoluteFileUrl(href: string) {
-  if (typeof window === "undefined") return href;
-  if (href.startsWith("http://") || href.startsWith("https://")) return href;
-  return new URL(href, window.location.origin).href;
+/**
+ * `Document` with `url` alone sometimes never triggers a visible fetch; loading bytes
+ * ourselves guarantees a `fetch` in DevTools and matches the same origin as the app.
+ */
+function usePdfBytes(relativeFileUrl: string) {
+  const [bytes, setBytes] = useState<ArrayBuffer | null>(null);
+  const [loadPct, setLoadPct] = useState<number | null>(null);
+  const [fetchError, setFetchError] = useState<Error | null>(null);
+
+  const toFetchUrl = useMemo(() => {
+    if (typeof window === "undefined") return relativeFileUrl;
+    if (
+      relativeFileUrl.startsWith("http://") ||
+      relativeFileUrl.startsWith("https://")
+    ) {
+      return relativeFileUrl;
+    }
+    if (relativeFileUrl.startsWith("/")) {
+      return new URL(relativeFileUrl, window.location.origin).href;
+    }
+    return new URL(relativeFileUrl, window.location.href).href;
+  }, [relativeFileUrl]);
+
+  useEffect(() => {
+    setBytes(null);
+    setLoadPct(0);
+    setFetchError(null);
+    const ac = new AbortController();
+
+    (async () => {
+      try {
+        const res = await fetch(toFetchUrl, {
+          signal: ac.signal,
+          credentials: "same-origin",
+        });
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status} ${res.statusText}`);
+        }
+        const cl = res.headers.get("content-length");
+        const total = cl ? parseInt(cl, 10) : 0;
+        const body = res.body;
+        if (body && total > 0) {
+          const reader = body.getReader();
+          const chunks: Uint8Array[] = [];
+          let loaded = 0;
+          for (;;) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            if (value) {
+              chunks.push(value);
+              loaded += value.length;
+              setLoadPct(Math.min(100, Math.round((100 * loaded) / total)));
+            }
+          }
+          const u8 = new Uint8Array(loaded);
+          let pos = 0;
+          for (const c of chunks) {
+            u8.set(c, pos);
+            pos += c.length;
+          }
+          setBytes(u8.buffer);
+        } else {
+          setLoadPct(50);
+          const buf = await res.arrayBuffer();
+          if (buf.byteLength < 8) {
+            throw new Error("The file is empty or not a PDF.");
+          }
+          setBytes(buf);
+        }
+        setLoadPct(100);
+      } catch (e) {
+        if (e instanceof DOMException && e.name === "AbortError") return;
+        setFetchError(e instanceof Error ? e : new Error(String(e)));
+        setLoadPct(null);
+      }
+    })();
+
+    return () => ac.abort();
+  }, [toFetchUrl]);
+
+  return { bytes, loadPct, fetchError };
 }
+
+const pdfDocumentOptions = {
+  cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjsRuntimeVersion}/cmaps/`,
+  cMapPacked: true,
+  standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjsRuntimeVersion}/standard_fonts/`,
+} as const;
 
 export function OptimizedBusinessPdfViewer({ fileUrl, className }: Props) {
   const { t } = useTranslation();
+  const { bytes, loadPct, fetchError } = usePdfBytes(fileUrl);
   const [numPages, setNumPages] = useState(0);
-  const [loadPct, setLoadPct] = useState<number | null>(null);
-  const [err, setErr] = useState<Error | null>(null);
+  const [parseErr, setParseErr] = useState<Error | null>(null);
   const { ref: sizeRef, width: containerW } = useContainerWidth();
-  const documentOptions = useMemo(() => getDocumentOptions(), []);
-  const fileUrlAbsolute = useMemo(() => toAbsoluteFileUrl(fileUrl), [fileUrl]);
-
   const pageW = useMemo(
     () => Math.max(200, containerW - 4),
     [containerW]
   );
 
-  const onLoadProgress = useCallback(
-    ({ loaded, total }: { loaded: number; total: number }) => {
-      if (total > 0) setLoadPct(Math.round((100 * loaded) / total));
-      else setLoadPct(null);
-    },
-    []
-  );
-
   useEffect(() => {
     setNumPages(0);
-    setErr(null);
-    setLoadPct(null);
-  }, [fileUrlAbsolute]);
+    setParseErr(null);
+  }, [fileUrl]);
+
+  const showError = fetchError ?? parseErr;
 
   return (
     <div className={cn("flex flex-col gap-2", className)}>
       <p className="text-xs text-muted-foreground sm:text-sm">
         {t("growthTools.pdfPagesScroll")}
       </p>
+      {loadPct !== null && loadPct < 100 && !fetchError && (
+        <div className="space-y-1.5">
+          <p className="text-xs text-muted-foreground">
+            {t("growthTools.pdfProgress", { pct: loadPct })}
+          </p>
+          <Progress value={loadPct} className="h-2" />
+        </div>
+      )}
+
       <div
         ref={sizeRef}
         className="max-h-[min(85vh,1200px)] w-full overflow-y-auto overflow-x-hidden rounded-md border border-border/80 bg-background"
       >
-        {err ? (
-          <div className="flex min-h-[40vh] items-center justify-center p-4 text-center text-sm text-destructive">
-            {t("growthTools.pdfError")}
+        {showError ? (
+          <div className="flex min-h-[40vh] flex-col items-center justify-center gap-1 p-4 text-center text-sm text-destructive">
+            <p>{t("growthTools.pdfError")}</p>
+            <p className="text-xs text-muted-foreground break-all max-w-prose">
+              {showError.message}
+            </p>
+          </div>
+        ) : !bytes ? (
+          <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3 p-6">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-sm text-muted-foreground">
+              {t("growthTools.pdfPreparing")}
+            </p>
           </div>
         ) : (
           <Document
-            key={fileUrlAbsolute}
-            file={fileUrlAbsolute}
-            options={documentOptions}
-            onSourceError={(e) => {
-              setErr(e instanceof Error ? e : new Error(String(e)));
-              setLoadPct(null);
-            }}
+            key={fileUrl}
+            file={bytes}
+            options={pdfDocumentOptions}
             onLoadSuccess={({ numPages: n }) => {
               setNumPages(n);
-              setLoadPct(100);
-              setErr(null);
+              setParseErr(null);
             }}
-            onLoadProgress={onLoadProgress}
             onLoadError={(e) => {
-              setErr(e instanceof Error ? e : new Error(String(e)));
-              setLoadPct(null);
+              setParseErr(e instanceof Error ? e : new Error(String(e)));
             }}
             loading={
-              <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3 p-6">
+              <div className="flex min-h-[40vh] items-center justify-center p-4">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                <p className="text-sm text-muted-foreground">
-                  {t("growthTools.pdfPreparing")}
-                </p>
-                {loadPct !== null && loadPct < 100 && (
-                  <div className="w-full max-w-sm space-y-1.5">
-                    <Progress value={loadPct} className="h-2" />
-                    <p className="text-center text-xs text-muted-foreground">
-                      {t("growthTools.pdfProgress", { pct: loadPct })}
-                    </p>
-                  </div>
-                )}
               </div>
             }
           >

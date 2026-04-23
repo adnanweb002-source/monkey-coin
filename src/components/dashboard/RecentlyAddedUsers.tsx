@@ -53,8 +53,6 @@ const RecentlyAddedUsers = () => {
 
   const users: RecentUser[] = data || [];
 
-  console.log("Recently Added Users:", users);
-
   return (
     <div className="bg-card rounded-xl p-5 border border-border h-[420px] flex flex-col">
       <div className="flex items-center justify-between mb-4 shrink-0">

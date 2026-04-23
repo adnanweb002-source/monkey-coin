@@ -437,7 +437,11 @@
     "title": "Growth Tools",
     "subtitle": "Grow your network and increase your income",
     "failedToLoad": "Failed to load growth tools",
-    "tryAgainLater": "Please try again later"
+    "tryAgainLater": "Please try again later",
+    "pdfPreparing": "Preparing document…",
+    "pdfProgress": "Downloading… {{pct}}%",
+    "pdfError": "Could not show the preview. Please try downloading the file.",
+    "pdfPagesScroll": "Pages load as you scroll to keep the preview fast."
   },
   "income": {
     "binaryIncome": "Binary Income",

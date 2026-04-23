@@ -166,17 +166,15 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
     const socket = connectSocket();
 
     socket.on("connect", () => {
-      console.log("✅ Socket connected:", socket.id);
+
     });
 
     socket.on("connect_error", (err) => {
       console.error("❌ Socket error:", err.message);
     });
 
-    console.log("NotificationContext mounted, WebSocket connected", socket);
 
     socket.on("notification", (payload: Notification) => {
-      console.log("Received real-time notification:", payload);
       dispatch({ type: "ADD_REALTIME", payload });
       toast({
         title: payload.title,

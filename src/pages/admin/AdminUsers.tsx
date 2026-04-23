@@ -394,7 +394,6 @@ const AdminUsers = () => {
         `/admin/users/${userId}/restrict-withdrawal`,
         { restrict: restrict },
       );
-      console.log("Restrict withdrawal response:", response.data);
       return response.data;
     },
     onSuccess: (_, variables) => {
@@ -431,7 +430,6 @@ const AdminUsers = () => {
         `/admin/users/${userId}/restrict-cross-line-transfer`,
         { restrict: restrict },
       );
-      console.log("Restrict withdrawal response:", response.data);
       return response.data;
     },
     onSuccess: (_, variables) => {

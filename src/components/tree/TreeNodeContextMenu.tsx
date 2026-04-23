@@ -75,7 +75,6 @@ const TreeNodeContextMenu = ({ node, children, isAdmin }: TreeNodeContextMenuPro
   });
 
   const getName = (email: string) => {
-    console.log("email", email)
     const name = email?.split("@")[0];
     return name?.charAt(0).toUpperCase() + name?.slice(1);
   };

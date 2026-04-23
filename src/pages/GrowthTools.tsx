@@ -7,7 +7,14 @@ import { UserProfile } from "@/types/user";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useMemo, useState } from "react";
+import { lazy, Suspense, useMemo, useState } from "react";
+import { publicFileUrl } from "@/lib/utils";
+
+const OptimizedBusinessPdfViewer = lazy(() =>
+  import("@/components/growth/OptimizedBusinessPdfViewer").then((m) => ({
+    default: m.OptimizedBusinessPdfViewer,
+  }))
+);
 
 const businessPresentationPdfs = [
   { language: "Arabic", fileName: "BUSINESS PRESENTATION ARABIC.pdf" },
@@ -44,7 +51,7 @@ const GrowthTools = () => {
   );
 
   const activePdfUrl = useMemo(
-    () => `/${encodeURIComponent(activePresentation.fileName).replace(/%2F/g, "/")}`,
+    () => publicFileUrl(activePresentation.fileName),
     [activePresentation.fileName]
   );
 
@@ -117,15 +124,15 @@ const GrowthTools = () => {
           </div>
         </div>
 
-        <div className="rounded-lg border border-border/80 bg-background overflow-hidden shadow-sm">
-          <iframe
-            key={activePdfUrl}
-            src={`${activePdfUrl}#toolbar=1&view=FitH`}
-            title={`Business Presentation - ${activePresentation.language}`}
-            loading="lazy"
-            className="w-full h-[65vh] min-h-[420px] sm:min-h-[560px]"
-          />
-        </div>
+        <Suspense
+          fallback={
+            <div className="flex min-h-[50vh] items-center justify-center rounded-lg border border-border/80 bg-background">
+              <Skeleton className="h-[min(60vh,720px)] w-full max-w-3xl" />
+            </div>
+          }
+        >
+          <OptimizedBusinessPdfViewer fileUrl={activePdfUrl} className="shadow-sm" />
+        </Suspense>
 
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-xs sm:text-sm text-muted-foreground">

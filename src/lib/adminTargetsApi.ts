@@ -85,9 +85,7 @@ export const updateTarget = async (
   targetId: number,
   data: Partial<AssignTargetPayload>,
 ) => {
-  console.log("the data is", data)
   const res = await api.patch(`/targets/${targetId}`, data);
-  console.log("the response", res)
   return res.data;
 };
 

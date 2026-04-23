@@ -291,6 +291,8 @@
     "withdrawalsLocked": "Retiros bloqueados",
     "transferLocked": "Retiros bloqueados",
     "withdrawalsLockedMessage": "Por favor, alcanza el objetivo asignado antes de realizar una solicitud de retiro.",
+    "withdrawalsLockedFromEWallet": "Los retiros están bloqueados para E Wallet.",
+    "withdrawalsLockedMessageEWallet": "Por favor, alcanza el objetivo asignado antes de realizar una solicitud de retiro desde E Wallet.",
     "insufficientBalance": "Saldo insuficiente",
     "insufficientBalanceDesc": "El saldo de tu {{wallet}} es insuficiente",
     "selectWalletError": "Por favor selecciona una billetera",

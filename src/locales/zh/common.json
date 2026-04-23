@@ -291,6 +291,8 @@
     "withdrawalsLocked": "提现已锁定",
     "transferLocked": "提现已锁定",
     "withdrawalsLockedMessage": "请在提出提现请求前达到指定的目标。",
+    "withdrawalsLockedFromEWallet": "E 钱包的提现已锁定。",
+    "withdrawalsLockedMessageEWallet": "请在从 E 钱包提出提现请求前达到指定的目标。",
     "insufficientBalance": "余额不足",
     "insufficientBalanceDesc": "您的 {{wallet}} 钱包余额不足",
     "selectWalletError": "请选择一个钱包",

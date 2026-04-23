@@ -291,6 +291,8 @@
     "withdrawalsLocked": "السحب مغلق",
     "transferLocked": "السحب مغلق",
     "withdrawalsLockedMessage": "يرجى الوصول إلى هدفك المحدد قبل تقديم طلب سحب.",
+    "withdrawalsLockedFromEWallet": "السحب مقفل لمحفظة E Wallet.",
+    "withdrawalsLockedMessageEWallet": "يرجى الوصول إلى هدفك المحدد قبل تقديم طلب سحب من محفظة E Wallet.",
     "insufficientBalance": "رصيد غير كافٍ",
     "insufficientBalanceDesc": "رصيد {{wallet}} غير كافٍ",
     "selectWalletError": "يرجى اختيار محفظة",

@@ -291,6 +291,8 @@
     "withdrawalsLocked": "निकासी लॉक है",
     "transferLocked": "निकासी लॉक है",
     "withdrawalsLockedMessage": "निकासी अनुरोध करने से पहले कृपया अपना निर्धारित लक्ष्य पूरा करें।",
+    "withdrawalsLockedFromEWallet": "ई वॉलेट के लिए निकासी लॉक है।",
+    "withdrawalsLockedMessageEWallet": "कृपया ई वॉलेट से निकासी अनुरोध करने से पहले अपना निर्धारित लक्ष्य पूरा करें।",
     "insufficientBalance": "अपर्याप्त शेष राशि",
     "insufficientBalanceDesc": "आपके {{wallet}} वॉलेट में शेष राशि अपर्याप्त है",
     "selectWalletError": "कृपया एक वॉलेट चुनें",

@@ -291,6 +291,8 @@
     "withdrawalsLocked": "പിൻവലിക്കൽ ലോക്ക് ചെയ്തിരിക്കുന്നു",
     "transferLocked": "പിൻവലിക്കൽ ലോക്ക് ചെയ്തിരിക്കുന്നു",
     "withdrawalsLockedMessage": "പിൻവലിക്കൽ അഭ്യർത്ഥിക്കുന്നതിന് മുമ്പ് നിങ്ങളുടെ ടാർഗെറ്റ് പൂർത്തിയാക്കുക.",
+    "withdrawalsLockedFromEWallet": "E വാലറ്റിനായി പിൻവലിക്കൽ പൂട്ടിയിരിക്കുന്നു.",
+    "withdrawalsLockedMessageEWallet": "E വാലറ്റിൽ നിന്ന് പിൻവലിക്കൽ അഭ്യർത്ഥിക്കുന്നതിന് മുമ്പ് നിങ്ങളുടെ ടാർഗെറ്റ് പൂർത്തിയാക്കുക.",
     "insufficientBalance": "ബാലൻസ് തികയുന്നില്ല",
     "insufficientBalanceDesc": "നിങ്ങളുടെ {{wallet}} ബാലൻസ് അപര്യാപ്തമാണ്",
     "selectWalletError": "ദയവായി ഒരു വാലറ്റ് തിരഞ്ഞെടുക്കുക",

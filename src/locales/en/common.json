@@ -292,6 +292,8 @@
     "withdrawalsLocked": "Withdrawals Disabled",
     "transferLocked": "Transfer Disabled",
     "withdrawalsLockedMessage": "Please reach your assigned target before placing a withdrawal request.",
+    "withdrawalsLockedFromEWallet": "Withdrawals are locked for E Wallet.",
+    "withdrawalsLockedMessageEWallet": "Please reach your assigned target before placing a withdrawal request from E Wallet.",
     "insufficientBalance": "Insufficient Balance",
     "insufficientBalanceDesc": "Your {{wallet}} balance is insufficient",
     "selectWalletError": "Please select a wallet",

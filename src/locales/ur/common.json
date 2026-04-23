@@ -291,6 +291,8 @@
     "withdrawalsLocked": "نکاسی مقفل ہے",
     "transferLocked": "نکاسی مقفل ہے",
     "withdrawalsLockedMessage": "براہ کرم نکاسی کی درخواست دینے سے پہلے اپنا مقررہ ہدف پورا کریں۔",
+    "withdrawalsLockedFromEWallet": "E والٹ کے لیے نکاسی مقفل ہے۔",
+    "withdrawalsLockedMessageEWallet": "براہ کرم E والٹ سے نکاسی کی درخواست دینے سے پہلے اپنا مقررہ ہدف پورا کریں۔",
     "insufficientBalance": "ناکافی بیلنس",
     "insufficientBalanceDesc": "آپ کے {{wallet}} میں بیلنس ناکافی ہے",
     "selectWalletError": "براہ کرم ایک والیٹ منتخب کریں",

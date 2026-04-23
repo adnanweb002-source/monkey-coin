@@ -291,6 +291,8 @@
     "withdrawalsLocked": "Retraits verrouillés",
     "transferLocked": "Retraits verrouillés",
     "withdrawalsLockedMessage": "Veuillez atteindre votre objectif assigné avant de placer une demande de retrait.",
+    "withdrawalsLockedFromEWallet": "Les retraits sont verrouillés pour E Wallet.",
+    "withdrawalsLockedMessageEWallet": "Veuillez atteindre votre objectif assigné avant de placer une demande de retrait depuis E Wallet.",
     "insufficientBalance": "Solde insuffisant",
     "insufficientBalanceDesc": "Le solde de votre {{wallet}} est insuffisant",
     "selectWalletError": "Veuillez sélectionner un portefeuille",

@@ -43,8 +43,7 @@ const Packages = () => {
     return new Date(promoEndAt).getTime();
   }, [promoEndAt]);
 
-  const showPromoBanner =
-    promoEnabled && Number.isFinite(promoEndMs) && nowMs < promoEndMs;
+  const showPromoBanner = promoEnabled
 
   useEffect(() => {
     if (!showPromoBanner) return;
@@ -123,7 +122,7 @@ const Packages = () => {
         <p className="text-muted-foreground mt-1">{t("packages.subtitle")}</p>
       </div>
 
-      {showPromoBanner && countdown && (
+      {showPromoBanner && (
         <div className="bg-card rounded-xl border border-border overflow-hidden">
            <div className="px-4 py-4 md:px-6 md:py-5 border-t border-border">
             <p className="text-sm md:text-base font-medium text-foreground mb-3">

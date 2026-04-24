@@ -110,7 +110,6 @@ const SignupForm = () => {
           (data.position === "AUTO" ? null : (data.position ?? null)),
         parentMemberId: parentIdParam || null,
       };
-      console.log(payload);
       const response = await api.post("/auth/register", payload);
 
       if (!response?.data?.id) {

@@ -312,17 +312,31 @@ const PackagePurchaseModal = ({
   const handleSubmit = () => {
     if (!selectedPackage || !isValid) return;
 
-    // Build split object as percentages (only from available wallets)
-    const availableWalletTypes = availableWallets.map((w) => w.type);
+    // Split = exact share of the package amount: (walletAmount / total) * 100, full Number precision
+    // (no integer or fixed-decimal rounding). Last wallet uses 100 − sum(others) so percentages sum
+    // to exactly 100 despite floating-point noise.
+    const entries = availableWallets
+      .map((w) => w.type)
+      .map((type) => ({
+        type,
+        numAmt: parseFloat(walletAmounts[type]) || 0,
+      }))
+      .filter((e) => e.numAmt > 0);
+
     const split: Record<string, number> = {};
-    Object.entries(walletAmounts)
-      .filter(([wallet]) => availableWalletTypes.includes(wallet))
-      .forEach(([wallet, amt]) => {
-        const numAmt = parseFloat(amt) || 0;
-        if (numAmt > 0) {
-          split[wallet] = Math.round((numAmt / totalAmount) * 100);
-        }
-      });
+    if (entries.length === 1) {
+      split[entries[0].type] = 100;
+    } else if (entries.length > 1) {
+      let assigned = 0;
+      for (let i = 0; i < entries.length - 1; i++) {
+        const e = entries[i];
+        const pct = (e.numAmt / totalAmount) * 100;
+        split[e.type] = pct;
+        assigned += pct;
+      }
+      const last = entries[entries.length - 1];
+      split[last.type] = 100 - assigned;
+    }
 
     const payload: {
       packageId: number;

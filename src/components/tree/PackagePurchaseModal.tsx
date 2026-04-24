@@ -312,9 +312,8 @@ const PackagePurchaseModal = ({
   const handleSubmit = () => {
     if (!selectedPackage || !isValid) return;
 
-    // Split = exact share of the package amount: (walletAmount / total) * 100, full Number precision
-    // (no integer or fixed-decimal rounding). Last wallet uses 100 − sum(others) so percentages sum
-    // to exactly 100 despite floating-point noise.
+    // Each wallet: (walletAmount / totalPackageAmount) × 100 — same formula for every wallet (no
+    // “100 − others” on the last entry, so e.g. A_WALLET is exactly (100/1100)*100, not a remainder).
     const entries = availableWallets
       .map((w) => w.type)
       .map((type) => ({
@@ -324,19 +323,9 @@ const PackagePurchaseModal = ({
       .filter((e) => e.numAmt > 0);
 
     const split: Record<string, number> = {};
-    if (entries.length === 1) {
-      split[entries[0].type] = 100;
-    } else if (entries.length > 1) {
-      let assigned = 0;
-      for (let i = 0; i < entries.length - 1; i++) {
-        const e = entries[i];
-        const pct = (e.numAmt / totalAmount) * 100;
-        split[e.type] = pct;
-        assigned += pct;
-      }
-      const last = entries[entries.length - 1];
-      split[last.type] = 100 - assigned;
-    }
+    entries.forEach((e) => {
+      split[e.type] = (e.numAmt / totalAmount) * 100;
+    });
 
     const payload: {
       packageId: number;

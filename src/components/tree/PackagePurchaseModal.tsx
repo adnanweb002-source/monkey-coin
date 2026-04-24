@@ -244,8 +244,7 @@ const PackagePurchaseModal = ({
         const balance = walletBalanceMap[wallet] || 0;
         if (numAmt > balance) {
           errors.push(
-            `${
-              WALLET_LABELS[wallet] || wallet
+            `${WALLET_LABELS[wallet] || wallet
             } amount exceeds balance ($${balance.toFixed(2)})`,
           );
         }
@@ -312,23 +311,25 @@ const PackagePurchaseModal = ({
   const handleSubmit = () => {
     if (!selectedPackage || !isValid) return;
 
-    // Build split object as percentages (only from available wallets)
-    const availableWalletTypes = availableWallets.map((w) => w.type);
+    const entries = availableWallets
+      .map((w) => w.type)
+      .map((type) => ({
+        type,
+        numAmt: parseFloat(walletAmounts[type]) || 0,
+      }))
+      .filter((e) => e.numAmt > 0);
+
+    // 🔹 SEND EXACT AMOUNTS (not %)
     const split: Record<string, number> = {};
-    Object.entries(walletAmounts)
-      .filter(([wallet]) => availableWalletTypes.includes(wallet))
-      .forEach(([wallet, amt]) => {
-        const numAmt = parseFloat(amt) || 0;
-        if (numAmt > 0) {
-          split[wallet] = Math.round((numAmt / totalAmount) * 100);
-        }
-      });
+    entries.forEach((e) => {
+      split[e.type] = Number(e.numAmt.toFixed(2)); // normalize
+    });
 
     const payload: {
       packageId: number;
       amount: string;
       userId?: string;
-      split: Record<string, number>;
+      split: Record<string, number>;    
     } = {
       packageId: selectedPackage.id,
       amount: amount,
@@ -341,6 +342,42 @@ const PackagePurchaseModal = ({
 
     purchaseMutation.mutate(payload);
   };
+
+  // const handleSubmit = () => {
+  //   if (!selectedPackage || !isValid) return;
+
+  //   // Each wallet: (walletAmount / totalPackageAmount) × 100 — same formula for every wallet (no
+  //   // “100 − others” on the last entry, so e.g. A_WALLET is exactly (100/1100)*100, not a remainder).
+  //   const entries = availableWallets
+  //     .map((w) => w.type)
+  //     .map((type) => ({
+  //       type,
+  //       numAmt: parseFloat(walletAmounts[type]) || 0,
+  //     }))
+  //     .filter((e) => e.numAmt > 0);
+
+  //   const split: Record<string, number> = {};
+  //   entries.forEach((e) => {
+  //     split[e.type] = (e.numAmt / totalAmount) * 100;
+  //   });
+
+  //   const payload: {
+  //     packageId: number;
+  //     amount: string;
+  //     userId?: string;
+  //     split: Record<string, number>;
+  //   } = {
+  //     packageId: selectedPackage.id,
+  //     amount: amount,
+  //     split,
+  //   };
+
+  //   if (purchaseMode === "downline" && targetMemberId) {
+  //     payload.userId = targetMemberId;
+  //   }
+
+  //   purchaseMutation.mutate(payload);
+  // };
 
   const activePackages = packages.filter((pkg) => pkg.isActive);
 
@@ -557,7 +594,7 @@ const PackagePurchaseModal = ({
                               className={cn(
                                 "pl-7 h-9 appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
                                 exceedsBalance &&
-                                  "border-destructive focus-visible:ring-destructive",
+                                "border-destructive focus-visible:ring-destructive",
                               )}
                               min="0"
                             />
@@ -603,7 +640,7 @@ const PackagePurchaseModal = ({
                         "text-sm font-semibold",
                         Math.abs(
                           Object.entries(walletAmounts)
-                            .filter(([w]) => w in availableWallets)
+                          .filter(([w]) => availableWallets.some(v => v.type === w))
                             .reduce(
                               (sum, [, amt]) => sum + (parseFloat(amt) || 0),
                               0,
@@ -615,7 +652,7 @@ const PackagePurchaseModal = ({
                     >
                       $
                       {Object.entries(walletAmounts)
-                        .filter(([w]) => w in availableWallets)
+                        .filter(([w]) => availableWallets.some(v => v.type === w))
                         .reduce(
                           (sum, [, amt]) => sum + (parseFloat(amt) || 0),
                           0,

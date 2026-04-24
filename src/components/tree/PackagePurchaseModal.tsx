@@ -174,7 +174,7 @@ const PackagePurchaseModal = ({
   // Get available wallets based on user role and purchase mode (from user-wallets API)
   const availableWallets = useMemo(() => {
     if (isAdminPurchasingForOther) {
-      // Admin purchasing for others: only Bonus Wallet
+      // Admin purchasing for others: only Awards Wallet (A_WALLET)
       return wallets.filter((w) => w.type === "A_WALLET");
     }
     return wallets;

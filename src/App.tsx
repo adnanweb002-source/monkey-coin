@@ -57,6 +57,7 @@ import AwardsAndRanks from "./pages/reports/AwardsAndRanks";
 import UserTargets from "./pages/UserTargets";
 import DepositBonusSettings from "./pages/admin/AdminDepositBonus";
 import TwoFactorResetRequests from "./pages/admin/TwoFactorResetRequests";
+import AdminPackagePurchases from "./pages/admin/AdminPackagePurchases";
 import NotFound from "./pages/NotFound";
 
 
@@ -177,6 +178,7 @@ const App = () => (
               <Route path="power-sheet" element={<AdminPowerSheet />} />
               <Route path="deposit-bonus" element={<DepositBonusSettings />} />
               <Route path="two-factor-reset-requests" element={<TwoFactorResetRequests />} />
+              <Route path="package-purchases" element={<AdminPackagePurchases />} />
             </Route>
 
             {/* User Targets Route */}

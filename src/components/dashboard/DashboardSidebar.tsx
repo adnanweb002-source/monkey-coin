@@ -199,6 +199,12 @@ const adminItems: SidebarItem[] = [
     adminOnly: true,
   },
   {
+    labelKey: "admin.packagePurchases",
+    icon: FileText,
+    path: "/admin/package-purchases",
+    adminOnly: true,
+  },
+  {
     labelKey: "admin.supportedWalletTypes",
     icon: Wallet,
     path: "/admin/supported-wallet-types",

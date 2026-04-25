@@ -278,10 +278,12 @@ const AdminTargets = () => {
       });
     } else {
       const split: Record<string, number> = {};
+
       Object.entries(walletAmounts).forEach(([wallet, amt]) => {
         const numAmt = parseFloat(amt) || 0;
+      
         if (numAmt > 0) {
-          split[wallet] = Math.round((numAmt / totalAmount) * 100);
+          split[wallet] = Number(numAmt.toFixed(2)); 
         }
       });
 

@@ -69,6 +69,7 @@
     "systemPrune": "System Prune",
     "ranks": "Ranks",
     "targets": "Targets",
+    "packagePurchases": "Package Purchases",
     "depositBonus": "Deposit Bonus",
     "twoFactorResetRequests": "2FA Reset Requests",
     "powerSheet": "Power Sheet"

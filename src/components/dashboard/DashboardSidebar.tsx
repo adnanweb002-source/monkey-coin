@@ -29,6 +29,7 @@ import {
   User2Icon,
   FileSpreadsheet,
   Network,
+  PlayCircle,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -202,6 +203,18 @@ const adminItems: SidebarItem[] = [
     labelKey: "admin.packagePurchases",
     icon: FileText,
     path: "/admin/package-purchases",
+    adminOnly: true,
+  },
+  {
+    labelKey: "admin.auditLogs",
+    icon: FileText,
+    path: "/admin/audit-logs",
+    adminOnly: true,
+  },
+  {
+    labelKey: "admin.dailyRuns",
+    icon: PlayCircle,
+    path: "/admin/daily-runs",
     adminOnly: true,
   },
   {

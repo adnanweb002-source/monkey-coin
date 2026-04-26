@@ -70,6 +70,8 @@
     "ranks": "Ranks",
     "targets": "Targets",
     "packagePurchases": "Package Purchases",
+    "auditLogs": "Audit Logs",
+    "dailyRuns": "Daily Runs",
     "depositBonus": "Deposit Bonus",
     "twoFactorResetRequests": "2FA Reset Requests",
     "powerSheet": "Power Sheet"

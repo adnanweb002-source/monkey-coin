@@ -30,6 +30,8 @@ import {
   FileSpreadsheet,
   Network,
   PlayCircle,
+  LineChart,
+  BarChart3,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -179,6 +181,18 @@ const adminItems: SidebarItem[] = [
     labelKey: "admin.deposits",
     icon: Wallet,
     path: "/admin/deposits",
+    adminOnly: true,
+  },
+  {
+    labelKey: "admin.depositGrowth",
+    icon: LineChart,
+    path: "/admin/growth/deposits",
+    adminOnly: true,
+  },
+  {
+    labelKey: "admin.packagePurchaseGrowth",
+    icon: BarChart3,
+    path: "/admin/growth/package-purchases",
     adminOnly: true,
   },
   {

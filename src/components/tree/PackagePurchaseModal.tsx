@@ -219,7 +219,7 @@ const PackagePurchaseModal = ({
     if (!isAdminPurchasingForOther) {
       Object.entries(walletRules).forEach(([wallet, minPct]) => {
         const currentPct = walletPercentages[wallet] || 0;
-        if (currentPct > 0 && currentPct < minPct) {
+        if (currentPct < minPct) {
           errors.push(
             `${WALLET_LABELS[wallet] || wallet} must be at least ${minPct}%`,
           );

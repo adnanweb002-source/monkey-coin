@@ -74,7 +74,31 @@
     "dailyRuns": "Daily Runs",
     "depositBonus": "Deposit Bonus",
     "twoFactorResetRequests": "2FA Reset Requests",
-    "powerSheet": "Power Sheet"
+    "powerSheet": "Power Sheet",
+    "depositGrowth": "Deposit growth",
+    "packagePurchaseGrowth": "Package purchase growth"
+  },
+  "adminGrowth": {
+    "subtitle": "View totals per period with adjustable lookbacks. Leave a field blank to use the server default for that dimension.",
+    "filtersTitle": "Lookback (query parameters)",
+    "filtersHint": "Applied values are sent as days, weeks, and months query parameters.",
+    "lookbackDays": "Points (daily series)",
+    "lookbackWeeks": "Points (weekly series)",
+    "lookbackMonths": "Points (monthly series)",
+    "placeholderOptional": "Server default",
+    "apply": "Apply",
+    "resetDefaults": "Reset to defaults",
+    "refresh": "Refresh",
+    "loadFailed": "Could not load growth data",
+    "timezoneNote": "Bucket labels use the reporting timezone: {{tz}}.",
+    "chartDaily": "Daily series",
+    "chartWeekly": "Weekly series",
+    "chartMonthly": "Monthly series",
+    "chartDailyDesc": "Buckets in the daily chart: {{count}}",
+    "chartWeeklyDesc": "Buckets in the weekly chart: {{count}}",
+    "chartMonthlyDesc": "Buckets in the monthly chart: {{count}}",
+    "emptySeries": "No buckets returned for this lookback.",
+    "amount": "Amount"
   },
   "adminPowerSheet": {
     "title": "Power Sheet Generator",

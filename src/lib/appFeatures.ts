@@ -227,6 +227,22 @@ export const APP_FEATURES: AppFeature[] = [
     adminOnly: true,
   },
   {
+    id: "admin-deposit-growth",
+    labelKey: "admin.depositGrowth",
+    path: "/admin/growth/deposits",
+    group: "admin",
+    adminOnly: true,
+    searchHints: ["analytics", "chart", "trend"],
+  },
+  {
+    id: "admin-package-purchase-growth",
+    labelKey: "admin.packagePurchaseGrowth",
+    path: "/admin/growth/package-purchases",
+    group: "admin",
+    adminOnly: true,
+    searchHints: ["analytics", "chart", "trend"],
+  },
+  {
     id: "admin-wallet-rules",
     labelKey: "admin.packageWalletRules",
     path: "/admin/package-wallet-rules",

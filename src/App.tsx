@@ -60,6 +60,8 @@ import TwoFactorResetRequests from "./pages/admin/TwoFactorResetRequests";
 import AdminPackagePurchases from "./pages/admin/AdminPackagePurchases";
 import AdminAuditLogs from "./pages/admin/AdminAuditLogs";
 import AdminDailyRuns from "./pages/admin/AdminDailyRuns";
+import AdminDepositGrowth from "./pages/admin/AdminDepositGrowth";
+import AdminPackagePurchaseGrowth from "./pages/admin/AdminPackagePurchaseGrowth";
 import NotFound from "./pages/NotFound";
 
 
@@ -183,6 +185,8 @@ const App = () => (
               <Route path="package-purchases" element={<AdminPackagePurchases />} />
               <Route path="audit-logs" element={<AdminAuditLogs />} />
               <Route path="daily-runs" element={<AdminDailyRuns />} />
+              <Route path="growth/deposits" element={<AdminDepositGrowth />} />
+              <Route path="growth/package-purchases" element={<AdminPackagePurchaseGrowth />} />
             </Route>
 
             {/* User Targets Route */}

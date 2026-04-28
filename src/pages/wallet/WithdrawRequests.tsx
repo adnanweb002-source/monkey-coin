@@ -96,7 +96,9 @@ const WithdrawRequests = () => {
                       <TableHead>Platform Commission (12%)</TableHead>
                       <TableHead>Final Amount</TableHead>
                       <TableHead>{t("profile.memberId")}</TableHead>
-                      <TableHead>{t("common.ipAddress")}</TableHead>
+                      {
+                        isAdmin && <TableHead>{t("common.ipAddress")}</TableHead>
+                      }
                       <TableHead>{t("wallet.method")}</TableHead>
                       <TableHead>{t("wallet.address")}</TableHead>
                       <TableHead>{t("common.status")}</TableHead>
@@ -113,7 +115,7 @@ const WithdrawRequests = () => {
                         <TableCell>${(parseFloat(request.amount) * 0.12).toLocaleString()}</TableCell>
                         <TableCell className="font-bold">${(parseFloat(request.amount) * 0.88).toLocaleString()}</TableCell>
                         <TableCell>{request.user?.memberId}</TableCell>
-                        <TableCell>{request.ip}</TableCell>
+                        {isAdmin && <TableCell>{request.ip}</TableCell>}
                         <TableCell>{request.method}</TableCell>
                         <TableCell className="max-w-[150px] truncate">{request.address || "-"}</TableCell>
                         <TableCell><Badge variant="outline" className={statusColors[request.status]}>{request.status}</Badge></TableCell>

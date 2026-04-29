@@ -85,8 +85,12 @@ const DownlineView = () => {
     });
 
   let userProfile: any = localStorage.getItem("userProfile");
+  let isAdmin = false;
   if (userProfile) {
     userProfile = JSON.parse(userProfile);
+  }
+  if (userProfile?.role === "ADMIN") {
+    isAdmin = true;
   }
 
   return (
@@ -242,7 +246,7 @@ const DownlineView = () => {
                         {r.firstName} {r.lastName}
                       </TableCell>
                       {
-                        r.sponsorId === Number(userProfile?.id) ? (
+                        r.sponsorId === Number(userProfile?.id) || isAdmin ? (
                           <TableCell className="text-sm max-w-[200px] truncate">
                             {r.email}
                           </TableCell>
@@ -253,7 +257,7 @@ const DownlineView = () => {
                         )}
 
                       {
-                        r.sponsorId === Number(userProfile?.id) ? (
+                        r.sponsorId === Number(userProfile?.id) || isAdmin ? (
                           <TableCell className="text-sm max-w-[200px] truncate">
                             {r.phoneNumber ?? "—"}
                           </TableCell>

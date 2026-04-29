@@ -84,6 +84,11 @@ const DownlineView = () => {
       timeStyle: "short",
     });
 
+  let userProfile: any = localStorage.getItem("userProfile");
+  if (userProfile) {
+    userProfile = JSON.parse(userProfile);
+  }
+
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-foreground">
@@ -236,12 +241,27 @@ const DownlineView = () => {
                       <TableCell className="whitespace-nowrap">
                         {r.firstName} {r.lastName}
                       </TableCell>
-                      <TableCell className="text-sm max-w-[200px] truncate">
-                        {r.email}
-                      </TableCell>
-                      <TableCell className="text-sm whitespace-nowrap">
-                        {r.phoneNumber ?? "—"}
-                      </TableCell>
+                      {
+                        r.sponsorId === Number(userProfile?.id) ? (
+                          <TableCell className="text-sm max-w-[200px] truncate">
+                            {r.email}
+                          </TableCell>
+                        ) : (
+                          <TableCell className="text-sm max-w-[200px] truncate">
+                            -
+                          </TableCell>
+                        )}
+
+                      {
+                        r.sponsorId === Number(userProfile?.id) ? (
+                          <TableCell className="text-sm max-w-[200px] truncate">
+                            {r.phoneNumber ?? "—"}
+                          </TableCell>
+                        ) : (
+                          <TableCell className="text-sm max-w-[200px] truncate">
+                            -
+                          </TableCell>
+                        )}
                       <TableCell>
                         {String(r.status).toUpperCase() === "SUSPENDED" ? (
                           <Badge className="bg-red-500/20 text-red-600 border-red-500/30">

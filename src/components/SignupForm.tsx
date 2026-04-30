@@ -6,7 +6,7 @@ import { RefreshCw, ChevronDown, Eye, EyeOff, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
-import api from "@/lib/api";
+import api, { getErrorMessage } from "@/lib/api";
 import logoImg from "@/assets/logo.png";
 import logoDark from "@/assets/logo-dark.png";
 import logoLight from "@/assets/logo-light.png";
@@ -110,13 +110,13 @@ const SignupForm = () => {
           (data.position === "AUTO" ? null : (data.position ?? null)),
         parentMemberId: parentIdParam || null,
       };
-      const response = await api.post("/auth/register", payload);
 
-      if (!response?.data?.id) {
+      try{
+        const response = await api.post("/auth/register", payload);
+      } catch (error) {
         toast({
           title: "Error",
-          description:
-            response?.data?.message || "Registration failed. Please try again.",
+          description: getErrorMessage(error),
           variant: "destructive",
         });
         return;

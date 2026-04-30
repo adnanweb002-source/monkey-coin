@@ -64,6 +64,7 @@ import AdminDepositGrowth from "./pages/admin/AdminDepositGrowth";
 import AdminPackagePurchaseGrowth from "./pages/admin/AdminPackagePurchaseGrowth";
 import NotFound from "./pages/NotFound";
 import Maintenance from "./pages/Maintenance";
+import AdminWalletBalanceAdjust from "./pages/admin/AdminWalletBalanceAdjust";
 
 
 const queryClient = new QueryClient();
@@ -194,6 +195,7 @@ const App = () => (
               <Route path="daily-runs" element={<AdminDailyRuns />} />
               <Route path="growth/deposits" element={<AdminDepositGrowth />} />
               <Route path="growth/package-purchases" element={<AdminPackagePurchaseGrowth />} />
+              <Route path="wallets/adjust-balance" element={<AdminWalletBalanceAdjust />} />
             </Route>
 
             {/* User Targets Route */}

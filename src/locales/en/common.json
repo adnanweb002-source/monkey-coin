@@ -76,7 +76,8 @@
     "twoFactorResetRequests": "2FA Reset Requests",
     "powerSheet": "Power Sheet",
     "depositGrowth": "Deposit growth",
-    "packagePurchaseGrowth": "Package purchase growth"
+    "packagePurchaseGrowth": "Package purchase growth",
+    "walletBalanceAdjust": "Wallet Balance Adjust"
   },
   "adminGrowth": {
     "subtitle": "View totals per period with adjustable lookbacks. Leave a field blank to use the server default for that dimension.",

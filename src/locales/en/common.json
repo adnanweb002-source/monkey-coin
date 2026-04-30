@@ -655,6 +655,17 @@
     "lastUpdated": "Last Updated",
     "created": "Created"
   },
+  "maintenance": {
+    "badge": "Maintenance",
+    "headline": "We're upgrading your experience",
+    "description": "The member portal is temporarily unavailable while we ship improvements and keep everything secure. We'll be back shortly — thank you for your patience.",
+    "secureRibbon": "Verified official Vaultire notice",
+    "securityHeading": "Security information",
+    "securityNote": "Your account balances and credentials remain isolated on secured systems—this outage does not weaken protection. Vaultire Infinite will never ask for your password, payment PIN, wallet seed phrases, or 2FA codes via chat or email.",
+    "verifiedContacts": "Use only these official support channels—we will not redirect you elsewhere during maintenance.",
+    "needHelp": "Need something urgent?",
+    "emailSubject": "Member portal — maintenance inquiry"
+  },
   "success": {
     "title": "Success !",
     "emailSent": "A email has been send to your email@domain.com. Please check for an email from company and click on the included link to reset your password."

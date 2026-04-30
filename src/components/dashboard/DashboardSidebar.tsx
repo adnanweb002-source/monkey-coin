@@ -32,6 +32,7 @@ import {
   PlayCircle,
   LineChart,
   BarChart3,
+  Scale,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -229,6 +230,12 @@ const adminItems: SidebarItem[] = [
     labelKey: "admin.dailyRuns",
     icon: PlayCircle,
     path: "/admin/daily-runs",
+    adminOnly: true,
+  },
+  {
+    labelKey: "admin.walletBalanceAdjust",
+    icon: Scale,
+    path: "/admin/wallets/adjust-balance",
     adminOnly: true,
   },
   {

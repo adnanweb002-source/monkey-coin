@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { mintWalletAdjustChallenge } from "@/lib/adminWalletAdjustChallenge";
 
 type WalletType = "D_WALLET" | "E_WALLET" | "P_WALLET" | "A_WALLET";
+type AdjustDirection = "CREDIT" | "DEBIT";
 
 interface MemberLookup {
   id: number;
@@ -51,7 +52,8 @@ const AdminWalletBalanceAdjust = () => {
   const [isLookingUpMember, setIsLookingUpMember] = useState(false);
 
   const [walletType, setWalletType] = useState<WalletType>("D_WALLET");
-  const [balance, setBalance] = useState("");
+  const [amount, setAmount] = useState("");
+  const [direction, setDirection] = useState<AdjustDirection>("CREDIT");
   const [twoFactorCode, setTwoFactorCode] = useState("");
   const [reason, setReason] = useState("");
 
@@ -109,7 +111,8 @@ const AdminWalletBalanceAdjust = () => {
       const payload = {
         memberId: mid,
         walletType,
-        balance: balance.trim(),
+        amount: amount.trim(),
+        direction,
         twoFactorCode: twoFactorCode.trim(),
         keySalt: signing.keySalt,
         requestTs: signing.requestTs,
@@ -141,8 +144,17 @@ const AdminWalletBalanceAdjust = () => {
       toast({ title: "Validation error", description: "Member ID is required.", variant: "destructive" });
       return;
     }
-    if (!balance.trim()) {
-      toast({ title: "Validation error", description: "Target balance is required.", variant: "destructive" });
+    if (!amount.trim()) {
+      toast({ title: "Validation error", description: "Adjustment amount is required.", variant: "destructive" });
+      return;
+    }
+    const amt = Number(amount.trim());
+    if (!Number.isFinite(amt) || amt <= 0) {
+      toast({
+        title: "Validation error",
+        description: "Amount must be a positive number.",
+        variant: "destructive",
+      });
       return;
     }
     if (!twoFactorCode.trim()) {
@@ -174,7 +186,7 @@ const AdminWalletBalanceAdjust = () => {
       <div>
         <h1 className="text-2xl font-bold text-foreground">Admin Wallet Balance Adjustment</h1>
         <p className="text-muted-foreground">
-          Set an exact wallet balance for a member. This action is audited and restricted to admins.
+          Credit or debit a member wallet by amount. This action is audited and restricted to admins.
         </p>
       </div>
 
@@ -228,13 +240,27 @@ const AdminWalletBalanceAdjust = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="balance">Target Balance *</Label>
+                <Label htmlFor="direction">Direction *</Label>
+                <select
+                  id="direction"
+                  value={direction}
+                  onChange={(e) => setDirection(e.target.value as AdjustDirection)}
+                  className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                >
+                  <option value="CREDIT">Credit (add to balance)</option>
+                  <option value="DEBIT">Debit (subtract from balance)</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="amount">Amount *</Label>
                 <Input
-                  id="balance"
+                  id="amount"
                   type="text"
+                  inputMode="decimal"
                   placeholder="e.g. 120.50"
-                  value={balance}
-                  onChange={(e) => setBalance(e.target.value)}
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
                 />
               </div>
 

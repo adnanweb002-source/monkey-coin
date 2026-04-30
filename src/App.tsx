@@ -63,9 +63,12 @@ import AdminDailyRuns from "./pages/admin/AdminDailyRuns";
 import AdminDepositGrowth from "./pages/admin/AdminDepositGrowth";
 import AdminPackagePurchaseGrowth from "./pages/admin/AdminPackagePurchaseGrowth";
 import NotFound from "./pages/NotFound";
+import Maintenance from "./pages/Maintenance";
 
 
 const queryClient = new QueryClient();
+
+const UNDER_MAINTENANCE = import.meta.env.VITE_APP_UNDER_MAINTENANCE === "true";
 
 // Protected Dashboard Layout with 2FA requirement
 const ProtectedDashboard = () => (
@@ -82,6 +85,10 @@ const App = () => (
         <Sonner />
         <BrowserRouter basename="/panel">
           <Routes>
+          {UNDER_MAINTENANCE ? (
+            <Route path="*" element={<Maintenance />} />
+          ) : (
+            <>
           <Route path="/" element={<ProtectedDashboard />}>
               <Route index element={<DashboardHome />} />
             </Route>
@@ -214,6 +221,8 @@ const App = () => (
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
+            </>
+          )}
           </Routes>
         </BrowserRouter>
       </TooltipProvider>

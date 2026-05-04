@@ -42,7 +42,9 @@ const SigninForm = () => {
     try {
       const payload: Record<string, string> = { phoneOrEmail: data.email, password: data.password };
       if (otpValue && otpValue.length > 0) payload.code = otpValue;
-      const response = await api.post("/auth/login", payload);
+      const response = await api.post("/auth/login", payload,  {
+        timeout: 7500, // longer timeout for heavy operation
+      });
       if (!response?.data?.ok) throw new Error("Login failed. Please try again.");
       const profileResponse = await api.get("/auth/get-profile");
       const userProfile = profileResponse?.data;

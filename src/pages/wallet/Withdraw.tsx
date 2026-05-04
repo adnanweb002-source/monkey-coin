@@ -26,7 +26,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { add } from "date-fns";
 
 interface SupportedWalletType {
   id: number;

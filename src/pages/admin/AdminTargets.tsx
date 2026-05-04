@@ -270,7 +270,7 @@ const AdminTargets = () => {
       updateMutation.mutate({
         id: editingTarget.id,
         data: {
-          // packageAmount: parseFloat(form.packageAmount),
+          packageAmount: parseFloat(form.packageAmount),
           multiplier: form.targetMultiplier,
           salesType: form.targetType,
           targetAmount: form.targetAmount

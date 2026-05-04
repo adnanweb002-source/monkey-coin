@@ -26,6 +26,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { add } from "date-fns";
 
 interface SupportedWalletType {
   id: number;
@@ -325,10 +326,11 @@ const Withdraw = () => {
                   (selectedWalletType === "E_WALLET" && isTargetLocked) ||
                   !selectedWalletType ||
                   user?.isWithdrawalRestricted ||
-                  !amount ||
+                  !amount ||  
                   parseFloat(amount) <= 0 ||
                   parseFloat(amount) > selectedBalance ||
-                  !method
+                  !method ||
+                  address.length === 0
                 }
                 className="w-full"
                 size="lg"

@@ -23,7 +23,7 @@ const walletLabels: Record<string, string> = { D_WALLET: "D Wallet", P_WALLET: "
 const WithdrawRequests = () => {
   const [requests, setRequests] = useState<WithdrawRequest[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -38,8 +38,9 @@ const WithdrawRequests = () => {
     setIsLoading(true);
     try {
       const response = await api.get("/wallet/withdraw-requests", { params: { skip: page * PAGE_SIZE, take: PAGE_SIZE, ...(statusFilter && statusFilter !== "ALL" ? { status: statusFilter } : {}) } });
-      setRequests(response.data?.data || response.data || []);
-      setTotal(response.data?.total || response.data?.length || 0);
+      const list = Array.isArray(response.data) ? response.data : response.data?.data ?? [];
+      setRequests(list);
+      setTotal(list[0]?.total ?? 0);
     } catch (error: any) { toast({ title: t("common.error"), description: error?.response?.data?.message || "Failed to fetch withdrawal requests", variant: "destructive" }); }
     finally { setIsLoading(false); }
   };

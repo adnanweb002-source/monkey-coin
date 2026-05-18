@@ -9,7 +9,7 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 
 const api = axios.create({
   baseURL: BE_URL,
-  timeout: 3000,
+  timeout: 17500,
   withCredentials: true, // REQUIRED FOR COOKIE AUTH
   headers: {
     "Content-Type": "application/json",

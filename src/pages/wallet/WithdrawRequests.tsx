@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
-import { FileText, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, FileText, Info } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -13,12 +13,24 @@ import api from "@/lib/api";
 import AdminWithdrawActions from "@/components/admin/AdminWithdrawActions";
 import { walletConfig } from "@/lib/config";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface WithdrawRequest { id: number; walletType: string; amount: string; method: string; address: string | null; status: "PENDING" | "APPROVED" | "REJECTED" | "FAILED" | "COMPLETED" | "CANCELLED"; adminNote: string | null; createdAt: string; updatedAt: string; wallet: any; user: { memberId: string }; ip: string }
 
 const PAGE_SIZE = 20;
 const statusColors: Record<string, string> = { PENDING: "bg-yellow-500/20 text-yellow-500 border-yellow-500/30", APPROVED: "bg-green-500/20 text-green-500 border-green-500/30", COMPLETED: "bg-green-500/20 text-green-500 border-green-500/30", REJECTED: "bg-red-500/20 text-red-500 border-red-500/30", FAILED: "bg-red-500/20 text-red-500 border-red-500/30", CANCELLED: "bg-muted text-muted-foreground border-border" };
 const walletLabels: Record<string, string> = { D_WALLET: "D Wallet", P_WALLET: "P Wallet", E_WALLET: "E Wallet", A_WALLET: "A Wallet" };
+
+function getWithdrawalCommissionRate(walletType: string | undefined): number {
+  switch (walletType) {
+    case "E_WALLET":
+      return 0;
+    case "P_WALLET":
+      return 0.05;
+    default:
+      return 0;
+  }
+}
 
 const WithdrawRequests = () => {
   const [requests, setRequests] = useState<WithdrawRequest[]>([]);
@@ -94,7 +106,25 @@ const WithdrawRequests = () => {
                     <TableRow>
                       <TableHead>{t("wallet.selectWallet")}</TableHead>
                       <TableHead>{t("common.amount")}</TableHead>
-                      <TableHead>Platform Commission (12%)</TableHead>
+                      <TableHead>
+                        <span className="inline-flex items-center gap-1.5">
+                          {t("wallet.platformCommission")}
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                type="button"
+                                className="inline-flex rounded-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                aria-label={t("wallet.platformCommissionFeeInfo")}
+                              >
+                                <Info className="h-3.5 w-3.5 shrink-0" />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="max-w-xs text-left">
+                              <p>{t("wallet.platformCommissionFeeInfo")}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </span>
+                      </TableHead>
                       <TableHead>Final Amount</TableHead>
                       <TableHead>{t("profile.memberId")}</TableHead>
                       {
@@ -109,12 +139,19 @@ const WithdrawRequests = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {requests.map((request) => (
+                    {requests.map((request) => {
+                      const walletType = request.wallet?.type ?? request.walletType;
+                      const amount = parseFloat(request.amount);
+                      const commissionRate = getWithdrawalCommissionRate(walletType);
+                      const commission = amount * commissionRate;
+                      const finalAmount = amount - commission;
+
+                      return (
                       <TableRow key={request.id}>
-                        <TableCell>{walletLabels[request.wallet?.type] || request.walletType}</TableCell>
-                        <TableCell>${parseFloat(request.amount).toLocaleString()}</TableCell>
-                        <TableCell>${(parseFloat(request.amount) * 0.12).toLocaleString()}</TableCell>
-                        <TableCell className="font-bold">${(parseFloat(request.amount) * 0.88).toLocaleString()}</TableCell>
+                        <TableCell>{walletLabels[walletType] || walletType}</TableCell>
+                        <TableCell>${amount.toLocaleString()}</TableCell>
+                        <TableCell>${commission.toLocaleString()}</TableCell>
+                        <TableCell className="font-bold">${finalAmount.toLocaleString()}</TableCell>
                         <TableCell>{request.user?.memberId}</TableCell>
                         {isAdmin && <TableCell>{request.ip}</TableCell>}
                         <TableCell>{request.method}</TableCell>
@@ -128,7 +165,8 @@ const WithdrawRequests = () => {
                           ) : (<span className="text-xs text-muted-foreground">—</span>)}
                         </TableCell>
                       </TableRow>
-                    ))}
+                    );
+                    })}
                   </TableBody>
                 </Table>
               </div>

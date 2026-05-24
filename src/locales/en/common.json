@@ -335,6 +335,8 @@
     "yourWithdrawalRequests": "Your Withdrawal Requests",
     "noWithdrawalRequests": "No withdrawal requests found",
     "withdrawalRequestsAppear": "Withdrawal requests will appear here",
+    "platformCommission": "Platform Commission",
+    "platformCommissionFeeInfo": "E Wallet withdrawal fee is 0%. P Wallet withdrawal fee is 5%.",
     "cancelWithdrawal": "Cancel Withdrawal?",
     "cancelWithdrawalDesc": "Are you sure you want to cancel this withdrawal request? This action cannot be undone.",
     "confirmCancel": "Confirm Cancel",

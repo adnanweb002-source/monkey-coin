@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { CloudCog, Wallet } from "lucide-react";
+import { CalendarOff, CloudCog, Wallet } from "lucide-react";
+import { isMemorialDayWithdrawalBlackout } from "@/lib/withdrawBlackout";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -105,6 +106,9 @@ const Withdraw = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isMemorialDayWithdrawalBlackout()) {
+      return;
+    }
     if (!selectedWalletType) {
       toast({
         title: t("common.error"),
@@ -178,6 +182,7 @@ const Withdraw = () => {
   };
   const userProfile = localStorage.getItem("userProfile");
   const user = userProfile ? JSON.parse(userProfile) : null;
+  const isMemorialDayBlackout = isMemorialDayWithdrawalBlackout();
 
   return (
     <div className="space-y-6">
@@ -200,6 +205,16 @@ const Withdraw = () => {
           <CloudCog className="h-5 w-5 text-destructive mt-0.5 shrink-0" />
           <p className="text-sm text-foreground">
             <strong>{t("wallet.withdrawalsLocked")}</strong>
+          </p>
+        </div>
+      )}
+
+      {isMemorialDayBlackout && (
+        <div className="flex items-start gap-3 p-4 rounded-lg border border-amber-500/30 bg-amber-500/10">
+          <CalendarOff className="h-5 w-5 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
+          <p className="text-sm text-foreground">
+            <strong>{t("wallet.memorialDayWithdrawalsPaused")}:</strong>{" "}
+            {t("wallet.memorialDayWithdrawalsMessage")}
           </p>
         </div>
       )}
@@ -322,10 +337,11 @@ const Withdraw = () => {
                 type="submit"
                 disabled={
                   isLoading ||
+                  isMemorialDayBlackout ||
                   (selectedWalletType === "E_WALLET" && isTargetLocked) ||
                   !selectedWalletType ||
                   user?.isWithdrawalRestricted ||
-                  !amount ||  
+                  !amount ||
                   parseFloat(amount) <= 0 ||
                   parseFloat(amount) > selectedBalance ||
                   !method ||

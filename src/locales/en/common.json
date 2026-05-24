@@ -322,6 +322,8 @@
     "withdrawalsLockedMessage": "Please reach your assigned target before placing a withdrawal request.",
     "withdrawalsLockedFromEWallet": "Withdrawals are locked for E Wallet.",
     "withdrawalsLockedMessageEWallet": "Please reach your assigned target before placing a withdrawal request from E Wallet.",
+    "memorialDayWithdrawalsPaused": "Withdrawals paused for Memorial Day",
+    "memorialDayWithdrawalsMessage": "We are not processing withdrawal requests today in observance of Memorial Day. Please return on the next business day to submit your request. Thank you for your patience and understanding.",
     "insufficientBalance": "Insufficient Balance",
     "insufficientBalanceDesc": "Your {{wallet}} balance is insufficient",
     "selectWalletError": "Please select a wallet",
